@@ -82,8 +82,9 @@ public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
 			Log.i("i",""+i);
 			squares.get(i).draw(canvas);
 			Square square1 = squares.get(i);
-			square1.top = square1.top + 5;
-			square1.bottom = square1.bottom + 5;
+			square1.top = square1.top + 5 + square1.a;
+			square1.bottom = square1.bottom + 5 + square1.a;
+			square1.a++;
 			squares.set(i, square1);
 		}
 		
@@ -95,7 +96,7 @@ public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
 		if (event.getAction() == MotionEvent.ACTION_UP){
 			Paint paint = new Paint();
 			paint.setColor((int)(0xff000000+Math.random()*0x00ffffff));
-			squares.add(new Square(event.getX()-10,event.getX()+10,event.getY()-10,event.getY()+10,paint));
+			squares.add(new Square(event.getX()-10,event.getX()+10,event.getY()-10,event.getY()+10,0,paint));
 		}
 		return true;
 	}

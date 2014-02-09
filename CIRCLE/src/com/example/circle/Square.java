@@ -8,14 +8,16 @@ public class Square {
 	float right;
 	float top;
 	float bottom;
+	int a;
 	Paint paint;
 	
-	public Square(float left, float right, float top, float bottom, Paint paint) {
+	public Square(float left, float right, float top, float bottom, int a, Paint paint) {
 		super();
 		this.left = left;
 		this.right = right;
 		this.top = top;
 		this.bottom = bottom;
+		this.a = a;
 		this.paint = paint;
 	}
 
