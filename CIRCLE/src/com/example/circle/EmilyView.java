@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -76,9 +77,14 @@ public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
 	
 	private void myDraw(Canvas canvas) {
 		Log.i("what is the size of squares?",squares.size()+"");
+		canvas.drawColor(0, Mode.CLEAR);
 		for (int i=0;i<squares.size();i++){
 			Log.i("i",""+i);
 			squares.get(i).draw(canvas);
+			Square square1 = squares.get(i);
+			square1.top = square1.top + 5;
+			square1.bottom = square1.bottom + 5;
+			squares.set(i, square1);
 		}
 		
 		
