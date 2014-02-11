@@ -2,10 +2,12 @@ package com.example.circle;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -15,6 +17,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.view.WindowManager;
 
 public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
@@ -46,7 +49,7 @@ public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
 		
 		/* modified from Elliott Hughes' "Dalvik Explorer" app
 		 * on http://stackoverflow.com/questions/1016896/how-to-get-screen-dimensions
-		 * 
+		 
 		WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display d = w.getDefaultDisplay();
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -72,40 +75,59 @@ public class EmilyView extends SurfaceView implements Runnable,OnTouchListener {
 		}
 		*/
 		
+		//Get the height of the whole display
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		
 		DisplayMetrics metrics = new DisplayMetrics();
 		wm.getDefaultDisplay().getMetrics(metrics);
-
-		int height = metrics.heightPixels;	//get screen height (dependent on rotation)
-		int width = metrics.widthPixels;	//get screen width (dependent on rotation)
 		
-		/*Display display = wm.getDefaultDisplay();
+		int screenheight = metrics.heightPixels;	//get screen height (dependent on rotation)
+		int screenwidth = metrics.widthPixels;	//get screen width (dependent on rotation)
 		
-		if (android.os.Build.VERSION.SDK_INT >= 13) {
-			Point size = new Point();
-			display.getSize(size);
-			int width = size.x;
-			int height = size.y;
+		Log.i("screenheight, screenwidth", screenheight+","+screenwidth);
+		
+		//Get the heights of status, title, decorations, etc.
+		Window win = ((Activity)context).getWindow();
+		Rect rect = new Rect();
+		
+		win.getDecorView().getWindowVisibleDisplayFrame(rect);
+		int statusBarHeight = rect.top;	//Get the height of the status bar
+		int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();	//Get height occupied by decoration contents
+		int titleBarHeight = contentViewTop - statusBarHeight;
+		
+		Log.i("statusBarHeight, contentViewTop, titleBarHeight", statusBarHeight+","+contentViewTop+","+titleBarHeight);
+		
+		//Get navigation bar height
+		int navBarHeight = 0;
+		/*Resources resources = context.getResources();
+		int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+		    navBarHeight = resources.getDimensionPixelSize(resourceId);
 		}
-		else {
-			int width = display.getWidth();  // deprecated
-			int height = display.getHeight();  // deprecated
-		}*/
 		
-		Log.i("height, width", height+", "+width);
+		Log.i("navBarHeight", navBarHeight+"");*/
+		
+		//Calculate actual height
+		int height = screenheight - (titleBarHeight + statusBarHeight + navBarHeight);
+		int width = screenwidth;
+		
+		Log.i("actual height, width", height+", "+width);
 		
 		TextPaint text = new TextPaint();
 		text.setTextSize(30);
 		text.setTextAlign(Align.CENTER);
 		text.setColor(0xffffffff);
-		
-		Paint color = new Paint();
-		color.setColor(0xff000000+(int)(Math.random()*0xffffff));
-		
-		for(int i=0; i<10; i++) {
-			buttons.add(new Button(i*width/10, (i+1)*width/10, 4*height/6, 5*height/6, color, i+"", text));
+					
+		for(int i=0; i<5; i++) {
+			Paint color = new Paint();
 			color.setColor(0xff000000+(int)(Math.random()*0xffffff));
+			buttons.add(new Button(i*width/11, (i+1)*width/11, 4*height/6, 5*height/6, color, i+1+"", text));
+		}
+		
+		for(int i=0; i<4; i++) {
+			Paint color = new Paint();
+			color.setColor(0xff000000+(int)(Math.random()*0xffffff));
+			buttons.add(new Button((int)((i+0.5)*width/11), (int)((i+1.5)*width/11), 5*height/6, height, color, i+6+"", text));
 		}
 	};
 

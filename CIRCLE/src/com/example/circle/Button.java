@@ -2,7 +2,6 @@ package com.example.circle;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 public class Button {
 	float left;
@@ -27,9 +26,9 @@ public class Button {
 	
 	public void draw(Canvas canvas) {
 		canvas.drawRect(left, top, right, bottom, bgpaint);
-		Log.i("I drew!", left+","+ top+","+ right+","+ bottom);
+		//Log.i("I drew!", left+","+ top+","+ right+","+ bottom);
 		canvas.drawText(text, left+(right-left)/2, top+(bottom-top)/2, txtpaint);
-		Log.i("I wrote!", text);
+		//Log.i("I wrote!", text);
 	}
 
 }
