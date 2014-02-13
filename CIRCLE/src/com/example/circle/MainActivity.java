@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
         
         emilyview = new EmilyView(this);
         setContentView(emilyview);
+        
     }
 
 
