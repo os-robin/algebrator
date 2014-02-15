@@ -9,6 +9,7 @@ public class Button {
 	float right;
 	float top;
 	float bottom;
+	int color;
 	Paint bgpaint;
 	String text;
 	Paint textpaint;
@@ -19,6 +20,7 @@ public class Button {
 		this.right = right;
 		this.top = top;
 		this.bottom = bottom;
+		this.color = color;
 		this.bgpaint = new Paint();
 		bgpaint.setColor(color);
 		this.text = text;
@@ -29,16 +31,17 @@ public class Button {
 	public void draw(Canvas canvas) {
 		canvas.drawRect(left, top, right, bottom, bgpaint);
 		//Log.i("I drew!", left+","+ top+","+ right+","+ bottom);
-		canvas.drawText(text, left+(right-left)/2, top+(bottom-top)/2, textpaint);
+		canvas.drawText(text, (right+left)/2, (bottom+top)/2, textpaint);
 		//Log.i("I wrote!", text);
 	}
-
-
+	
+	
 	public void click(MotionEvent event) {
 		if (event.getX()<right && event.getX()>left && event.getY()<bottom && event.getY()>top){
-			bgpaint.setColor(0x00ffffff);
+			bgpaint.setColor(color - 0xff000000);
+			Heart.heartpaint.setColor(color);
 		}
-		
+				
 	}
 
 }

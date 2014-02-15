@@ -27,6 +27,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	volatile boolean running = false;
 
 	ArrayList<Button> buttons = new ArrayList<Button>(); // list of our buttons
+	ArrayList<Heart> hearts = new ArrayList<Heart>();
 
 	public EmilyView(Context context) {
 		super(context);
@@ -112,12 +113,15 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		int width = screenwidth;
 
 		Log.i("actual height, width", height + ", " + width);
-
+		
+		hearts.add(new Heart(width/2, height/4, 500, 0x00000000));
+		
 		TextPaint text = new TextPaint();
 		text.setTextSize(30);
 		text.setTextAlign(Align.CENTER);
 		text.setColor(0xffffffff);
 
+		/*
 		for (int i = 0; i < 5; i++) {
 			buttons.add(new Button(i*width/11, (i+1)*width/11, 4*height/6, 5*height/6,
 					0xff000000+(int)(Math.random()*0xffffff), i+1+"", text));
@@ -147,7 +151,30 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "MORE", text));
 		buttons.add(new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text));
+		*/
 
+		buttons.add(new Button(0*width/11, 1*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "W", text));
+		buttons.add(new Button(1*width/11, 2*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "I", text));
+		buttons.add(new Button(2*width/11, 3*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
+		buttons.add(new Button(3*width/11, 4*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
+		buttons.add(new Button(4*width/11, 5*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "Y", text));
+		buttons.add(new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "O", text));
+		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "U", text));
+		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "B", text));
+		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
+		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "M", text));
+		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "Y", text));
+		buttons.add(new Button((int)(0.5*width/11), (int)(1.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "V", text));
+		buttons.add(new Button((int)(1.5*width/11), (int)(2.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "A", text));
+		buttons.add(new Button((int)(2.5*width/11), (int)(3.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
+		buttons.add(new Button((int)(3.5*width/11), (int)(4.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
+		buttons.add(new Button((int)(4.5*width/11), (int)(5.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "N", text));
+		buttons.add(new Button((int)(5.5*width/11), (int)(6.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "T", text));
+		buttons.add(new Button((int)(6.5*width/11), (int)(7.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "I", text));
+		buttons.add(new Button((int)(7.5*width/11), (int)(8.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "N", text));
+		buttons.add(new Button((int)(8.5*width/11), (int)(9.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
+		buttons.add(new Button((int)(9.5*width/11), (int)(10.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "?", text));
+		
 	};
 
 	public void onResume() {
@@ -183,8 +210,15 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	private void myDraw(Canvas canvas) {
 		canvas.drawColor(0, Mode.CLEAR);
 		for (int i = 0; i < buttons.size(); i++) {
+			int currentColor = buttons.get(i).bgpaint.getColor();
 			buttons.get(i).draw(canvas);
+			buttons.get(i).bgpaint.setColor((int) Math.ceil((currentColor + buttons.get(i).color)/2));
 		}
+		
+		for (int i = 0; i < hearts.size(); i++) {
+			hearts.get(0).draw(canvas);
+		}
+				
 	}
 
 	@Override
@@ -193,7 +227,9 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 
 			for (int i = 0; i < buttons.size(); i++) {
 				buttons.get(i).click(event);
+								
 			}
+			
 		}
 
 		return true;
