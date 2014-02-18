@@ -210,9 +210,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	private void myDraw(Canvas canvas) {
 		canvas.drawColor(0, Mode.CLEAR);
 		for (int i = 0; i < buttons.size(); i++) {
-			int currentColor = buttons.get(i).bgpaint.getColor();
 			buttons.get(i).draw(canvas);
-			buttons.get(i).bgpaint.setColor((int) Math.ceil((currentColor + buttons.get(i).color)/2));
 		}
 		
 		for (int i = 0; i < hearts.size(); i++) {
