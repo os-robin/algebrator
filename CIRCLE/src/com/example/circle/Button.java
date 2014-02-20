@@ -13,6 +13,7 @@ public class Button {
 	Paint bgpaint;
 	String text;
 	Paint textpaint;
+	Action myAction;
 	
 	public Button(float left, float right, float top, float bottom, int color, String text, Paint textpaint) {
 		super();
@@ -52,9 +53,12 @@ public class Button {
 	public void click(MotionEvent event) {
 		if (event.getX()<right && event.getX()>left && event.getY()<bottom && event.getY()>top){
 			bgpaint.setColor(color - 0xff000000);
-			Heart.heartpaint.setColor(color);
-		}
-				
+			if (myAction != null){
+				myAction.act();
+			}
+		}	
 	}
+	
+	
 
 }

@@ -2,8 +2,8 @@ package com.algebrator.eq;
 
 public class EqMngr {
 	
-	public static AddEqation expand(AddEqation a,AddEqation b){
-		AddEqation result = new AddEqation();
+	public static AddEquation expand(AddEquation a,AddEquation b){
+		AddEquation result = new AddEquation();
 		for (int i=0;i<a.size();i++){
 			for (int j=0;j<b.size();j++){
 				MultiEquation toAdd = new MultiEquation();

@@ -1,6 +1,6 @@
 Colin
 - Equations stuff
-- figure out how muliply/divide equation works
+- figure out how multiply/divide equation works
 
 Emily
 - First steps for equation writing
