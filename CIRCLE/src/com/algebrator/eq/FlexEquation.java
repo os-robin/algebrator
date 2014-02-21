@@ -8,6 +8,7 @@ public abstract class FlexEquation extends Equation {
 		// if this is now empty replace it with the proper equation
 		if (this.size() ==1){
 			this.parent.set(this.parent.indexOf(this),this.get(0));
+			this.get(0).parent = this.parent;
 		}
 		return removed;
 	}
@@ -16,6 +17,7 @@ public abstract class FlexEquation extends Equation {
 		// if this is now empty replace it with the proper equation
 		if (this.size() ==1){
 			this.parent.set(this.parent.indexOf(this),this.get(0));
+			this.get(0).parent = this.parent;
 		}
 		return result;
 	}

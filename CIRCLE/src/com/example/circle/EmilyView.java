@@ -20,15 +20,32 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.algebrator.eq.AddEquation;
+import com.algebrator.eq.EqualsEquation;
+import com.algebrator.eq.NumConstEquation;
+
 public class EmilyView extends SurfaceView implements Runnable, OnTouchListener {
 
 	Thread thread = null;
 	SurfaceHolder surfaceHolder;
 	volatile boolean running = false;
 
-	ArrayList<Button> buttons = new ArrayList<Button>(); // list of our buttons
-	ArrayList<Heart> hearts = new ArrayList<Heart>();
-
+/**
+ 	* 	list of our buttons
+ */
+	ArrayList<Button> buttons = new ArrayList<Button>();
+	/**
+	 * list of our passed in variables
+	 */
+	ArrayList<Button> vars = new ArrayList<Button>();
+	ArrayList<String> varList = new ArrayList<String>();
+	EqualsEquation stupid = new EqualsEquation();
+	
+	int width;
+	int height;
+	
+	TextPaint text = new TextPaint();
+	
 	public EmilyView(Context context) {
 		super(context);
 		init(context);
@@ -69,6 +86,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		 * (Exception ignored) { }
 		 */
 
+		
 		// Get the height of the whole display
 		WindowManager wm = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
@@ -108,20 +126,18 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		 */
 
 		// Calculate actual height
-		int height = screenheight
+		height = screenheight
 				- (titleBarHeight + statusBarHeight + navBarHeight);
-		int width = screenwidth;
+		width = screenwidth;
 
 		Log.i("actual height, width", height + ", " + width);
 		
-		hearts.add(new Heart(width/2, height/4, 500, 0x00000000));
 		
-		TextPaint text = new TextPaint();
 		text.setTextSize(30);
 		text.setTextAlign(Align.CENTER);
 		text.setColor(0xffffffff);
 
-		/*
+
 		for (int i = 0; i < 5; i++) {
 			buttons.add(new Button(i*width/11, (i+1)*width/11, 4*height/6, 5*height/6,
 					0xff000000+(int)(Math.random()*0xffffff), i+1+"", text));
@@ -133,7 +149,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "x", text));
 		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "y", text));
 		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "VAR", text));
-
+		
 		for (int i = 0; i < 4; i++) {
 			buttons.add(new Button((int)((i+0.5)*width/11), (int) ((i+1.5)*width/11), 5*height/6, height,
 					0xff000000+(int)(Math.random()*0xffffff), i+6+"", text));
@@ -151,29 +167,37 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "MORE", text));
 		buttons.add(new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text));
-		*/
+		
+		
+		AddEquation add1 = new AddEquation();
+		add1.add(new NumConstEquation("3"));
+		add1.add(new NumConstEquation("4"));
+		AddEquation add2 = new AddEquation();
+		add2.add(new NumConstEquation("2"));
+		add2.add(new NumConstEquation("5"));
+		stupid.add(add1);
+		stupid.add(add2);
+		
+		buttons.get(0).myAction = new Action(){
 
-		buttons.add(new Button(0*width/11, 1*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "W", text));
-		buttons.add(new Button(1*width/11, 2*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "I", text));
-		buttons.add(new Button(2*width/11, 3*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
-		buttons.add(new Button(3*width/11, 4*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
-		buttons.add(new Button(4*width/11, 5*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "Y", text));
-		buttons.add(new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "O", text));
-		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "U", text));
-		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "B", text));
-		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
-		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "M", text));
-		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "Y", text));
-		buttons.add(new Button((int)(0.5*width/11), (int)(1.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "V", text));
-		buttons.add(new Button((int)(1.5*width/11), (int)(2.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "A", text));
-		buttons.add(new Button((int)(2.5*width/11), (int)(3.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "L", text));
-		buttons.add(new Button((int)(3.5*width/11), (int)(4.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
-		buttons.add(new Button((int)(4.5*width/11), (int)(5.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "N", text));
-		buttons.add(new Button((int)(5.5*width/11), (int)(6.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "T", text));
-		buttons.add(new Button((int)(6.5*width/11), (int)(7.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "I", text));
-		buttons.add(new Button((int)(7.5*width/11), (int)(8.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "N", text));
-		buttons.add(new Button((int)(8.5*width/11), (int)(9.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "E", text));
-		buttons.add(new Button((int)(9.5*width/11), (int)(10.5*width/11), 5*height/6, 6*height/6, 0xff000000+(int)(Math.random()*0xffffff), "?", text));
+			@Override
+			public void act() {
+				Log.i("button 0 get pressed!","yo");
+			}
+		};
+		
+		buttons.get(10).myAction = new Action(){
+
+			@Override
+			public void act() {
+				varList.add("A"); varList.add("B"); varList.add("C");
+				if(vars.size()<3) {
+					vars.add(new Button(width*(10-vars.size())/11, width*(11-vars.size())/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), varList.get(vars.size()), text));
+				}
+				
+			}
+			
+		};
 		
 	};
 
@@ -210,15 +234,15 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	private void myDraw(Canvas canvas) {
 		canvas.drawColor(0, Mode.CLEAR);
 		for (int i = 0; i < buttons.size(); i++) {
-			int currentColor = buttons.get(i).bgpaint.getColor();
 			buttons.get(i).draw(canvas);
-			buttons.get(i).bgpaint.setColor((int) Math.ceil((currentColor + buttons.get(i).color)/2));
 		}
 		
-		for (int i = 0; i < hearts.size(); i++) {
-			hearts.get(0).draw(canvas);
+		for (int i = 0; i < vars.size(); i++) {
+			vars.get(i).draw(canvas);
 		}
-				
+		
+		stupid.draw(canvas, width/2, height/2);
+		
 	}
 
 	@Override
@@ -230,6 +254,10 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 								
 			}
 			
+			for (int i = 0; i < vars.size(); i++) {
+				vars.get(i).click(event);
+			}
+			stupid.onAny(event.getX(), event.getY());
 		}
 
 		return true;

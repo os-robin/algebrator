@@ -4,11 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
-public class NumConstEquation extends FixEquation {
-	private double value;
+public class EqualsEquation extends FixEquation {
 	
-	public NumConstEquation(String display) {
-		this.display = display;
+	public EqualsEquation() {
+		display ="=";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 		textPaint = new Paint();
@@ -19,17 +18,18 @@ public class NumConstEquation extends FixEquation {
 
 	@Override
 	public float measureWidth() {
-		return singleMeasureWidth();
-	}
-
-	@Override
-	public float measureHeight() {
-		return singleMeasureHeight();
+		return horizMeasureWidth();
 	}
 
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		singleDraw(canvas,x,y);
+		horizDraw(canvas,x,y);
+		
+	}
+
+	@Override
+	public float measureHeight() {
+		return horizMeasureHeight();
 	}
 
 }

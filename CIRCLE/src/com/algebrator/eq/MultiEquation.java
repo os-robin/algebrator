@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import android.graphics.Canvas;
 
 public class MultiEquation extends FlexEquation implements List<Equation>{
 	ArrayList<Equation> structured;
@@ -108,5 +109,24 @@ public class MultiEquation extends FlexEquation implements List<Equation>{
 	public boolean containsAll(Collection<?> arg0) {
 		System.out.println("not implemented");
 		return false;
+	}
+	@Override
+	public float measureWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public float measureHeight() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void draw(Canvas canvas, float x, float y) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,0 +1,16 @@
+Colin
+- Equations stuff
+- figure out how multiply/divide equation works
+
+Emily
+- First steps for equation writing
+	- create EqualsEquation should extend FixEquation
+	- create Place holder Equation for writing
+	- make place holder work with numbers and +
+- var button
+	- make some var buttons running right to left
+	- make the var button add a new var button (with a default name)
+		- remind colin to tell you how to pass functions in to the buttons or just figure out your own way or look it up 
+
+
+rando on the write screen do we need a next button, prolly not its not like clicking on what they want is hard
