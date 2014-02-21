@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.algebrator.eq.AddEquation;
+import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.NumConstEquation;
 
 public class EmilyView extends SurfaceView implements Runnable, OnTouchListener {
@@ -29,11 +30,16 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	SurfaceHolder surfaceHolder;
 	volatile boolean running = false;
 
-	ArrayList<Button> buttons = new ArrayList<Button>(); // list of our buttons
-	ArrayList<Button> vars = new ArrayList<Button>();	// list of our passed in variables
+/**
+ 	* 	list of our buttons
+ */
+	ArrayList<Button> buttons = new ArrayList<Button>();
+	/**
+	 * list of our passed in variables
+	 */
+	ArrayList<Button> vars = new ArrayList<Button>();
 	ArrayList<String> varList = new ArrayList<String>();
-	
-	AddEquation stupid = new AddEquation();
+	EqualsEquation stupid = new EqualsEquation();
 	
 	int width;
 	int height;
@@ -162,10 +168,15 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		buttons.add(new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text));
 		
-		stupid.add(new NumConstEquation("7"));
-		stupid.add(new NumConstEquation("9"));
-		stupid.add(new NumConstEquation("8"));
-		stupid.add(new NumConstEquation("8"));
+		
+		AddEquation add1 = new AddEquation();
+		add1.add(new NumConstEquation("3"));
+		add1.add(new NumConstEquation("4"));
+		AddEquation add2 = new AddEquation();
+		add2.add(new NumConstEquation("2"));
+		add2.add(new NumConstEquation("5"));
+		stupid.add(add1);
+		stupid.add(add2);
 		
 		buttons.get(0).myAction = new Action(){
 
@@ -246,7 +257,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 			for (int i = 0; i < vars.size(); i++) {
 				vars.get(i).click(event);
 			}
-			
+			stupid.onAny(event.getX(), event.getY());
 		}
 
 		return true;
