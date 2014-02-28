@@ -15,7 +15,7 @@ public class EqMngr {
 		return result;
 	}
 	
-	public static boolean canSwitchSides(Equation child, Equation root){
+	public static boolean canSwitchSides(Equation child, EqualsEquation root){
 		if (child.parent.equals(root)){
 			return true;
 		}
@@ -27,7 +27,7 @@ public class EqMngr {
 		return false;
 	}
 	
-	public static boolean trySwitchSides(Equation child, Equation root, Equation target, int pos){
+	public static boolean trySwitchSides(Equation child, EqualsEquation root, Equation target, int pos){
 		if (!canSwitchSides(child, root)){
 			return false;
 		}

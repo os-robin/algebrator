@@ -1,5 +1,6 @@
 package com.algebrator.eq;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,12 +17,45 @@ abstract public class Equation extends ArrayList<Equation>{
 	ArrayList<Point> lastPoint =new ArrayList<Point>();
 	protected int myWidth;
 	protected int myHeight;
+	
+	@Override
+	public boolean add(Equation equation) {
+		boolean result = super.add(equation);
+		equation.parent =this;
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public ArrayList<EquationDis> closest(float x, float y){
+		ArrayList<EquationDis> result= new ArrayList<EquationDis>();
+		for (int i=0;i<size();i++){
+			result.addAll(get(i).closest(x, y));
+		}
+		Collections.sort(result);
+		return result;
+	}
+	
 	public abstract boolean isFlex();
 	public abstract float measureWidth();
 	/**
 	 * x,y is the center of the equation to be drawn
 	 */
 	public abstract void draw(Canvas canvas,float x, float y);
+	
+	public boolean deepContains(Equation equation){
+		for (int i=0;i<size();i++){
+			if (get(i).deepContains(equation)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public abstract float measureHeight();
 	public boolean on(float x, float y){
 		Log.i("yo,yo",x+","+y);

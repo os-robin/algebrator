@@ -7,126 +7,60 @@ import java.util.List;
 import java.util.ListIterator;
 import android.graphics.Canvas;
 
-public class MultiEquation extends FlexEquation implements List<Equation>{
-	ArrayList<Equation> structured;
-
-	@Override
-	public boolean add(Equation equation) {
-		boolean result = super.add(equation);
-		structured.add(equation);
-		return result;
-	}
-
-	@Override
-	public void add(int pos, Equation equation) {
-		super.add(pos,equation);
-		//TODO structured
-		
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends Equation> equations) {
-		Iterator<? extends Equation> itter = equations.iterator();
-		while (itter.hasNext()){
-			this.add(itter.next());
+public class MultiEquation extends FlexEquation {
+	/**
+	 * returns true is the given equation could be "on top" if this MultiEquation was written as A/B
+	 * @param equation - a child of this
+	 * @return true if the child would be on top false if the child would be on bottom or if the equation is not a child
+	 */
+	public boolean isTop(Equation equation){
+		boolean currentTop= true;
+		Equation current = equation;
+		while (true){
+			//TODO if current is an EqualsEquation Error out
+			//TODO if we hit something that is not a div or multi error out
+			if (current.parent.equals(this)){
+				return currentTop;
+			}
+			if (current.parent instanceof DivEquation){
+				currentTop = ((DivEquation)current.parent).isTop(current) == currentTop;
+			}
+			current = current.parent;
 		}
-		// TODO what does this return
-		return false;
 	}
 
-	@Override
-	public void clear() {
-		super.clear();
-		structured.clear();
-	}
-
-	@Override
-	public Equation remove(int pos) {
-		Equation result = this.get(pos);
-		remove(result);
-		// TODO is this what I want to return?
-		return result;
-	}
-
-	@Override
-	public boolean remove(Equation eq) {
-		for (int i=0;i<structured.size();i++){
-			if (structured.get(i).contains(eq)){
-				structured.get(i).remove(eq);
+	/**
+	 * check to see if all the generations between an equation and this are divEquations or MultiEquations
+	 * @param equation
+	 * @return
+	 */
+	
+	public boolean DivMultiContain(Equation equation){
+		Equation current = equation;
+		while (true){
+			if (current.parent.equals(this)){
+				return true;
+			}else if (current.parent instanceof DivEquation || current.parent instanceof MultiEquation){
+				current = current.parent;
+			}else{
+				return false;
 			}
 		}
-		return super.remove(eq);
 	}
 
-	@Override
-	public Equation set(int pos, Equation eq) {
-		super.set(pos, eq);
-		
-		return null;
-	}
-
-	
-	/** 
-	 * not implemented, do not use
-	 */
-	@Override
-	public List<Equation> subList(int arg0, int arg1) {
-		System.out.println("not implemented");
-		return null;
-	}
-	
-	/** 
-	 * not implemented, do not use
-	 */
-	@Override
-	public boolean retainAll(Collection<?> arg0) {
-		System.out.println("not implemented");
-		return false;
-	}
-	
-	/** 
-	 * not implemented, do not use
-	 */
-	@Override
-	public boolean removeAll(Collection<?> arg0) {
-		System.out.println("not implemented");
-		return false;
-	}
-	
-	/** 
-	 * not implemented, do not use
-	 */
-	@Override
-	public boolean addAll(int arg0, Collection<? extends Equation> arg1) {
-		System.out.println("not implemented");
-		return false;
-	}
-	
-	/** 
-	 * not implemented, do not use
-	 */
-	@Override
-	public boolean containsAll(Collection<?> arg0) {
-		System.out.println("not implemented");
-		return false;
-	}
 	@Override
 	public float measureWidth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return horizMeasureWidth();
 	}
-
-
-	@Override
-	public float measureHeight() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		// TODO Auto-generated method stub
+		horizDraw(canvas,x,y);
 		
+	}
+
+	@Override
+	public float measureHeight() {
+		return horizMeasureHeight();
 	}
 }
