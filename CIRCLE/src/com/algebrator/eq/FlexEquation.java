@@ -1,6 +1,12 @@
 package com.algebrator.eq;
 
+import com.example.circle.EmilyView;
+
 public abstract class FlexEquation extends Equation {
+	public FlexEquation(EmilyView ev) {
+		super(ev);
+		// TODO Auto-generated constructor stub
+	}
 	Equation empty;
 	
 	public Equation remove(int i){

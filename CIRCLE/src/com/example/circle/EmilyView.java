@@ -20,12 +20,12 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.EqualsEquation;
-import com.algebrator.eq.NumConstEquation;
+import com.algebrator.eq.Equation;
+import com.algebrator.eq.PlaceholderEquation;
 
 public class EmilyView extends SurfaceView implements Runnable, OnTouchListener {
-
+	public Equation selected;
 	Thread thread = null;
 	SurfaceHolder surfaceHolder;
 	volatile boolean running = false;
@@ -39,7 +39,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	 */
 	ArrayList<Button> vars = new ArrayList<Button>();
 	ArrayList<String> varList = new ArrayList<String>();
-	EqualsEquation stupid = new EqualsEquation();
+	EqualsEquation stupid;
 	
 	int width;
 	int height;
@@ -64,6 +64,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	private void init(Context context) {
 		surfaceHolder = getHolder();
 		this.setOnTouchListener(this);
+		stupid = new EqualsEquation(this);
 
 		/*
 		 * modified from Elliott Hughes' "Dalvik Explorer" app on
@@ -168,23 +169,25 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		buttons.add(new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text));
 		
-		
+		/*
 		AddEquation add1 = new AddEquation();
 		add1.add(new NumConstEquation("3"));
 		add1.add(new NumConstEquation("4"));
 		AddEquation add2 = new AddEquation();
 		add2.add(new NumConstEquation("2"));
 		add2.add(new NumConstEquation("5"));
+		AddEquation add3 = new AddEquation();
+		add3.add(new NumConstEquation("1"));
+		add3.add(new NumConstEquation("6"));
 		stupid.add(add1);
 		stupid.add(add2);
+		stupid.add(add3); */
 		
-		buttons.get(0).myAction = new Action(){
-
-			@Override
-			public void act() {
-				Log.i("button 0 get pressed!","yo");
-			}
-		};
+		PlaceholderEquation empty1 = new PlaceholderEquation(this);
+		empty1.setSelected(true);
+		PlaceholderEquation empty2 = new PlaceholderEquation(this);
+		stupid.add(empty1);
+		stupid.add(empty2);
 		
 		buttons.get(10).myAction = new Action(){
 

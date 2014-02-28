@@ -8,12 +8,36 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.example.circle.BigDaddy;
+import com.example.circle.EmilyView;
+
 abstract public class Equation extends ArrayList<Equation>{
 	public static final int DEFAULT_SIZE = 50;
 	Equation parent;
 	String display;
-	Paint textPaint; 
-	boolean selected = false;
+	Paint textPaint;
+	EmilyView owner;
+	
+	public Equation(EmilyView ev){
+		owner =ev;
+	}
+	
+	protected boolean selected = false;
+	
+	public boolean isSelected() {
+		return selected;
+	}
+	public void setSelected(boolean selected) {
+		if (selected){
+			if (owner.selected != null){
+			owner.selected.setSelected(false);
+			}
+
+			owner.selected =this;
+		}
+		this.selected = selected;
+	}
+
 	ArrayList<Point> lastPoint =new ArrayList<Point>();
 	protected int myWidth;
 	protected int myHeight;
@@ -165,7 +189,9 @@ abstract public class Equation extends ArrayList<Equation>{
 	}
 
 	public float singleMeasureWidth() {
-		return myWidth;
+		// not tested
+		textPaint.measureText(display);
+		return myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
 	}
 
 	public float singleMeasureHeight() {
@@ -178,6 +204,8 @@ abstract public class Equation extends ArrayList<Equation>{
 			canvas.drawText(display, x, y, textPaint);
 		}else{
 			Paint temp = new Paint();
+			temp.setTextSize(BigDaddy.TEXT_SIZE);
+			temp.measureText(display);
 			temp.setColor(Color.GREEN);
 			canvas.drawText(display, x, y, temp);
 		}

@@ -1,10 +1,13 @@
 package com.algebrator.eq;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import com.example.circle.EmilyView;
+
 import android.graphics.Canvas;
 
 public class MultiEquation extends FlexEquation {
@@ -47,6 +50,12 @@ public class MultiEquation extends FlexEquation {
 			}
 		}
 	}
+
+	public MultiEquation(EmilyView ev) {
+		super(ev);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	@Override
 	public float measureWidth() {

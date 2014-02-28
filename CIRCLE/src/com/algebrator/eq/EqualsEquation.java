@@ -4,9 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
+import com.example.circle.EmilyView;
+
 public class EqualsEquation extends FixEquation {
 	
-	public EqualsEquation() {
+	public EqualsEquation(EmilyView ev) {
+		super(ev);
 		display ="=";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;

@@ -2,10 +2,16 @@ package com.algebrator.eq;
 
 import java.util.ArrayList;
 
+import com.example.circle.EmilyView;
+
 import android.graphics.Canvas;
 import android.graphics.Point;
 
 public abstract class LeafEquation extends FixEquation {
+
+	public LeafEquation(EmilyView ev) {
+		super(ev);
+	}
 
 	@Override
 	public ArrayList<EquationDis> closest(float x, float y){

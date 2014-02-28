@@ -6,43 +6,33 @@ import android.graphics.Paint.Align;
 
 import com.example.circle.EmilyView;
 
-public class AddEquation extends FlexEquation {
-	Equation empty;
+public class PlaceholderEquation extends FixEquation {
 	
-	public AddEquation(EmilyView ev){
+	public PlaceholderEquation(EmilyView ev) {
 		super(ev);
-		display ="+";
+		display = "_";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 		textPaint = new Paint();
 		textPaint.setTextSize(30);
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
-		empty= new NumConstEquation("0",ev);
-	}
-	
-	void operate(int pos1, int pos2){
-		// 
-	}
-	
-	void operate(){
-		
-	}
-	
-	boolean canOperate(){
-		return false;
 	}
 
-	public float measureHeight() {
-		return horizMeasureHeight();
-	}
-
+	@Override
 	public float measureWidth() {
-		return horizMeasureWidth();
+		return singleMeasureWidth();
 	}
-	
+
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		horizDraw(canvas,x,y);		
+		singleDraw(canvas, x, y);
 	}
+
+	@Override
+	public float measureHeight() {
+		return singleMeasureHeight();
+	}
+	
+
 }
