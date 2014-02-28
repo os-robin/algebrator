@@ -4,19 +4,17 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
-import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 
-public class NumConstEquation extends FixEquation {
-	private double value;
+public class PlaceholderEquation extends FixEquation {
 	
-	public NumConstEquation(String display, EmilyView ev) {
+	public PlaceholderEquation(EmilyView ev) {
 		super(ev);
-		this.display = display;
+		display = "_";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 		textPaint = new Paint();
-		textPaint.setTextSize(BigDaddy.TEXT_SIZE);
+		textPaint.setTextSize(30);
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
 	}
@@ -27,13 +25,14 @@ public class NumConstEquation extends FixEquation {
 	}
 
 	@Override
-	public float measureHeight() {
-		return singleMeasureHeight();
+	public void draw(Canvas canvas, float x, float y) {
+		singleDraw(canvas, x, y);
 	}
 
 	@Override
-	public void draw(Canvas canvas, float x, float y) {
-		singleDraw(canvas,x,y);
+	public float measureHeight() {
+		return singleMeasureHeight();
 	}
+	
 
 }

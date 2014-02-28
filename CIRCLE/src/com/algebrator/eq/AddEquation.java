@@ -4,10 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
+import com.example.circle.EmilyView;
+
 public class AddEquation extends FlexEquation {
-	Equation empty= new NumConstEquation("0");
+	Equation empty;
 	
-	public AddEquation(){
+	public AddEquation(EmilyView ev){
+		super(ev);
 		display ="+";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
@@ -15,6 +18,7 @@ public class AddEquation extends FlexEquation {
 		textPaint.setTextSize(30);
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
+		empty= new NumConstEquation("0",ev);
 	}
 	
 	void operate(int pos1, int pos2){
