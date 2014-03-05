@@ -6,7 +6,7 @@ import android.graphics.Paint.Align;
 import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 
-public class NumConstEquation extends FixEquation {
+public class NumConstEquation extends LeafEquation {
 	private double value;
 	
 	public NumConstEquation(String display, EmilyView ev) {
@@ -18,24 +18,6 @@ public class NumConstEquation extends FixEquation {
 		textPaint.setTextSize(BigDaddy.TEXT_SIZE);
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
-	}
-
-	@Override
-	public float measureWidth() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void draw(Canvas canvas, float x, float y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public float measureHeight() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

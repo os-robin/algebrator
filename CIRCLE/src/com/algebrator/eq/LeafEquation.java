@@ -2,9 +2,12 @@ package com.algebrator.eq;
 
 import java.util.ArrayList;
 
+import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 
 public abstract class LeafEquation extends FixEquation {
@@ -29,17 +32,41 @@ public abstract class LeafEquation extends FixEquation {
 	
 	@Override
 	public float measureWidth() {
-		return singleMeasureWidth();
+		// not tested
+		textPaint.measureText(display);
+		
+		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
+		
+		if (parenthesis){
+			//TODO test
+			Paint p = new Paint();
+			p.setTextSize(measureHeight());
+			totalWidth += p.measureText("()");
+		}
+		return totalWidth;
 	}
 
 	@Override
 	public float measureHeight() {
-		return singleMeasureHeight();
+		return myHeight;
 	}
 
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		singleDraw(canvas,x,y);
+		lastPoint =new ArrayList<Point>();
+		if (!selected){
+			canvas.drawText(display, x, y, textPaint);
+		}else{
+			Paint temp = new Paint();
+			temp.setTextSize(BigDaddy.TEXT_SIZE);
+			temp.measureText(display);
+			temp.setColor(Color.GREEN);
+			canvas.drawText(display, x, y, temp);
+		}
+		Point point = new Point();
+		point.x =(int) x;
+		point.y = (int) y;
+		lastPoint.add(point);
 	}
 
 }

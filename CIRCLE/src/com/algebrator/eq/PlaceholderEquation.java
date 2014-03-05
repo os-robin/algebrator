@@ -6,7 +6,7 @@ import android.graphics.Paint.Align;
 
 import com.example.circle.EmilyView;
 
-public class PlaceholderEquation extends FixEquation {
+public class PlaceholderEquation extends LeafEquation {
 	
 	public PlaceholderEquation(EmilyView ev) {
 		super(ev);
@@ -18,21 +18,4 @@ public class PlaceholderEquation extends FixEquation {
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
 	}
-
-	@Override
-	public float measureWidth() {
-		return singleMeasureWidth();
-	}
-
-	@Override
-	public void draw(Canvas canvas, float x, float y) {
-		singleDraw(canvas, x, y);
-	}
-
-	@Override
-	public float measureHeight() {
-		return singleMeasureHeight();
-	}
-	
-
 }

@@ -10,13 +10,60 @@ import com.example.circle.EmilyView;
 
 import android.graphics.Canvas;
 
-public class MultiEquation extends FlexEquation {
+public class MultiEquation extends MultiDivSuperEquation {
+	
+	public boolean canInsert(Equation eq){
+		// we can't put things in themselves
+		if (eq.deepContains(this)){
+			return false;
+		}
+		//if the other is a div multi element of this
+		if (DivMultiContain(eq)){
+			if (onTop(eq)){
+				return true;
+			}
+		}
+		// if this and eq are both div multi elements of something
+		// and they are both on the same side of that something
+		Equation lcc= lowestCommonContainer(eq);
+		if (lcc instanceof MultiEquation){
+			if (((MultiEquation) lcc).DivMultiContain(this) 
+					&&((MultiEquation) lcc).DivMultiContain(this)){
+				if (((MultiEquation) lcc).onTop(this)
+						== ((MultiEquation) lcc).onTop(this)){
+					return true;
+				}
+			}
+		}
+		// this this and other are on different sides
+		if (lcc instanceof EqualsEquation){
+			// figure out what side this is on
+			int mySide = ((EqualsEquation)lcc).side(this);
+			// if both size have div or multi as top node
+			if (lcc.get(mySide) instanceof MultiDivSuperEquation
+					&& lcc.get(EqualsEquation.otherSide(mySide)) instanceof MultiDivSuperEquation
+					){
+				// if this and eq are both div multi contained by thier sides top
+				if (((MultiDivSuperEquation) lcc.get(mySide)).DivMultiContain(this)
+					&& ((MultiDivSuperEquation) lcc.get(mySide)).DivMultiContain(this)){
+						//if we have different on topness
+						if (((MultiDivSuperEquation)lcc.get(mySide)).onTop(this) != ((MultiDivSuperEquation) lcc.get(EqualsEquation.otherSide(mySide))).onTop(eq)){
+							return true;
+					}	
+				}
+			}
+		}
+		// TODO other cases?
+		return false;
+	}
+
 	/**
 	 * returns true is the given equation could be "on top" if this MultiEquation was written as A/B
 	 * @param equation - a child of this
 	 * @return true if the child would be on top false if the child would be on bottom or if the equation is not a child
 	 */
-	public boolean isTop(Equation equation){
+	@Override
+	public boolean onTop(Equation equation){
 		boolean currentTop= true;
 		Equation current = equation;
 		while (true){
@@ -26,28 +73,9 @@ public class MultiEquation extends FlexEquation {
 				return currentTop;
 			}
 			if (current.parent instanceof DivEquation){
-				currentTop = ((DivEquation)current.parent).isTop(current) == currentTop;
+				currentTop = ((DivEquation)current.parent).onTop(current) == currentTop;
 			}
 			current = current.parent;
-		}
-	}
-
-	/**
-	 * check to see if all the generations between an equation and this are divEquations or MultiEquations
-	 * @param equation
-	 * @return
-	 */
-	
-	public boolean DivMultiContain(Equation equation){
-		Equation current = equation;
-		while (true){
-			if (current.parent.equals(this)){
-				return true;
-			}else if (current.parent instanceof DivEquation || current.parent instanceof MultiEquation){
-				current = current.parent;
-			}else{
-				return false;
-			}
 		}
 	}
 
@@ -65,7 +93,6 @@ public class MultiEquation extends FlexEquation {
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
 		horizDraw(canvas,x,y);
-		
 	}
 
 	@Override

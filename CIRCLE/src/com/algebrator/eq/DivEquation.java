@@ -6,9 +6,10 @@ import android.graphics.Paint.Align;
 
 import com.example.circle.EmilyView;
 
-public class DivEquation extends FixEquation {
+public class DivEquation extends MultiDivSuperEquation {
 	
-	public boolean isTop(Equation equation){
+	@Override
+	public boolean onTop(Equation equation){
 		return equation.equals(get(0));
 	}
 	
@@ -52,4 +53,11 @@ public class DivEquation extends FixEquation {
 		}
 		return parent;
 	}
+
+	@Override
+	public boolean canInsert(Equation eq) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
