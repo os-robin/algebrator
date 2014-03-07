@@ -7,7 +7,6 @@ import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 
 public class NumConstEquation extends FixEquation {
-	private double value;
 	
 	public NumConstEquation(String display, EmilyView ev) {
 		super(ev);
@@ -22,20 +21,18 @@ public class NumConstEquation extends FixEquation {
 
 	@Override
 	public float measureWidth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return singleMeasureWidth();
 	}
 
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		// TODO Auto-generated method stub
+		singleDraw(canvas,x,y);
 		
 	}
 
 	@Override
 	public float measureHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return singleMeasureHeight();
 	}
 
 }

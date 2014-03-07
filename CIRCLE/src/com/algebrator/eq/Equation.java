@@ -13,8 +13,8 @@ import com.example.circle.EmilyView;
 
 abstract public class Equation extends ArrayList<Equation>{
 	public static final int DEFAULT_SIZE = 50;
-	Equation parent;
-	String display;
+	public Equation parent;
+	public String display;
 	Paint textPaint;
 	EmilyView owner;
 	
