@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
 
@@ -78,6 +79,23 @@ public abstract class LeafEquation extends FixEquation {
 		point.x =(int) x;
 		point.y = (int) y;
 		lastPoint.add(point);
+	}
+	
+	@Override
+	public boolean on(float x, float y){
+		Log.i("yo,yo",x+","+y);
+		boolean result =false;
+		for (int i=0;i<lastPoint.size();i++){
+			//TODO should be measureHeight and width??
+			if (x < lastPoint.get(i).x + measureWidth()/2 
+					&& x > lastPoint.get(i).x - measureWidth()/2 
+					&& y < lastPoint.get(i).y + measureHeight()/2 
+					&& y > lastPoint.get(i).y - measureHeight()/2){
+				result = true;
+				setSelected(true);
+			}
+		}
+		return result;
 	}
 
 }
