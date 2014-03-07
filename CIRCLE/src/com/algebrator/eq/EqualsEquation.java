@@ -35,4 +35,18 @@ public class EqualsEquation extends FixEquation {
 		return horizMeasureHeight();
 	}
 
+	public int side(Equation equation)  {
+		if (get(0).deepContains(equation)){
+			return 0;
+		}
+		if (get(1).deepContains(equation)){
+			return 1;
+		}
+		// else error out
+		return -1;
+	}
+
+	public static int otherSide(int side) {
+		return (side ==1?0:1);
+	}
 }

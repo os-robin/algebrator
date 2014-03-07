@@ -17,6 +17,7 @@ abstract public class Equation extends ArrayList<Equation>{
 	public String display;
 	Paint textPaint;
 	EmilyView owner;
+	public boolean parenthesis;
 	
 	public Equation(EmilyView ev){
 		owner =ev;
@@ -144,6 +145,14 @@ abstract public class Equation extends ArrayList<Equation>{
 			totalWidth += get(i).measureWidth();
 		}
 		totalWidth += (size()-1)*myWidth;
+		
+		if (parenthesis){
+			//TODO test
+			Paint p = new Paint();
+			p.setTextSize(measureHeight());
+			totalWidth += p.measureText("()");
+		}
+		
 		return totalWidth;
 	}
 	
@@ -184,35 +193,25 @@ abstract public class Equation extends ArrayList<Equation>{
 				maxWidth = get(i).measureHeight();
 			}
 		}
+		if (parenthesis){
+			//TODO test
+			Paint p = new Paint();
+			p.setTextSize(measureHeight());
+			maxWidth += p.measureText("()");
+		}
 		
 		return maxWidth;
 	}
-
-	public float singleMeasureWidth() {
-		// not tested
-		textPaint.measureText(display);
-		return myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
-	}
-
-	public float singleMeasureHeight() {
-		return myHeight;
-	}
-
-	public void singleDraw(Canvas canvas, float x, float y) {
-		lastPoint =new ArrayList<Point>();
-		if (!selected){
-			canvas.drawText(display, x, y, textPaint);
-		}else{
-			Paint temp = new Paint();
-			temp.setTextSize(BigDaddy.TEXT_SIZE);
-			temp.measureText(display);
-			temp.setColor(Color.GREEN);
-			canvas.drawText(display, x, y, temp);
+	
+	public Equation lowestCommonContainer(Equation eq) {
+		// TODO slow
+		Equation at = parent;
+		while (true){
+			if (at.deepContains(eq)){ 
+				return at;
+			}else{
+				at = at.parent;
+			}
 		}
-		Point point = new Point();
-		point.x =(int) x;
-		point.y = (int) y;
-		lastPoint.add(point);
-		
 	}
 }
