@@ -112,12 +112,23 @@ abstract public class Equation extends ArrayList<Equation>{
  		lastPoint =new ArrayList<Point>();
 		float totalWidth = measureWidth();
 		float currentX=0;
+		Paint temp = textPaint;
+		if (selected){
+			temp = new Paint(textPaint);
+			temp.setColor(Color.GREEN);
+			
+		}
+		if (parenthesis){
+			drawParenthesis(canvas,x,y,temp);
+			temp.setTextSize(measureHeight());
+			totalWidth -= temp.measureText("()");
+		} 
 		for (int i=0;i<size();i++){
 			float currentWidth = get(i).measureWidth();
 			get(i).draw(canvas, x - (totalWidth/2) + currentX + (currentWidth/2),y);
 			currentX+=get(i).measureWidth();
 			if (i != size()-1){
-				canvas.drawText(display, x - (totalWidth/2) + currentX + (myWidth/2), y, textPaint);
+				canvas.drawText(display, x - (totalWidth/2) + currentX + (myWidth/2), y, temp);
 				Point point = new Point();
 				point.x =(int)( x - (totalWidth/2) + currentX + (myWidth/2));
 				point.y = (int)  ( y);
@@ -128,15 +139,18 @@ abstract public class Equation extends ArrayList<Equation>{
 	}
 	
 	public float horizMeasureHeight() {
-		float maxHeight = myHeight;
+		float totalHeight = myHeight;
 		
 		for(int i = 0; i<size(); i++) {
-			if(get(i).measureHeight() > maxHeight) {
-				maxHeight = get(i).measureHeight();
+			if(get(i).measureHeight() > totalHeight) {
+				totalHeight = get(i).measureHeight();
 			}
 		}
+		if (parenthesis){
+			totalHeight += PARN_HEIGHT_ADDITION;
+		}
 		
-		return maxHeight;
+		return totalHeight;
 	}
 
 	public float horizMeasureWidth() {
@@ -161,12 +175,22 @@ abstract public class Equation extends ArrayList<Equation>{
 		lastPoint =new ArrayList<Point>();
 		float totalHieght = measureWidth();
 		float currentY=0;
+		Paint temp = textPaint;
+		if (selected){
+			temp = new Paint(textPaint);
+			temp.setColor(Color.GREEN);
+			
+		}
+		if (parenthesis){
+			drawParenthesis(canvas,x,y,temp);
+			totalHieght = totalHieght-PARN_HEIGHT_ADDITION;
+		} 
 		for (int i=0;i<size();i++){
 			float currentHieght = get(i).measureHeight();
 			get(i).draw(canvas, x,y - (totalHieght/2) + currentY + (currentHieght/2));
 			currentY+=currentHieght;
 			if (i != size()-1){
-				canvas.drawText(display, x, y - (totalHieght/2) + currentY + (myWidth/2), textPaint);
+				canvas.drawText(display, x, y - (totalHieght/2) + currentY + (myWidth/2), temp);
 				Point point = new Point();
 				point.x =(int) x;
 				point.y = (int)  (y - (totalHieght/2) + currentY + (myWidth/2));
@@ -181,6 +205,9 @@ abstract public class Equation extends ArrayList<Equation>{
 		
 		for(int i = 0; i<size(); i++) {
 			totalHeight = get(i).measureHeight();
+		}
+		if (parenthesis){
+			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		totalHeight += (size()-1)*myHeight;
 		return totalHeight;
