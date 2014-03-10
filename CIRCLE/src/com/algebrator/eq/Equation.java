@@ -12,7 +12,8 @@ import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 
 abstract public class Equation extends ArrayList<Equation>{
-	public static final int DEFAULT_SIZE = 50;
+	protected static final int DEFAULT_SIZE = 50;
+	protected static final float PARN_HEIGHT_ADDITION = 10;
 	public Equation parent;
 	public String display;
 	Paint textPaint;
@@ -213,5 +214,12 @@ abstract public class Equation extends ArrayList<Equation>{
 				at = at.parent;
 			}
 		}
+	}
+	
+	protected void drawParenthesis(Canvas canvas ,float x, float y, Paint temp) {
+		Paint ptemp = new Paint(temp);
+		ptemp.setTextSize(measureHeight());
+		canvas.drawText("(", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);
+		canvas.drawText(")", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);		
 	}
 }

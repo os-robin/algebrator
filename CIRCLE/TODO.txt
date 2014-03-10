@@ -1,5 +1,6 @@
 Colin
  - draw parnthesis
+ - for the perdicition text editor, they need to be able to accept the first character of the perdiction
 
 Emily
 - First steps for equation writing
