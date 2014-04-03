@@ -10,27 +10,49 @@ public abstract class MultiDivSuperEquation extends FlexEquation {
 		super(ev);
 	}
 	
-	/**
-	 * check to see if all the generations between an equation and this are divEquations or MultiEquations
-	 * equations are considered to contain themselves
-	 * @param equation
-	 * @return
-	 */
-	public boolean DivMultiContain(Equation equation){
-		Equation current = equation;
-		if (equation.equals(this)){
-			return true;
-		}
-		while (true){
-			if (current.parent.equals(this)){
-				return true;
-			}else if (current.parent instanceof MultiDivSuperEquation){
-				current = current.parent;
-			}else{
-				return false;
-			}
-		}
-	}
+	//TODO is this different than what is in Equation?
+//	@Override
+//	public boolean canDiv(Equation eq) {
+//		
+//		// if the element is an element of this but not on top
+//		if (DivMultiContain(eq)){
+//			if (!this.onTop(eq)){
+//				return true;
+//			}
+//		}
+//		// if these this and eq are both the div multi child of a super equation
+//		// this contains the above case 
+//		Equation lcc = lowestCommonContainer(eq);
+//		if (lcc instanceof MultiDivSuperEquation){
+//			MultiDivSuperEquation lccmd = (MultiDivSuperEquation)lcc;
+//			if (lccmd.DivMultiContain(this)
+//					&& lccmd.DivMultiContain(eq)){
+//				if (lccmd.onTop(eq)!= lccmd.onTop(this)){
+//					return true;
+//				}
+//			}
+//		}
+//		// if eq is on the other side
+//		if (lcc instanceof EqualsEquation){
+//			EqualsEquation lccee = (EqualsEquation) lcc;
+//			// if both top are div multi equation
+//			if (lccee.get(lccee.side(this)) instanceof MultiDivSuperEquation){
+//				MultiDivSuperEquation mySide =(MultiDivSuperEquation)lccee.get(lccee.side(this));
+//				if (mySide.DivMultiContain(this)){
+//					if (lccee.get(lccee.side(eq)) instanceof MultiDivSuperEquation){
+//						MultiDivSuperEquation eqSide =(MultiDivSuperEquation)lccee.get(lccee.side(eq));
+//						if (eqSide.DivMultiContain(eq)){
+//							if (eqSide.onTop(eq)== mySide.onTop(this)){
+//								return true;
+//							}
+//						}
+//					}
+//				}	
+//			}
+//		}
+//		return false;
+//	}
+
 	
 	/**
 	 * returns true is the given equation could be "on top" if this MultiEquation was written as A/B

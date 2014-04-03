@@ -9,8 +9,41 @@ import com.example.circle.EmilyView;
 public class DivEquation extends MultiDivSuperEquation {
 	
 	@Override
-	public boolean onTop(Equation equation){
-		return equation.equals(get(0));
+	public Equation copy() {
+		Equation result = new DivEquation(this.owner);
+		result.display = this.display;
+		result.parenthesis = this.parenthesis;
+		// pass selected?
+
+		// copy all the kiddos and set this as their parent
+		for (int i = 0; i < this.size(); i++) {
+			result.add(this.get(i).copy());
+			result.get(i).parent = result;
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean onTop(Equation eq){
+		if  (eq.equals(get(0))){
+			return true;
+		}
+		if (eq.equals(get(1))){
+			return false;
+		}
+		if (get(0).deepContains(eq)){
+			if (get(0) instanceof MultiDivSuperEquation){
+				MultiDivSuperEquation next = (MultiDivSuperEquation)get(0);
+				return next.onTop(eq);
+			}
+		}
+		if (get(1).deepContains(eq)){
+			if (get(1) instanceof MultiDivSuperEquation){
+				MultiDivSuperEquation next = (MultiDivSuperEquation)get(1);
+				return !next.onTop(eq);
+			}
+		}
+		return false;
 	}
 	
 	public DivEquation(EmilyView ev){
@@ -55,9 +88,26 @@ public class DivEquation extends MultiDivSuperEquation {
 	}
 
 	@Override
-	public boolean canInsert(Equation eq) {
+	public EquationLoc closestPossible(float x, float y) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
+
+	@Override
+	public boolean canInstertAt(int pos, Equation e) {
+		if (pos ==0){
+			return canMulti(e);
+		}
+		else if (pos ==1){
+			return canDiv(e);
+		}
+		return false;
+	}
+	
+	@Override
+	public Equation set(int pos, Equation e){
+		//TODO looking at canInsertAt, I am going to need to reqrite this
+		return set(pos,e);
+	}
 }

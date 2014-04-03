@@ -1,8 +1,8 @@
 package com.algebrator.eq;
 
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 import com.example.circle.EmilyView;
 
@@ -17,5 +17,16 @@ public class PlaceholderEquation extends LeafEquation {
 		textPaint.setTextSize(30);
 		textPaint.setTextAlign(Align.CENTER);
 		textPaint.setColor(0xffffffff);
+	}
+	
+	@Override
+	public Equation copy() {
+		Log.e("copy", "this should prolly not be called");
+		
+		Equation result = new PlaceholderEquation(this.owner);
+		result.parenthesis = this.parenthesis;
+		result.display = this.display;
+
+		return result;
 	}
 }

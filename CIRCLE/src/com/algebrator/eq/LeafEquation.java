@@ -72,4 +72,10 @@ public abstract class LeafEquation extends FixEquation {
 		point.y = (int) y;
 		lastPoint.add(point);
 	}
+	
+	public EquationLoc closestPossible(float x, float y){
+		return null;
+	}
+	
+	
 }

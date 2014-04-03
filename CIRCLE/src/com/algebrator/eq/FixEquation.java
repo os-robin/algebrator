@@ -15,4 +15,7 @@ public abstract class FixEquation extends Equation {
 	public boolean isFlex() {
 		return false;
 	}
+	public boolean canInstertAt(int pos, Equation e){
+		return false;
+	}
 }
