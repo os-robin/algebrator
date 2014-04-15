@@ -26,7 +26,12 @@ abstract public class Equation extends ArrayList<Equation>{
 		owner =ev;
 	}
 	
-	// we could template this in C++ can we in java
+	// we could template this in C++ can we in java?
+	/**
+	 * makes a copy the entire equation tree below and including this node
+	 * good for showing work
+	 * @return
+	 */
 	public abstract Equation copy();
 
 	public boolean isSelected() {
