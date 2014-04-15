@@ -65,6 +65,9 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		surfaceHolder = getHolder();
 		this.setOnTouchListener(this);
 		stupid = new EqualsEquation(this);
+		Equation x = new PlaceholderEquation(this);
+		Equation y = new PlaceholderEquation(this);
+		Log.e("zoom?",(x==y)+"");
 
 		/*
 		 * modified from Elliott Hughes' "Dalvik Explorer" app on

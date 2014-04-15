@@ -13,12 +13,6 @@ public class NumConstEquation extends LeafEquation {
 	public NumConstEquation(String display, EmilyView ev) {
 		super(ev);
 		this.display = display;
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
-		textPaint = new Paint();
-		textPaint.setTextSize(BigDaddy.TEXT_SIZE);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xffffffff);
 
 	}
 	

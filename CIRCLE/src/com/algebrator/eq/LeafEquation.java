@@ -9,10 +9,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Paint.Align;
+import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
 	public LeafEquation(EmilyView ev) {
 		super(ev);
+
+		myWidth = DEFAULT_SIZE;
+		myHeight = DEFAULT_SIZE;
+		textPaint = new Paint();
+		textPaint.setTextSize(BigDaddy.TEXT_SIZE);
+		textPaint.setTextAlign(Align.CENTER);
+		textPaint.setColor(0xffffffff);
 	}
 
 	@Override
@@ -73,9 +82,8 @@ public abstract class LeafEquation extends FixEquation {
 		lastPoint.add(point);
 	}
 	
+
 	public EquationLoc closestPossible(float x, float y){
 		return null;
 	}
-	
-	
 }

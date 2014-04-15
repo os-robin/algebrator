@@ -34,16 +34,18 @@ abstract public class Equation extends ArrayList<Equation>{
 	 */
 	public abstract Equation copy();
 
+	
 	public boolean isSelected() {
 		return selected;
 	}
 	public void setSelected(boolean selected) {
 		if (selected){
 			if (owner.selected != null){
-			owner.selected.setSelected(false);
+				owner.selected.setSelected(false);
 			}
-
 			owner.selected =this;
+		}else if (owner.selected.equals(this)){
+			owner.selected = null;
 		}
 		this.selected = selected;
 	}
@@ -147,16 +149,18 @@ abstract public class Equation extends ArrayList<Equation>{
 	}
 	
 	public abstract float measureHeight();
+	
 	public boolean on(float x, float y){
 		Log.i("yo,yo",x+","+y);
 		boolean result =false;
 		for (int i=0;i<lastPoint.size();i++){
+			//TODO should be measureHeight and width??
 			if (x < lastPoint.get(i).x + myWidth/2 
 					&& x > lastPoint.get(i).x - myWidth/2 
 					&& y < lastPoint.get(i).y + myHeight/2 
 					&& y > lastPoint.get(i).y - myHeight/2){
 				result = true;
-				selected =true;
+				setSelected(true);
 			}
 		}
 		return result;
@@ -358,5 +362,10 @@ abstract public class Equation extends ArrayList<Equation>{
 				return false;
 			}
 		}
+	}
+	
+	@Override
+	public boolean equals(Object x){
+		return this==x;
 	}
 }
