@@ -88,7 +88,7 @@ public class EqualsEquation extends FixEquation {
 	public Equation copy() {
 		Equation result = new EqualsEquation(this.owner);
 		result.display = this.display;
-		result.parenthesis = this.parenthesis;
+		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent

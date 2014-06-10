@@ -165,6 +165,8 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text);
 		delete.myAction = new DeleteAction(this);
 		
+		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "( )", text);
+		parentheses.myAction = new ParenthesesAction(this);
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "0", text));

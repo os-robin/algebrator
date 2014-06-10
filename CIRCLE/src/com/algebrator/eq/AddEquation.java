@@ -13,7 +13,7 @@ public class AddEquation extends FlexEquation {
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
 		result.display = this.display;
-		result.parenthesis = this.parenthesis;
+		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent

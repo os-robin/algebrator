@@ -43,7 +43,7 @@ public abstract class LeafEquation extends FixEquation {
 		// not tested		
 		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
 		
-		if (parenthesis){
+		if (parentheses){
 			//TODO test
 			Paint p = new Paint(textPaint);
 			p.setTextSize(measureHeight());
@@ -56,7 +56,7 @@ public abstract class LeafEquation extends FixEquation {
 	public float measureHeight() {
 		float totalHeight= myHeight;
 		
-		if (parenthesis){
+		if (parentheses){
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		return totalHeight;
@@ -71,8 +71,9 @@ public abstract class LeafEquation extends FixEquation {
 			temp.setColor(Color.GREEN);
 			
 		}
-		if (parenthesis){
-			drawParenthesis(canvas,x,y,temp);
+		if (parentheses){
+			Log.i("I tried","");
+			drawParentheses(canvas,x,y,temp);
 		} 
 		canvas.drawText(display, x, y, temp);
 		

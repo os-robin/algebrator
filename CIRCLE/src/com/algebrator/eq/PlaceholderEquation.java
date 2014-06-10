@@ -24,7 +24,7 @@ public class PlaceholderEquation extends LeafEquation {
 		Log.e("copy", "this should prolly not be called");
 		
 		Equation result = new PlaceholderEquation(this.owner);
-		result.parenthesis = this.parenthesis;
+		result.parentheses = this.parentheses;
 		result.display = this.display;
 
 		return result;

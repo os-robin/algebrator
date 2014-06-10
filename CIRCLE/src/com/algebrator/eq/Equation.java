@@ -18,7 +18,7 @@ abstract public class Equation extends ArrayList<Equation>{
 	public String display;
 	Paint textPaint;
 	EmilyView owner;
-	public boolean parenthesis;
+	public boolean parentheses;
 	protected boolean selected = false;
 	
 	
@@ -186,8 +186,8 @@ abstract public class Equation extends ArrayList<Equation>{
 			temp.setColor(Color.GREEN);
 			
 		}
-		if (parenthesis){
-			drawParenthesis(canvas,x,y,temp);
+		if (parentheses){
+			drawParentheses(canvas,x,y,temp);
 			temp.setTextSize(measureHeight());
 			totalWidth -= temp.measureText("()");
 		} 
@@ -214,7 +214,7 @@ abstract public class Equation extends ArrayList<Equation>{
 				totalHeight = get(i).measureHeight();
 			}
 		}
-		if (parenthesis){
+		if (parentheses){
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		
@@ -229,7 +229,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		}
 		totalWidth += (size()-1)*myWidth;
 		
-		if (parenthesis){
+		if (parentheses){
 			//TODO test
 			Paint p = new Paint();
 			p.setTextSize(measureHeight());
@@ -249,8 +249,8 @@ abstract public class Equation extends ArrayList<Equation>{
 			temp.setColor(Color.GREEN);
 			
 		}
-		if (parenthesis){
-			drawParenthesis(canvas,x,y,temp);
+		if (parentheses){
+			drawParentheses(canvas,x,y,temp);
 			totalHieght = totalHieght-PARN_HEIGHT_ADDITION;
 		} 
 		for (int i=0;i<size();i++){
@@ -274,7 +274,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		for(int i = 0; i<size(); i++) {
 			totalHeight = get(i).measureHeight();
 		}
-		if (parenthesis){
+		if (parentheses){
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		totalHeight += (size()-1)*myHeight;
@@ -289,7 +289,7 @@ abstract public class Equation extends ArrayList<Equation>{
 				maxWidth = get(i).measureHeight();
 			}
 		}
-		if (parenthesis){
+		if (parentheses){
 			//TODO test
 			Paint p = new Paint();
 			p.setTextSize(measureHeight());
@@ -311,7 +311,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		}
 	}
 	
-	protected void drawParenthesis(Canvas canvas ,float x, float y, Paint temp) {
+	protected void drawParentheses(Canvas canvas ,float x, float y, Paint temp) {
 		Paint ptemp = new Paint(temp);
 		ptemp.setTextSize(measureHeight());
 		canvas.drawText("(", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);
