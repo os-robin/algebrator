@@ -20,7 +20,6 @@ public class NumConstEquation extends LeafEquation {
 	public Equation copy() {
 		Equation result = new NumConstEquation(this.display, this.owner);
 		result.parenthesis = this.parenthesis;
-
 		return result;
 	}
 

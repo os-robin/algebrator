@@ -21,6 +21,7 @@ public class NumberAction extends Action {
 			NumConstEquation numEq = new NumConstEquation(num, emilyView);
 			int index = emilyView.selected.parent.indexOf(emilyView.selected);
 			emilyView.selected.parent.set(index, numEq);
+			numEq.parent = emilyView.selected.parent;
 			numEq.setSelected(true);
 		}
 		
