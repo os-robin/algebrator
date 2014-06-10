@@ -30,9 +30,9 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	SurfaceHolder surfaceHolder;
 	volatile boolean running = false;
 
-/**
+	/**
  	* 	list of our buttons
- */
+ 	*/
 	ArrayList<Button> buttons = new ArrayList<Button>();
 	/**
 	 * list of our passed in variables
@@ -163,8 +163,10 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "0", text));
+		buttons.get(15).myAction = new NumberAction(this, "0");
 		buttons.add(new Button((int) ((5 + 0.5) * width / 11), (int) ((6 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), ".", text));
+		buttons.get(16).myAction = new DecimalAction(this, ".");
 		buttons.add(new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "÷", text));
 		buttons.add(new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)

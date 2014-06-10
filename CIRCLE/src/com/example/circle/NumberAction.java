@@ -24,8 +24,12 @@ public class NumberAction extends Action {
 			numEq.setSelected(true);
 		}
 		
-		else if (emilyView.selected instanceof NumConstEquation) {
+		else if (emilyView.selected instanceof NumConstEquation && ! emilyView.selected.display.equals("0")) {
 			emilyView.selected.display = emilyView.selected.display + num;
+		}
+		
+		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.display.equals("0")) {
+			emilyView.selected.display = num;
 		}
 		
 	}
