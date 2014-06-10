@@ -49,4 +49,54 @@ public class EqualsEquation extends FixEquation {
 	public static int otherSide(int side) {
 		return (side ==1?0:1);
 	}
+
+	@Override
+	public EquationLoc closestPossible(float x, float y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/**  
+	 * can't add to the equals equation
+	 */
+	@Override
+	public boolean canInstertAt(int pos, Equation e) {
+		return false;
+	}
+	/**  
+	 * can't div the equals equation
+	 */
+	@Override
+	public boolean canDiv(Equation e) {
+		return false;
+	}
+	/**  
+	 * can't add to the equals equation
+	 */
+	@Override
+	public boolean canAdd(Equation e) {
+		return false;
+	}
+	/**  
+	 * can't multi the equals equation
+	 */
+	@Override
+	public boolean canMulti(Equation e) {
+		return false;
+	}
+
+	@Override
+	public Equation copy() {
+		Equation result = new EqualsEquation(this.owner);
+		result.display = this.display;
+		result.parenthesis = this.parenthesis;
+		// pass selected?
+
+		// copy all the kiddos and set this as their parent
+		for (int i = 0; i < this.size(); i++) {
+			result.add(this.get(i).copy());
+			result.get(i).parent = result;
+		}
+		return result;
+	}
+
 }

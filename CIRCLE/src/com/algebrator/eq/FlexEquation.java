@@ -31,6 +31,4 @@ public abstract class FlexEquation extends Equation {
 	public boolean isFlex() {
 		return true;
 	}
-	
-	public abstract boolean canInsert(Equation eq);
 }

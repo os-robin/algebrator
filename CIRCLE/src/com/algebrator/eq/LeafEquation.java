@@ -10,9 +10,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
-
 	public LeafEquation(EmilyView ev) {
 		super(ev);
 
@@ -40,15 +40,12 @@ public abstract class LeafEquation extends FixEquation {
 	
 	@Override
 	public float measureWidth() {
-		// not tested
-		textPaint.measureText(display);
-		
+		// not tested		
 		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
 		
 		if (parenthesis){
 			//TODO test
-			Paint p = new Paint();
-			p.setTextSize(BigDaddy.TEXT_SIZE);
+			Paint p = new Paint(textPaint);
 			p.setTextSize(measureHeight());
 			totalWidth += p.measureText("()");
 		}
@@ -57,27 +54,36 @@ public abstract class LeafEquation extends FixEquation {
 
 	@Override
 	public float measureHeight() {
-		return myHeight;
+		float totalHeight= myHeight;
+		
+		if (parenthesis){
+			totalHeight += PARN_HEIGHT_ADDITION;
+		}
+		return totalHeight;
 	}
 
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
 		lastPoint =new ArrayList<Point>();
-		if (!this.isSelected()){
-			textPaint.measureText(display);
-			canvas.drawText(display, x, y, textPaint);
-		}else{
-			Paint temp = new Paint();
-			temp.setTextSize(BigDaddy.TEXT_SIZE);
-			temp.measureText(display);
-			temp.setTextAlign(Align.CENTER);
+		Paint temp = textPaint;
+		if (selected){
+			temp = new Paint(textPaint);
 			temp.setColor(Color.GREEN);
-			canvas.drawText(display, x, y, temp);
+			
 		}
+		if (parenthesis){
+			drawParenthesis(canvas,x,y,temp);
+		} 
+		canvas.drawText(display, x, y, temp);
+		
 		Point point = new Point();
 		point.x =(int) x;
 		point.y = (int) y;
 		lastPoint.add(point);
 	}
+	
 
+	public EquationLoc closestPossible(float x, float y){
+		return null;
+	}
 }

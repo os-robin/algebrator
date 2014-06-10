@@ -14,29 +14,4 @@ public class EqMngr {
 		}
 		return result;
 	}
-	
-	public static boolean canSwitchSides(Equation child, EqualsEquation root){
-		if (child.parent.equals(root)){
-			return true;
-		}
-		if (child.parent.isFlex()){
-			if (child.parent.parent.equals(root)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static boolean trySwitchSides(Equation child, EqualsEquation root, Equation target, int pos){
-		if (!canSwitchSides(child, root)){
-			return false;
-		}
-		switchSides(child,target,pos);
-		return true;
-	}
-
-	public static void switchSides(Equation child, Equation target, int pos) {
-		child.parent.remove(child);
-		target.add(pos, child);
-	}
 }
