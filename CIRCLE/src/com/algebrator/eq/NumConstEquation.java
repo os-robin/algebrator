@@ -19,6 +19,7 @@ public class NumConstEquation extends LeafEquation {
 	@Override
 	public Equation copy() {
 		Equation result = new NumConstEquation(this.display, this.owner);
+
 		result.parentheses = this.parentheses;
 
 		return result;
