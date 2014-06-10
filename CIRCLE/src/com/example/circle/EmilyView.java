@@ -160,6 +160,11 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 					0xff000000+(int)(Math.random()*0xffffff), i+6+"", text));
 			buttons.get(i+11).myAction = new NumberAction(this, i+6+"");
 		}
+		
+		Button delete= new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
+				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text);
+		delete.myAction = new DeleteAction(this);
+		
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "0", text));
@@ -171,8 +176,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "-", text));
 		buttons.add(new Button((int) ((8 + 0.5) * width / 11), (int) ((9 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "MORE", text));
-		buttons.add(new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text));
+		buttons.add(delete);
 		
 		/*
 		AddEquation add1 = new AddEquation();
@@ -193,6 +197,8 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		PlaceholderEquation empty2 = new PlaceholderEquation(this);
 		stupid.add(empty1);
 		stupid.add(empty2);
+		
+		
 		
 		buttons.get(10).myAction = new Action(){
 
