@@ -38,7 +38,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	 * list of our passed in variables
 	 */
 	ArrayList<Button> vars = new ArrayList<Button>();
-	ArrayList<String> varList = new ArrayList<String>();
+	ArrayList<Button> varList = new ArrayList<Button>();
 	EqualsEquation stupid;
 	
 	int width;
@@ -160,13 +160,20 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		
 		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, "( )", text,bkg, highlight);
 		parentheses.myAction = new ParenthesesAction(this);
+		
+		Button varX = new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, "x", text,bkg, highlight);
+		varX.myAction = new VarAction(this, varX.text);
+		
+		Button varY = new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6,  "y", text,bkg, highlight);
+		varY.myAction = new VarAction(this, varY.text);
 
 		buttons.add(parentheses);
 		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight));
 		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight));
-		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6,  "x", text,bkg, highlight));
-		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6,  "y", text,bkg, highlight));
+		buttons.add(varX);
+		buttons.add(varY);
 		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6,  "VAR", text,bkg, highlight));
+
 		
 		for (int i = 0; i < 4; i++) {
 			buttons.add(new Button((int)((i+0.5)*width/11), (int) ((i+1.5)*width/11), 5*height/6, height, i+6+"", text,bkg, highlight));
@@ -213,15 +220,23 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		stupid.add(empty1);
 		stupid.add(empty2);
 		
-		
+		final EmilyView temp = this;
 		
 		buttons.get(10).myAction = new Action(){
 
 			@Override
 			public void act() {
-				varList.add("A"); varList.add("B"); varList.add("C");
+				Button varA = new Button(width*(10-1)/11, width*(11-1)/11, 3*height/6, 4*height/6, "A", text,bkg, highlight);
+				varA.myAction = new VarAction(temp, varA.text);
+				Button varB = new Button(width*(10-2)/11, width*(11-2)/11, 3*height/6, 4*height/6,  "B", text,bkg, highlight);
+				varB.myAction = new VarAction(temp, varB.text);
+				Button varC = new Button(width*(10-3)/11, width*(11-3)/11, 3*height/6, 4*height/6, "C", text,bkg, highlight);
+				varC.myAction = new VarAction(temp, varC.text);
+				
+				varList.add(varA); varList.add(varB); varList.add(varC);
 				if(vars.size()<3) {
-					vars.add(new Button(width*(10-vars.size())/11, width*(11-vars.size())/11, 3*height/6, 4*height/6, varList.get(vars.size()), text,bkg, highlight));
+
+					vars.add(varList.get(vars.size()));
 				}
 				
 			}
