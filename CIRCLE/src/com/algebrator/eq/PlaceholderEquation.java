@@ -29,4 +29,9 @@ public class PlaceholderEquation extends LeafEquation {
 
 		return result;
 	}
+
+	public void replace(NumConstEquation numConstEquation) {
+		// TODO Auto-generated method stub
+		
+	}
 }

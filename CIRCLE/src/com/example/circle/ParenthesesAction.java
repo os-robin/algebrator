@@ -13,7 +13,6 @@ public class ParenthesesAction extends Action {
 	@Override
 	public void act() {
 		emilyView.selected.parentheses = ! emilyView.selected.parentheses;
-		
 	}
 
 }
