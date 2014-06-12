@@ -45,6 +45,8 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	int height;
 	
 	TextPaint text = new TextPaint();
+	int highlight;
+	TextPaint bkg;
 	
 	public EmilyView(Context context) {
 		super(context);
@@ -136,52 +138,59 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 
 		Log.i("actual height, width", height + ", " + width);
 		
-		
+
 		text.setTextSize(30);
 		text.setTextAlign(Align.CENTER);
-		text.setColor(0xffffffff);
+		text.setColor(0xff000000);
+		
+		highlight = 0xff000000+(int)(Math.random()*0xffffff);
+		
+		bkg = new TextPaint();
+		bkg.setTextSize(30);
+		bkg.setTextAlign(Align.CENTER);
+		bkg.setColor(0x00000000);
+
 
 
 		for (int i = 0; i < 5; i++) {
 			buttons.add(new Button(i*width/11, (i+1)*width/11, 4*height/6, 5*height/6,
-					0xff000000+(int)(Math.random()*0xffffff), i+1+"", text));
+					 i+1+"", text,bkg, highlight));
 			buttons.get(i).myAction = new NumberAction(this, i+1+"");
 		}
 		
-		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "( )", text);
+		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, "( )", text,bkg, highlight);
 		parentheses.myAction = new ParenthesesAction(this);
 
 		buttons.add(parentheses);
-		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "*", text));
-		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "+", text));
-		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "x", text));
-		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "y", text));
-		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "VAR", text));
+		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight));
+		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight));
+		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6,  "x", text,bkg, highlight));
+		buttons.add(new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6,  "y", text,bkg, highlight));
+		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6,  "VAR", text,bkg, highlight));
 		
 		for (int i = 0; i < 4; i++) {
-			buttons.add(new Button((int)((i+0.5)*width/11), (int) ((i+1.5)*width/11), 5*height/6, height,
-					0xff000000+(int)(Math.random()*0xffffff), i+6+"", text));
+			buttons.add(new Button((int)((i+0.5)*width/11), (int) ((i+1.5)*width/11), 5*height/6, height, i+6+"", text,bkg, highlight));
 			buttons.get(i+11).myAction = new NumberAction(this, i+6+"");
 		}
 		
 		Button delete= new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text);
+				* width / 11), 5 * height / 6, height,  "DEL", text,bkg, highlight);
 		delete.myAction = new DeleteAction(this);
 		
 		
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "0", text));
+				* width / 11), 5 * height / 6, height,  "0", text,bkg, highlight));
 		buttons.get(15).myAction = new NumberAction(this, "0");
 		buttons.add(new Button((int) ((5 + 0.5) * width / 11), (int) ((6 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), ".", text));
+				* width / 11), 5 * height / 6, height,  ".", text,bkg, highlight));
 		buttons.get(16).myAction = new DecimalAction(this, ".");
 		buttons.add(new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "÷", text));
+				* width / 11), 5 * height / 6, height,  "÷", text,bkg, highlight));
 		buttons.add(new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "-", text));
+				* width / 11), 5 * height / 6, height,  "-", text,bkg, highlight));
 		buttons.add(new Button((int) ((8 + 0.5) * width / 11), (int) ((9 + 0.5)
-				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "MORE", text));
+				* width / 11), 5 * height / 6, height,  "MORE", text,bkg, highlight));
 		buttons.add(delete);
 		
 		/*
@@ -212,7 +221,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 			public void act() {
 				varList.add("A"); varList.add("B"); varList.add("C");
 				if(vars.size()<3) {
-					vars.add(new Button(width*(10-vars.size())/11, width*(11-vars.size())/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), varList.get(vars.size()), text));
+					vars.add(new Button(width*(10-vars.size())/11, width*(11-vars.size())/11, 3*height/6, 4*height/6, varList.get(vars.size()), text,bkg, highlight));
 				}
 				
 			}
@@ -252,7 +261,8 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 	}
 
 	private void myDraw(Canvas canvas) {
-		canvas.drawColor(0, Mode.CLEAR);
+		//canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
+		canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).draw(canvas);
 		}

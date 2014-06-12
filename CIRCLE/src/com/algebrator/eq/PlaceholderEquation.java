@@ -29,13 +29,4 @@ public class PlaceholderEquation extends LeafEquation {
 
 		return result;
 	}
-
-	public void replace(Equation eg) {
-		// TODO Auto-generated method stub
-		int index = parent.indexOf(owner.selected);
-		owner.selected.parent.set(index, eg);
-		eg.parent = owner.selected.parent;
-		eg.setSelected(true);
-		eg.parentheses = parentheses;
-	}
 }

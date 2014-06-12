@@ -13,7 +13,7 @@ import com.example.circle.EmilyView;
 
 abstract public class Equation extends ArrayList<Equation>{
 	protected static final int DEFAULT_SIZE = 50;
-	protected static final float PARN_HEIGHT_ADDITION = 10;
+	protected static final float PARN_HEIGHT_ADDITION = 0;
 	public Equation parent;
 	public String display;
 	Paint textPaint;
@@ -315,7 +315,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		Paint ptemp = new Paint(temp);
 		ptemp.setTextSize(measureHeight());
 		canvas.drawText("(", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);
-		canvas.drawText(")", x + (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);		
+		canvas.drawText(")", x + (measureWidth()/2)-(ptemp.measureText(")")/2), y, ptemp);		
 	}
 	
 	public boolean addContain(Equation equation){
@@ -367,5 +367,14 @@ abstract public class Equation extends ArrayList<Equation>{
 	@Override
 	public boolean equals(Object x){
 		return this==x;
+	}
+	
+	public void replace(Equation eq) {
+		// TODO Auto-generated method stub
+		int index = parent.indexOf(owner.selected);
+		owner.selected.parent.set(index, eq);
+		eq.parent = owner.selected.parent;
+		eq.setSelected(true);
+		eq.parentheses = parentheses;
 	}
 }
