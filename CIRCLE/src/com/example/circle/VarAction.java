@@ -1,6 +1,7 @@
 package com.example.circle;
 
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.VarEquation;
 
 public class VarAction extends Action {
 	
@@ -17,7 +18,7 @@ public class VarAction extends Action {
 	public void act() {
 		
 		if (emilyView.selected instanceof PlaceholderEquation) {
-			((PlaceholderEquation) emilyView.selected).replace(numConstEquation);
+			((PlaceholderEquation) emilyView.selected).replace(new VarEquation(var, emilyView));;
 		}
 		
 	}

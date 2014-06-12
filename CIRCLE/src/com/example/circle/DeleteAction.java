@@ -2,6 +2,7 @@ package com.example.circle;
 
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.VarEquation;
 
 public class DeleteAction extends Action {
 
@@ -30,6 +31,11 @@ public class DeleteAction extends Action {
 				temp.parent = emilyView.selected.parent;
 				temp.setSelected(true);
 			}
+		}
+		
+		if (emilyView.selected instanceof VarEquation) {
+			VarEquation oldEq = (VarEquation) emilyView.selected;
+			// TODO replace
 		}
 	}
 }
