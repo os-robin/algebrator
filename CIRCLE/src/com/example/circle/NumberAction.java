@@ -18,11 +18,14 @@ public class NumberAction extends Action {
 	public void act() {
 	
 		if (emilyView.selected instanceof PlaceholderEquation) {
-			NumConstEquation numEq = new NumConstEquation(num, emilyView);
-			int index = emilyView.selected.parent.indexOf(emilyView.selected);
+			PlaceholderEquation oldEq = (PlaceholderEquation) emilyView.selected;
+			oldEq.replace(new NumConstEquation(num, emilyView));
+			
+			int index = oldEq.parent.indexOf(emilyView.selected);
 			emilyView.selected.parent.set(index, numEq);
 			numEq.parent = emilyView.selected.parent;
 			numEq.setSelected(true);
+			numEq.parentheses = oldEq.parentheses;
 		}
 		
 		else if (emilyView.selected instanceof NumConstEquation && ! emilyView.selected.display.equals("0")) {

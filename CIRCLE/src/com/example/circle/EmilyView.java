@@ -147,8 +147,11 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 					0xff000000+(int)(Math.random()*0xffffff), i+1+"", text));
 			buttons.get(i).myAction = new NumberAction(this, i+1+"");
 		}
+		
+		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "( )", text);
+		parentheses.myAction = new ParenthesesAction(this);
 
-		buttons.add(new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "( )", text));
+		buttons.add(parentheses);
 		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "*", text));
 		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "+", text));
 		buttons.add(new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "x", text));
@@ -165,8 +168,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "DEL", text);
 		delete.myAction = new DeleteAction(this);
 		
-		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, 0xff000000+(int)(Math.random()*0xffffff), "( )", text);
-		parentheses.myAction = new ParenthesesAction(this);
+		
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
 				* width / 11), 5 * height / 6, height, 0xff000000+(int)(Math.random()*0xffffff), "0", text));
