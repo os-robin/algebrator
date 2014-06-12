@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Paint.Align;
 import android.util.Log;
 
 import com.example.circle.BigDaddy;
@@ -24,6 +25,11 @@ abstract public class Equation extends ArrayList<Equation>{
 	
 	public Equation(EmilyView ev){
 		owner =ev;
+		
+		textPaint = new Paint();
+		textPaint.setTextSize(30);
+		textPaint.setTextAlign(Align.CENTER);
+		textPaint.setColor(0xff000000);
 	}
 	
 	// we could template this in C++ can we in java?

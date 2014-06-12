@@ -13,11 +13,6 @@ public class EqualsEquation extends FixEquation {
 		display ="=";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
-		// we should probably pass in the paint
-		textPaint = new Paint();
-		textPaint.setTextSize(30);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xff000000);
 	}
 
 	@Override
