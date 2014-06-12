@@ -315,7 +315,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		Paint ptemp = new Paint(temp);
 		ptemp.setTextSize(measureHeight());
 		canvas.drawText("(", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);
-		canvas.drawText(")", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);		
+		canvas.drawText(")", x + (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);		
 	}
 	
 	public boolean addContain(Equation equation){
