@@ -19,6 +19,26 @@ public abstract class LeafEquation extends FixEquation {
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 	}
+	
+	@Override
+	public boolean on(float x, float y){
+		Log.i("yo,yo",x+","+y);
+
+		boolean result =false;
+		
+		
+		for (int i=0;i<lastPoint.size();i++){
+			//TODO should be measureHeight and width??
+			if (x < lastPoint.get(i).x + measureWidth()/2 
+					&& x > lastPoint.get(i).x - measureWidth()/2 
+					&& y < lastPoint.get(i).y + measureHeight()/2 
+					&& y > lastPoint.get(i).y - measureHeight()/2){
+				result = true;
+				setSelected(true);
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public ArrayList<EquationDis> closest(float x, float y){
