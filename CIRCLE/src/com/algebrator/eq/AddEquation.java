@@ -29,10 +29,7 @@ public class AddEquation extends FlexEquation {
 		display ="+";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
-		textPaint = new Paint();
-		textPaint.setTextSize(30);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xffffffff);
+
 		empty= new NumConstEquation("0",ev);
 	}
 	

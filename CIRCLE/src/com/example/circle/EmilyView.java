@@ -169,7 +169,10 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 
 		buttons.add(parentheses);
 		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight));
-		buttons.add(new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight));
+		
+		Button plus = new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight);
+		plus.myAction = new PlusAction(this);
+		buttons.add(plus);
 		buttons.add(varX);
 		buttons.add(varY);
 		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6,  "VAR", text,bkg, highlight));
@@ -223,22 +226,21 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		final EmilyView temp = this;
 		
 		buttons.get(10).myAction = new Action(){
+			 int count =0;
 
 			@Override
 			public void act() {
-				Button varA = new Button(width*(10-0)/11, width*(11-0)/11, 3*height/6, 4*height/6, "A", text,bkg, highlight);
-				varA.myAction = new VarAction(temp, varA.text);
-				Button varB = new Button(width*(10-1)/11, width*(11-1)/11, 3*height/6, 4*height/6,  "B", text,bkg, highlight);
-				varB.myAction = new VarAction(temp, varB.text);
-				Button varC = new Button(width*(10-2)/11, width*(11-2)/11, 3*height/6, 4*height/6, "C", text,bkg, highlight);
-				varC.myAction = new VarAction(temp, varC.text);
-				
-				varList.add(varA); varList.add(varB); varList.add(varC);
-				if(vars.size()<3) {
 
-					vars.add(varList.get(vars.size()));
-				}
+				//TODO while there is room:
+				//TODO allow the player to enter a var name
+				//TODO it would be cool if you could swipe up or something to delete these
 				
+				Button tempButton = new Button(width*(10-count)/11, width*(11-count)/11, 3*height/6, 4*height/6, "A"+count, text,bkg, highlight);
+				tempButton.myAction = new VarAction(temp, tempButton.text);
+				
+				vars.add(tempButton);
+				
+				count++;
 			}
 			
 		};
@@ -286,7 +288,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 			vars.get(i).draw(canvas);
 		}
 		
-		stupid.draw(canvas, width/2, height/2);
+		stupid.draw(canvas, width/2, height/3);
 		
 	}
 
