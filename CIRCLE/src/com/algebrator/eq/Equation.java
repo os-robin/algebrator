@@ -176,7 +176,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		boolean result =on(x,y);
 		if (result){return result;}
 		for (int i=0;i<size();i++){
-			result =get(i).on(x,y);
+			result =get(i).onAny(x,y);
 			if (result){return result;}
 		}
 		return result;
