@@ -289,7 +289,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 			vars.get(i).draw(canvas);
 		}
 		
-		stupid.draw(canvas, width/2, height/2);
+		stupid.draw(canvas, width/2, height/3);
 		
 	}
 
