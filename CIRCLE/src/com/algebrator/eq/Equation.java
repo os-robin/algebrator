@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Paint.Align;
 import android.util.Log;
 
 import com.example.circle.BigDaddy;
@@ -13,7 +14,7 @@ import com.example.circle.EmilyView;
 
 abstract public class Equation extends ArrayList<Equation>{
 	protected static final int DEFAULT_SIZE = 50;
-	protected static final float PARN_HEIGHT_ADDITION = 10;
+	protected static final float PARN_HEIGHT_ADDITION = 0;
 	public Equation parent;
 	public String display;
 	Paint textPaint;
@@ -24,6 +25,11 @@ abstract public class Equation extends ArrayList<Equation>{
 	
 	public Equation(EmilyView ev){
 		owner =ev;
+		
+		textPaint = new Paint();
+		textPaint.setTextSize(30);
+		textPaint.setTextAlign(Align.CENTER);
+		textPaint.setColor(0xff000000);
 	}
 	
 	// we could template this in C++ can we in java?
@@ -315,7 +321,7 @@ abstract public class Equation extends ArrayList<Equation>{
 		Paint ptemp = new Paint(temp);
 		ptemp.setTextSize(measureHeight());
 		canvas.drawText("(", x - (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);
-		canvas.drawText(")", x + (measureWidth()/2)+(ptemp.measureText("(")/2), y, ptemp);		
+		canvas.drawText(")", x + (measureWidth()/2)-(ptemp.measureText(")")/2), y, ptemp);		
 	}
 	
 	public boolean addContain(Equation equation){
@@ -367,5 +373,14 @@ abstract public class Equation extends ArrayList<Equation>{
 	@Override
 	public boolean equals(Object x){
 		return this==x;
+	}
+	
+	public void replace(Equation eq) {
+		// TODO Auto-generated method stub
+		int index = parent.indexOf(owner.selected);
+		owner.selected.parent.set(index, eq);
+		eq.parent = owner.selected.parent;
+		eq.setSelected(true);
+		eq.parentheses = parentheses;
 	}
 }

@@ -13,10 +13,7 @@ public class PlaceholderEquation extends LeafEquation {
 		display = "_";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
-		textPaint = new Paint();
-		textPaint.setTextSize(30);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xffffffff);
+
 	}
 	
 	@Override
@@ -28,14 +25,5 @@ public class PlaceholderEquation extends LeafEquation {
 		result.display = this.display;
 
 		return result;
-	}
-
-	public void replace(Equation eg) {
-		// TODO Auto-generated method stub
-		int index = parent.indexOf(owner.selected);
-		owner.selected.parent.set(index, eg);
-		eg.parent = owner.selected.parent;
-		eg.setSelected(true);
-		eg.parentheses = parentheses;
 	}
 }

@@ -18,10 +18,6 @@ public abstract class LeafEquation extends FixEquation {
 
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
-		textPaint = new Paint();
-		textPaint.setTextSize(BigDaddy.TEXT_SIZE);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xffffffff);
 	}
 
 	@Override

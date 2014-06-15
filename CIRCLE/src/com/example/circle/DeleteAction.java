@@ -35,7 +35,8 @@ public class DeleteAction extends Action {
 		
 		if (emilyView.selected instanceof VarEquation) {
 			VarEquation oldEq = (VarEquation) emilyView.selected;
-			// TODO replace
+			PlaceholderEquation temp = new PlaceholderEquation(emilyView);
+			oldEq.replace(temp);
 		}
 	}
 }

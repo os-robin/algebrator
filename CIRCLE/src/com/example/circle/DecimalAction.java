@@ -18,10 +18,9 @@ public class DecimalAction extends Action {
 	public void act() {
 	
 		if (emilyView.selected instanceof PlaceholderEquation) {
+			PlaceholderEquation oldEq = (PlaceholderEquation)emilyView.selected;
 			NumConstEquation numEq = new NumConstEquation("0.", emilyView);
-			int index = emilyView.selected.parent.indexOf(emilyView.selected);
-			emilyView.selected.parent.set(index, numEq);
-			numEq.setSelected(true);
+			oldEq.replace(numEq);
 		}
 		
 		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.display.contains(".") == false) {
