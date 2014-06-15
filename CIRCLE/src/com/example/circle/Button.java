@@ -38,13 +38,13 @@ public class Button {
 		int currentRed = android.graphics.Color.red(currentColor);
 		int currentGreen = android.graphics.Color.green(currentColor);
 		int currentBlue = android.graphics.Color.blue(currentColor);
-		int targetAlpha = android.graphics.Color.alpha(bkgColor);
-		int targetRed = android.graphics.Color.red(bkgColor);
-		int targetGreen = android.graphics.Color.green(bkgColor);
-		int targetBlue = android.graphics.Color.blue(bkgColor);
+//		int targetAlpha = android.graphics.Color.alpha(bkgColor);
+//		int targetRed = android.graphics.Color.red(bkgColor);
+//		int targetGreen = android.graphics.Color.green(bkgColor);
+//		int targetBlue = android.graphics.Color.blue(bkgColor);
 		
-		if(currentColor != bkgColor) {
-			currentColor = android.graphics.Color.argb(((currentAlpha*3 + targetAlpha)/4), ((currentRed*3 + targetRed)/4), ((currentGreen*3 + targetGreen)/4), ((currentBlue*3 + targetBlue)/4));
+		if(currentAlpha > 0) {
+			currentColor = android.graphics.Color.argb(currentAlpha-17, currentRed, currentGreen, currentBlue);
 		}
 		
 		bkgPaint.setColor(currentColor);
