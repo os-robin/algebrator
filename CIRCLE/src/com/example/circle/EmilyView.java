@@ -216,11 +216,11 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 
 			@Override
 			public void act() {
-				Button varA = new Button(width*(10-1)/11, width*(11-1)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "A", text);
+				Button varA = new Button(width*(10-0)/11, width*(11-0)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "A", text);
 				varA.myAction = new VarAction(temp, varA.text);
-				Button varB = new Button(width*(10-2)/11, width*(11-2)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "B", text);
+				Button varB = new Button(width*(10-1)/11, width*(11-1)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "B", text);
 				varB.myAction = new VarAction(temp, varB.text);
-				Button varC = new Button(width*(10-3)/11, width*(11-3)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "C", text);
+				Button varC = new Button(width*(10-2)/11, width*(11-2)/11, 3*height/6, 4*height/6, 0xff000000+(int)(Math.random()*0xffffff), "C", text);
 				varC.myAction = new VarAction(temp, varC.text);
 				
 				varList.add(varA); varList.add(varB); varList.add(varC);
