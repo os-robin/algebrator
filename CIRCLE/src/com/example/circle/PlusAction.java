@@ -18,7 +18,10 @@ public class PlusAction extends Action {
 		AddEquation newEq = new AddEquation(emilyView);
 		oldEq.replace(newEq);
 		newEq.add(oldEq);
-		newEq.add(new PlaceholderEquation(emilyView));
+		
+		PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
+		newEq.add(rightAdd);
+		rightAdd.setSelected(true);
 	}
 
 }
