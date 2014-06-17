@@ -16,12 +16,19 @@ abstract public class Equation extends ArrayList<Equation>{
 	protected static final int DEFAULT_SIZE = 50;
 	protected static final float PARN_HEIGHT_ADDITION = 0;
 	public Equation parent;
-	public String display;
+	protected String display;
 	Paint textPaint;
 	EmilyView owner;
 	public boolean parentheses;
 	protected boolean selected = false;
 	
+	public void setDisplay(String display){
+		this.display = display;
+	}
+	
+	public String getDisplay(int pos){
+		return display;
+	}
 	
 	public Equation(EmilyView ev){
 		owner =ev;
@@ -202,7 +209,7 @@ abstract public class Equation extends ArrayList<Equation>{
 			get(i).draw(canvas, x - (totalWidth/2) + currentX + (currentWidth/2),y);
 			currentX+=get(i).measureWidth();
 			if (i != size()-1){
-				canvas.drawText(display, x - (totalWidth/2) + currentX + (myWidth/2), y, temp);
+				canvas.drawText(getDisplay(i+1), x - (totalWidth/2) + currentX + (myWidth/2), y, temp);
 				Point point = new Point();
 				point.x =(int)( x - (totalWidth/2) + currentX + (myWidth/2));
 				point.y = (int)  ( y);
@@ -264,7 +271,7 @@ abstract public class Equation extends ArrayList<Equation>{
 			get(i).draw(canvas, x,y - (totalHieght/2) + currentY + (currentHieght/2));
 			currentY+=currentHieght;
 			if (i != size()-1){
-				canvas.drawText(display, x, y - (totalHieght/2) + currentY + (myWidth/2), temp);
+				canvas.drawText(getDisplay(i+1), x, y - (totalHieght/2) + currentY + (myWidth/2), temp);
 				Point point = new Point();
 				point.x =(int) x;
 				point.y = (int)  (y - (totalHieght/2) + currentY + (myWidth/2));
@@ -382,5 +389,9 @@ abstract public class Equation extends ArrayList<Equation>{
 		eq.parent = owner.selected.parent;
 		eq.setSelected(true);
 		eq.parentheses = parentheses;
+		
+		if (this instanceof LeafEquation && eq instanceof LeafEquation){
+			((LeafEquation) eq).negative = ((LeafEquation) this).negative;
+		}
 	}
 }

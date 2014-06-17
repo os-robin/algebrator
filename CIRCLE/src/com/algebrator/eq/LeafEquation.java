@@ -13,11 +13,22 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
+	public boolean negative= false;
+
+
 	public LeafEquation(EmilyView ev) {
 		super(ev);
 
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
+	}
+	
+	@Override
+	public String getDisplay(int pos){
+		if (parent instanceof AddEquation && parent.indexOf(this) != 0){
+			return display;
+		}
+		return (negative?"-":"")+display;
 	}
 	
 	@Override
@@ -91,7 +102,7 @@ public abstract class LeafEquation extends FixEquation {
 			Log.i("I tried","");
 			drawParentheses(canvas,x,y,temp);
 		} 
-		canvas.drawText(display, x, y, temp);
+		canvas.drawText(getDisplay(-1), x, y, temp);
 		
 		Point point = new Point();
 		point.x =(int) x;

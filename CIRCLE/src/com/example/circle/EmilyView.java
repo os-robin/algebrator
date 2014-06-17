@@ -197,8 +197,10 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		buttons.get(16).myAction = new DecimalAction(this, ".");
 		buttons.add(new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
 				* width / 11), 5 * height / 6, height,  "÷", text,bkg, highlight));
-		buttons.add(new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)
-				* width / 11), 5 * height / 6, height,  "-", text,bkg, highlight));
+		Button minus = new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)
+				* width / 11), 5 * height / 6, height,  "-", text,bkg, highlight);
+		minus.myAction = new MinusAction(this);
+		buttons.add(minus);
 		buttons.add(new Button((int) ((8 + 0.5) * width / 11), (int) ((9 + 0.5)
 				* width / 11), 5 * height / 6, height,  "MORE", text,bkg, highlight));
 		buttons.add(delete);

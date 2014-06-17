@@ -22,12 +22,12 @@ public class NumberAction extends Action {
 			oldEq.replace(new NumConstEquation(num, emilyView));
 		}
 		
-		else if (emilyView.selected instanceof NumConstEquation && ! emilyView.selected.display.equals("0")) {
-			emilyView.selected.display = emilyView.selected.display + num;
+		else if (emilyView.selected instanceof NumConstEquation && ! emilyView.selected.getDisplay(-1).equals("0")) {
+			emilyView.selected.setDisplay( emilyView.selected.getDisplay(-1) + num);
 		}
 		
-		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.display.equals("0")) {
-			emilyView.selected.display = num;
+		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.getDisplay(-1).equals("0")) {
+			emilyView.selected.setDisplay(num);
 		}
 		
 	}

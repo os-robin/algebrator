@@ -23,8 +23,8 @@ public class DecimalAction extends Action {
 			oldEq.replace(numEq);
 		}
 		
-		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.display.contains(".") == false) {
-			emilyView.selected.display = emilyView.selected.display + dec;
+		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.getDisplay(-1).contains(".") == false) {
+			emilyView.selected.setDisplay(emilyView.selected.getDisplay(-1) + dec);
 		}
 		
 	}

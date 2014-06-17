@@ -8,11 +8,11 @@ import com.example.circle.EmilyView;
 
 public class AddEquation extends FlexEquation {
 	Equation empty;
-	
+
 	@Override
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
-		result.display = this.display;
+		result.display = this.getDisplay(-1);
 		result.parentheses = this.parentheses;
 		// pass selected?
 
@@ -23,27 +23,38 @@ public class AddEquation extends FlexEquation {
 		}
 		return result;
 	}
-	
-	public AddEquation(EmilyView ev){
+
+	public String getDisplay(int pos) {
+		if (pos >= 0 && pos < size()) {
+			if (get(pos) instanceof LeafEquation) {
+				if (((LeafEquation) get(pos)).negative) {
+					return "–";
+				}
+			}
+		}
+		return display;
+	}
+
+	public AddEquation(EmilyView ev) {
 		super(ev);
-		display ="+";
+		display = "+";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 
-		empty= new NumConstEquation("0",ev);
+		empty = new NumConstEquation("0", ev);
 	}
-	
-	void operate(int pos1, int pos2){
+
+	void operate(int pos1, int pos2) {
 		// TODO - if the elements at pos1 and know there values
 		// what if they are both x ... or one is 3 x and the other is 2 x
 		// or x + 5 and x + 7
 	}
-	
-	void operate(){
-		//TODO
+
+	void operate() {
+		// TODO
 	}
-	
-	boolean canOperate(){
+
+	boolean canOperate() {
 		// TODO
 		return false;
 	}
@@ -55,10 +66,10 @@ public class AddEquation extends FlexEquation {
 	public float measureWidth() {
 		return horizMeasureWidth();
 	}
-	
+
 	@Override
 	public void draw(Canvas canvas, float x, float y) {
-		horizDraw(canvas,x,y);		
+		horizDraw(canvas, x, y);
 	}
 
 	@Override

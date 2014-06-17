@@ -16,14 +16,16 @@ public class DeleteAction extends Action {
 
 	@Override
 	public void act() {
-		if (emilyView.selected instanceof NumConstEquation) {
-			if (((NumConstEquation) emilyView.selected).display.length() != 0) {
-				((NumConstEquation) emilyView.selected).display = (String) ((NumConstEquation) emilyView.selected).display
+		if (emilyView.selected instanceof PlaceholderEquation) {
+			//TODO remove it if you can;
+		}else if (emilyView.selected instanceof NumConstEquation) {
+			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
+				((NumConstEquation) emilyView.selected).setDisplay( (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
 						.subSequence(0,
-								((NumConstEquation) emilyView.selected).display
-										.length() - 1);
+								((NumConstEquation) emilyView.selected).getDisplay(-1)
+										.length() - 1));
 			}
-			if (((NumConstEquation) emilyView.selected).display.length() == 0) {
+			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() == 0) {
 				PlaceholderEquation temp = new PlaceholderEquation(emilyView);
 				int at = emilyView.selected.parent
 						.lastIndexOf(emilyView.selected);
@@ -33,7 +35,7 @@ public class DeleteAction extends Action {
 			}
 		}
 		
-		if (emilyView.selected instanceof VarEquation) {
+		else if (emilyView.selected instanceof VarEquation) {
 			VarEquation oldEq = (VarEquation) emilyView.selected;
 			PlaceholderEquation temp = new PlaceholderEquation(emilyView);
 			oldEq.replace(temp);

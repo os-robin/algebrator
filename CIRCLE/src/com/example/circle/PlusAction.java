@@ -13,15 +13,34 @@ public class PlusAction extends Action {
 
 	@Override
 	public void act() {
-		// TODO Auto-generated method stub
-		Equation oldEq = emilyView.selected;
-		AddEquation newEq = new AddEquation(emilyView);
-		oldEq.replace(newEq);
-		newEq.add(oldEq);
+		// if you have an add equation selected add a new element
+		if (emilyView.selected instanceof AddEquation) {
+			Equation oldEq = emilyView.selected;
+			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
+			oldEq.add(newEq);
+			newEq.setSelected(true);
+			
+		}else 
 		
-		PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
-		newEq.add(rightAdd);
-		rightAdd.setSelected(true);
+		// if what you have selected is part of a add equation
+		if (emilyView.selected.parent instanceof AddEquation){
+				Equation oldEq = emilyView.selected.parent;
+				PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
+				oldEq.add(newEq);
+				newEq.setSelected(true);
+		}
+		
+		// otherwise create a new add equation
+		else{
+			Equation oldEq = emilyView.selected;
+			AddEquation newEq = new AddEquation(emilyView);
+			oldEq.replace(newEq);
+			newEq.add(oldEq);
+		
+			PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
+			newEq.add(rightAdd);
+			rightAdd.setSelected(true);
+		}
 	}
 
 }

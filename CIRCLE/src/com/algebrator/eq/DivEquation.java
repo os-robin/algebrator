@@ -11,7 +11,7 @@ public class DivEquation extends MultiDivSuperEquation {
 	@Override
 	public Equation copy() {
 		Equation result = new DivEquation(this.owner);
-		result.display = this.display;
+		result.display = this.getDisplay(-1);
 		result.parentheses = this.parentheses;
 		// pass selected?
 
