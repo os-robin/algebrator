@@ -13,8 +13,8 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
-	public boolean negative= false;
 
+	public boolean negative= false;
 
 	public LeafEquation(EmilyView ev) {
 		super(ev);
