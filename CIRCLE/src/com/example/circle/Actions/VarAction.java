@@ -1,17 +1,16 @@
-package com.example.circle;
+package com.example.circle.Actions;
 
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.VarEquation;
+import com.example.circle.EmilyView;
 
 public class VarAction extends Action {
 	
-	public EmilyView emilyView;
+
 	public String var;
 	
 	public VarAction(EmilyView emilyView, String var) {
-		super();
-		this.emilyView = emilyView;
-		this.var = var;
+		super(emilyView);
 	}
 
 	@Override

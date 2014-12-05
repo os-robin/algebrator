@@ -1,16 +1,15 @@
-package com.example.circle;
+package com.example.circle.Actions;
 
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.example.circle.EmilyView;
 
 public class DecimalAction extends Action {
 	
-	public EmilyView emilyView;
 	public String dec;
 	
 	public DecimalAction(EmilyView emilyView, String dec){
-		super();
-		this.emilyView = emilyView;
+		super(emilyView);
 		this.dec = dec;
 	}
 

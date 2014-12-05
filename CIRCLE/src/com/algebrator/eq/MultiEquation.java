@@ -52,6 +52,7 @@ public class MultiEquation extends MultiDivSuperEquation {
 
 	public MultiEquation(EmilyView ev) {
 		super(ev);
+		display = "*";
 		// TODO Auto-generated constructor stub
 	}
 

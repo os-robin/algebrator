@@ -16,11 +16,12 @@ abstract public class Equation extends ArrayList<Equation>{
 	protected static final int DEFAULT_SIZE = 50;
 	protected static final float PARN_HEIGHT_ADDITION = 0;
 	public Equation parent;
-	protected String display;
+	protected String display="";
 	Paint textPaint;
 	EmilyView owner;
 	public boolean parentheses;
 	protected boolean selected = false;
+	public boolean negative= false;
 	
 	public void setDisplay(String display){
 		this.display = display;
@@ -200,8 +201,9 @@ abstract public class Equation extends ArrayList<Equation>{
 			
 		}
 		if (parentheses){
-			drawParentheses(canvas,x,y,temp);
-			temp.setTextSize(measureHeight());
+			Paint parPaint = new Paint(temp);
+			parPaint.setTextSize(measureHeight());
+			drawParentheses(canvas,x,y,parPaint);
 			totalWidth -= temp.measureText("()");
 		} 
 		for (int i=0;i<size();i++){
@@ -263,7 +265,9 @@ abstract public class Equation extends ArrayList<Equation>{
 			
 		}
 		if (parentheses){
-			drawParentheses(canvas,x,y,temp);
+			Paint parPaint = new Paint(temp);
+			parPaint.setTextSize(measureHeight());
+			drawParentheses(canvas,x,y,parPaint);
 			totalHieght = totalHieght-PARN_HEIGHT_ADDITION;
 		} 
 		for (int i=0;i<size();i++){
@@ -388,7 +392,6 @@ abstract public class Equation extends ArrayList<Equation>{
 		owner.selected.parent.set(index, eq);
 		eq.parent = owner.selected.parent;
 		eq.setSelected(true);
-		eq.parentheses = parentheses;
 		
 		if (this instanceof LeafEquation && eq instanceof LeafEquation){
 			((LeafEquation) eq).negative = ((LeafEquation) this).negative;

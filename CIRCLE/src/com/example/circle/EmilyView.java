@@ -23,6 +23,16 @@ import android.view.WindowManager;
 import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.example.circle.Actions.Action;
+import com.example.circle.Actions.DecimalAction;
+import com.example.circle.Actions.DeleteAction;
+import com.example.circle.Actions.DivAction;
+import com.example.circle.Actions.MinusAction;
+import com.example.circle.Actions.NumberAction;
+import com.example.circle.Actions.ParenthesesAction;
+import com.example.circle.Actions.PlusAction;
+import com.example.circle.Actions.TimesAction;
+import com.example.circle.Actions.VarAction;
 
 public class EmilyView extends SurfaceView implements Runnable, OnTouchListener {
 	public Equation selected;
@@ -168,7 +178,9 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		varY.myAction = new VarAction(this, varY.text);
 
 		buttons.add(parentheses);
-		buttons.add(new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight));
+		Button times = new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight);
+		times.myAction = new TimesAction(this);
+		buttons.add(times);
 		
 		Button plus = new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight);
 		plus.myAction = new PlusAction(this);
@@ -195,8 +207,11 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		buttons.add(new Button((int) ((5 + 0.5) * width / 11), (int) ((6 + 0.5)
 				* width / 11), 5 * height / 6, height,  ".", text,bkg, highlight));
 		buttons.get(16).myAction = new DecimalAction(this, ".");
-		buttons.add(new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
-				* width / 11), 5 * height / 6, height,  "÷", text,bkg, highlight));
+		Button div =new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
+				* width / 11), 5 * height / 6, height,  "÷", text,bkg, highlight);
+		div.myAction = new DivAction(this);
+		buttons.add(div);
+		
 		Button minus = new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)
 				* width / 11), 5 * height / 6, height,  "-", text,bkg, highlight);
 		minus.myAction = new MinusAction(this);
@@ -225,9 +240,8 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		stupid.add(empty1);
 		stupid.add(empty2);
 		
-		final EmilyView temp = this;
 		
-		buttons.get(10).myAction = new Action(){
+		buttons.get(10).myAction = new Action(this){
 			 int count =0;
 
 			@Override
@@ -238,7 +252,7 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 				//TODO it would be cool if you could swipe up or something to delete these
 				
 				Button tempButton = new Button(width*(10-count)/11, width*(11-count)/11, 3*height/6, 4*height/6, "A"+count, text,bkg, highlight);
-				tempButton.myAction = new VarAction(temp, tempButton.text);
+				tempButton.myAction = new VarAction(emilyView, tempButton.text);
 				
 				vars.add(tempButton);
 				

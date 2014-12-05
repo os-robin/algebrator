@@ -105,9 +105,4 @@ public class DivEquation extends MultiDivSuperEquation {
 		return false;
 	}
 	
-	@Override
-	public Equation set(int pos, Equation e){
-		//TODO looking at canInsertAt, I am going to need to reqrite this
-		return set(pos,e);
-	}
 }

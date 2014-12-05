@@ -1,17 +1,16 @@
-package com.example.circle;
+package com.example.circle.Actions;
 
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.VarEquation;
+import com.example.circle.EmilyView;
 
 public class DeleteAction extends Action {
 
-	public EmilyView emilyView;
 	public String num;
 
 	public DeleteAction(EmilyView emilyView) {
-		super();
-		this.emilyView = emilyView;
+		super(emilyView);
 	}
 
 	@Override

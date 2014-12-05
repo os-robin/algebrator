@@ -14,8 +14,6 @@ import android.util.Log;
 
 public abstract class LeafEquation extends FixEquation {
 
-	public boolean negative= false;
-
 	public LeafEquation(EmilyView ev) {
 		super(ev);
 
@@ -26,6 +24,9 @@ public abstract class LeafEquation extends FixEquation {
 	@Override
 	public String getDisplay(int pos){
 		if (parent instanceof AddEquation && parent.indexOf(this) != 0){
+			return display;
+		}
+		if (pos != -1){
 			return display;
 		}
 		return (negative?"-":"")+display;

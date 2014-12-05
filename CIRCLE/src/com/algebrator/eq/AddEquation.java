@@ -26,10 +26,8 @@ public class AddEquation extends FlexEquation {
 
 	public String getDisplay(int pos) {
 		if (pos >= 0 && pos < size()) {
-			if (get(pos) instanceof LeafEquation) {
-				if (((LeafEquation) get(pos)).negative) {
+			if ( get(pos).negative) {
 					return "–";
-				}
 			}
 		}
 		return display;

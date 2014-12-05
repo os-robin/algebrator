@@ -1,13 +1,11 @@
-package com.example.circle;
+package com.example.circle.Actions;
+
+import com.example.circle.EmilyView;
 
 public class ParenthesesAction extends Action {
-	
-	public EmilyView emilyView;
-	
-	public ParenthesesAction(EmilyView emilyView) {
-		super();
-		this.emilyView = emilyView;
 		
+	public ParenthesesAction(EmilyView emilyView) {
+		super(emilyView);
 	}
 
 	@Override

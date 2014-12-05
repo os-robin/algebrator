@@ -1,14 +1,15 @@
-package com.example.circle;
+package com.example.circle.Actions;
 
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.example.circle.EmilyView;
 
 public class PlusAction extends Action {
-	EmilyView emilyView;
+
 
 	public PlusAction(EmilyView emilyView) {
-		this.emilyView = emilyView;
+		super(emilyView);
 	}
 
 	@Override
@@ -34,6 +35,10 @@ public class PlusAction extends Action {
 		else{
 			Equation oldEq = emilyView.selected;
 			AddEquation newEq = new AddEquation(emilyView);
+			if (oldEq.parentheses){
+				oldEq.parentheses = false;
+				newEq.parentheses = true;
+			}
 			oldEq.replace(newEq);
 			newEq.add(oldEq);
 		
