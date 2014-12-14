@@ -1,8 +1,9 @@
 package com.example.circle.Actions;
 
+import com.algebrator.eq.EqualsEquation;
+import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
-import com.algebrator.eq.VarEquation;
 import com.example.circle.EmilyView;
 
 public class DeleteAction extends Action {
@@ -15,9 +16,7 @@ public class DeleteAction extends Action {
 
 	@Override
 	public void act() {
-		if (emilyView.selected instanceof PlaceholderEquation) {
-			//TODO remove it if you can;
-		}else if (emilyView.selected instanceof NumConstEquation) {
+		if (emilyView.selected instanceof NumConstEquation) {
 			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
 				((NumConstEquation) emilyView.selected).setDisplay( (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
 						.subSequence(0,
@@ -34,10 +33,18 @@ public class DeleteAction extends Action {
 			}
 		}
 		
-		else if (emilyView.selected instanceof VarEquation) {
-			VarEquation oldEq = (VarEquation) emilyView.selected;
+		else if (emilyView.selected instanceof PlaceholderEquation){
+			emilyView.selected.remove();
+		}
+		
+		else if (!(emilyView.selected instanceof EqualsEquation)){
+			Equation oldEq =  emilyView.selected;
 			PlaceholderEquation temp = new PlaceholderEquation(emilyView);
 			oldEq.replace(temp);
 		}
+		
+		//else if (emilyView.selected instanceof EqualsEquation){
+		//	emilyView.selected.remove();
+		//}
 	}
 }

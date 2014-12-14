@@ -5,11 +5,12 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 import com.example.circle.EmilyView;
+import com.example.circle.SuperView;
 
 public class PlaceholderEquation extends LeafEquation {
 	
-	public PlaceholderEquation(EmilyView ev) {
-		super(ev);
+	public PlaceholderEquation(SuperView owner) {
+		super(owner);
 		display = "_";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;

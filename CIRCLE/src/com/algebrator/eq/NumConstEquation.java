@@ -6,12 +6,13 @@ import android.graphics.Paint.Align;
 
 import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
+import com.example.circle.SuperView;
 
 public class NumConstEquation extends LeafEquation {
 	private double value;
 	
-	public NumConstEquation(String display, EmilyView ev) {
-		super(ev);
+	public NumConstEquation(String display, SuperView owner) {
+		super(owner);
 		this.display = display;
 
 	}
@@ -24,6 +25,4 @@ public class NumConstEquation extends LeafEquation {
 
 		return result;
 	}
-
-
 }

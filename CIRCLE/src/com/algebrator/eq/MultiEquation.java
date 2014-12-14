@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.example.circle.EmilyView;
+import com.example.circle.SuperView;
 
 import android.graphics.Canvas;
 
-public class MultiEquation extends MultiDivSuperEquation {
+public class MultiEquation extends FlexEquation implements MultiDivSuperEquation {
 
 	@Override
 	public Equation copy() {
@@ -50,81 +51,12 @@ public class MultiEquation extends MultiDivSuperEquation {
 		}
 	}
 
-	public MultiEquation(EmilyView ev) {
-		super(ev);
+	public MultiEquation(SuperView owner) {
+		super(owner);
 		display = "*";
+
+		myWidth = DEFAULT_SIZE;
+		myHeight = DEFAULT_SIZE;
 		// TODO Auto-generated constructor stub
-	}
-
-
-	@Override
-	public float measureWidth() {
-		return horizMeasureWidth();
-	}
-
-	@Override
-	public void draw(Canvas canvas, float x, float y) {
-		horizDraw(canvas,x,y);
-	}
-
-	@Override
-	public float measureHeight() {
-		return horizMeasureHeight();
-	}
-
-	@Override
-	public EquationLoc closestPossible(float x, float y) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean canInstertAt(int pos, Equation eq) {
-		return canMulti(eq);
-//		// we can't put things in themselves
-//		if (eq.deepContains(this)) {
-//			return false;
-//		}
-//		// if the other is a div multi element of this
-//		if (DivMultiContain(eq)) {
-//			if (onTop(eq)) {
-//				return true;
-//			}
-//		}
-//		// if this and eq are both div multi elements of something
-//		// and they are both on the same side of that something
-//		Equation lcc = lowestCommonContainer(eq);
-//		if (lcc instanceof MultiEquation) {
-//			if (((MultiEquation) lcc).DivMultiContain(this)
-//					&& ((MultiEquation) lcc).DivMultiContain(this)) {
-//				if (((MultiEquation) lcc).onTop(this) == ((MultiEquation) lcc)
-//						.onTop(this)) {
-//					return true;
-//				}
-//			}
-//		}
-//		// this this and other are on different sides
-//		if (lcc instanceof EqualsEquation) {
-//			// figure out what side this is on
-//			int mySide = ((EqualsEquation) lcc).side(this);
-//			// if both size have div or multi as top node
-//			if (lcc.get(mySide) instanceof MultiDivSuperEquation
-//					&& lcc.get(EqualsEquation.otherSide(mySide)) instanceof MultiDivSuperEquation) {
-//				// if this and eq are both div multi contained by thier sides
-//				// top
-//				if (((MultiDivSuperEquation) lcc.get(mySide))
-//						.DivMultiContain(this)
-//						&& ((MultiDivSuperEquation) lcc.get(mySide))
-//								.DivMultiContain(this)) {
-//					// if we have different on topness
-//					if (((MultiDivSuperEquation) lcc.get(mySide)).onTop(this) != ((MultiDivSuperEquation) lcc
-//							.get(EqualsEquation.otherSide(mySide))).onTop(eq)) {
-//						return true;
-//					}
-//				}
-//			}
-//		}
-//		// TODO other cases?
-//		return false;
 	}
 }

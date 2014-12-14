@@ -11,6 +11,7 @@ public class VarAction extends Action {
 	
 	public VarAction(EmilyView emilyView, String var) {
 		super(emilyView);
+		this.var = var;
 	}
 
 	@Override

@@ -9,14 +9,13 @@ import android.view.View;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
-	EmilyView emilyview;
+	SuperView superView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        emilyview = new EmilyView(this);
-        setContentView(emilyview);
+        lookAt(new EmilyView(this));
         
     }
 
@@ -50,13 +49,19 @@ public class MainActivity extends Activity {
      	actionBar.hide();
      }
      
-     emilyview.onResume();
+     superView.onResume();
     }
     
     @Override
     protected void onPause() {
      super.onPause();
-     emilyview.onPause();
+     superView.onPause();
     }
+
+
+	public void lookAt(SuperView view) {
+		setContentView(view);
+		superView = view;
+	}
     
 }

@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
 import com.example.circle.EmilyView;
+import com.example.circle.SuperView;
 
 public class AddEquation extends FlexEquation {
 	Equation empty;
@@ -33,51 +34,12 @@ public class AddEquation extends FlexEquation {
 		return display;
 	}
 
-	public AddEquation(EmilyView ev) {
-		super(ev);
+	public AddEquation(SuperView owner) {
+		super(owner);
 		display = "+";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 
-		empty = new NumConstEquation("0", ev);
-	}
-
-	void operate(int pos1, int pos2) {
-		// TODO - if the elements at pos1 and know there values
-		// what if they are both x ... or one is 3 x and the other is 2 x
-		// or x + 5 and x + 7
-	}
-
-	void operate() {
-		// TODO
-	}
-
-	boolean canOperate() {
-		// TODO
-		return false;
-	}
-
-	public float measureHeight() {
-		return horizMeasureHeight();
-	}
-
-	public float measureWidth() {
-		return horizMeasureWidth();
-	}
-
-	@Override
-	public void draw(Canvas canvas, float x, float y) {
-		horizDraw(canvas, x, y);
-	}
-
-	@Override
-	public boolean canInstertAt(int pos, Equation eq) {
-		return canAdd(eq);
-	}
-
-	@Override
-	public EquationLoc closestPossible(float x, float y) {
-		// TODO Auto-generated method stub
-		return null;
+		empty = new NumConstEquation("0", owner);
 	}
 }

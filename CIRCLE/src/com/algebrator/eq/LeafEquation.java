@@ -1,24 +1,24 @@
 package com.algebrator.eq;
 
 import java.util.ArrayList;
-
-import com.example.circle.BigDaddy;
-import com.example.circle.EmilyView;
+import java.util.HashSet;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.util.Log;
+
+import com.example.circle.EmilyView;
+import com.example.circle.SuperView;
 
 public abstract class LeafEquation extends FixEquation {
 
-	public LeafEquation(EmilyView ev) {
-		super(ev);
-
-		myWidth = DEFAULT_SIZE;
+	public LeafEquation(SuperView owner) {
+		super(owner);
 		myHeight = DEFAULT_SIZE;
+		myWidth = DEFAULT_SIZE;
 	}
 	
 	@Override
@@ -33,10 +33,10 @@ public abstract class LeafEquation extends FixEquation {
 	}
 	
 	@Override
-	public boolean on(float x, float y){
+	public HashSet<Equation> on(float x, float y){
 		Log.i("yo,yo",x+","+y);
 
-		boolean result =false;
+		HashSet<Equation> result = new HashSet<Equation>();
 		
 		
 		for (int i=0;i<lastPoint.size();i++){
@@ -45,43 +45,37 @@ public abstract class LeafEquation extends FixEquation {
 					&& x > lastPoint.get(i).x - measureWidth()/2 
 					&& y < lastPoint.get(i).y + measureHeight()/2 
 					&& y > lastPoint.get(i).y - measureHeight()/2){
-				result = true;
-				setSelected(true);
+				result.add(this);
 			}
 		}
 		return result;
 	}
 
+
 	@Override
 	public ArrayList<EquationDis> closest(float x, float y){
 		ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
-		if (lastPoint.size() ==1){
-			Point lastP = lastPoint.get(0);;
-			float dis = (float) Math.sqrt((x - lastP.x)*(x - lastP.x) + (y - lastP.y)*(y - lastP.y)); 
-			result.add(new EquationDis(this,dis));
-		}else{
-			//TODO error
-			
-		}
+		result.add(new EquationDis(this,x,y));
 		return result;
 	}
 	
 	@Override
 	public float measureWidth() {
-		// not tested		
+		// not tested
 		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
 		
 		if (parentheses){
-			//TODO test
-			Paint p = new Paint(textPaint);
-			p.setTextSize(measureHeight());
-			totalWidth += p.measureText("()");
+			totalWidth += PARN_WIDTH_ADDITION;
 		}
 		return totalWidth;
 	}
 
 	@Override
 	public float measureHeight() {
+//		Rect out =  new Rect();
+//		textPaint.getTextBounds(display, 0, display.length(),out);
+//		float totalHeight= out.height();
+		
 		float totalHeight= myHeight;
 		
 		if (parentheses){
@@ -91,19 +85,18 @@ public abstract class LeafEquation extends FixEquation {
 	}
 
 	@Override
-	public void draw(Canvas canvas, float x, float y) {
+	public void privateDraw(Canvas canvas, float x, float y) {
+		drawBkgBox(canvas, x, y);
 		lastPoint =new ArrayList<Point>();
-		Paint temp = textPaint;
-		if (selected){
-			temp = new Paint(textPaint);
-			temp.setColor(Color.GREEN);
-			
-		}
+		Paint temp = getPaint();
 		if (parentheses){
-			Log.i("I tried","");
 			drawParentheses(canvas,x,y,temp);
 		} 
-		canvas.drawText(getDisplay(-1), x, y, temp);
+		Rect out =  new Rect();
+		textPaint.getTextBounds(display, 0, display.length(),out);
+		float h= out.height();
+		float w= out.width();
+		canvas.drawText(getDisplay(-1), x, y+ (h/2), temp);
 		
 		Point point = new Point();
 		point.x =(int) x;
@@ -111,8 +104,110 @@ public abstract class LeafEquation extends FixEquation {
 		lastPoint.add(point);
 	}
 	
+	public  boolean tryAddLeft(DragEquation dragging){
+		if (CanAdd(dragging)){
+			if (side() != dragging.demo.side()){
+				dragging.demo.negative = !dragging.demo.negative;
+			}
+			dragging.demo.remove();
+			if (parent instanceof AddEquation){
+				int myIndex = parent.indexOf(this);
+				if (dragging.demo.x < x){
+					parent.add(myIndex+1,dragging.demo);
+				}else{
+					parent.add(myIndex,dragging.demo);
+				}
+				
+			}else{
+				Equation oldEq = this;
+				AddEquation newEq = new AddEquation(owner);
+				if (oldEq.parentheses){
+					oldEq.parentheses = false;
+					newEq.parentheses = true;
+				}
+				oldEq.replace(newEq);
+				newEq.add(dragging.demo);
+				newEq.add(oldEq);
+			}
+			return true;
+		}
+		return false;
+	}
 
-	public EquationLoc closestPossible(float x, float y){
-		return null;
+	private boolean CanAdd(DragEquation dragging) {
+		// if these are in the same add block
+		if (parent.addContain(dragging.demo) || dragging.demo.addContain(this)){
+			return true;
+		}
+		// if they are only both only adds away form equals
+		if (getEquals().addContain(dragging.demo) && dragging.demo.getEquals().addContain(this)){
+			return true;
+		}
+		return false;
+	}
+
+	
+	private boolean tryAdd(DragEquation dragging,boolean right){
+		if (CanAdd(dragging)){
+			if (side() != dragging.demo.side()){
+				dragging.demo.negative = !dragging.demo.negative;
+			}
+			dragging.demo.remove();
+			if (parent instanceof AddEquation){
+				int myIndex = parent.indexOf(this);
+				if (dragging.demo.x < x){
+					parent.add(myIndex+1,dragging.demo);
+				}else{
+					parent.add(myIndex,dragging.demo);
+				}
+			}else{
+				Equation oldEq = this;
+				AddEquation newEq = new AddEquation(owner);
+				if (oldEq.parentheses){
+					oldEq.parentheses = false;
+					newEq.parentheses = true;
+				}
+				oldEq.replace(newEq);
+				if (right){
+					newEq.add(dragging.demo);
+					newEq.add(oldEq);
+				}else{
+					newEq.add(oldEq);
+					newEq.add(dragging.demo);
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public  boolean tryAddRight(DragEquation dragging){
+		return tryAdd(dragging,false);
+	}
+
+	public  boolean tryDiv(DragEquation dragging){
+		return false;
+	}
+
+	public  boolean tryMultiRight(DragEquation dragging){
+		return tryAdd(dragging,true);
+	}
+
+	// TODO
+	private boolean CanMulti(DragEquation dragging) {
+		return false;
+		// if these are in the same multi block
+		//if (parent.DivMultiContain(dragging.demo) || dragging.demo.DivMultiContain(this)){
+		//		return true;
+		//}
+		//		// if they are only both only adds away form equals
+		//if (getEquals().DivMultiContain(dragging.demo) && dragging.demo.getEquals().DivMultiContain(this)){
+		//		return true;
+		//}
+		//return false;
+	}
+
+	public  boolean tryMultiLeft(DragEquation dragging){
+		return false;
 	}
 }

@@ -1,27 +1,21 @@
 package com.example.circle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint.Align;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.Rect;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.Window;
-import android.view.WindowManager;
 
+import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.FlexEquation;
+import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.example.circle.Actions.Action;
 import com.example.circle.Actions.DecimalAction;
@@ -31,33 +25,21 @@ import com.example.circle.Actions.MinusAction;
 import com.example.circle.Actions.NumberAction;
 import com.example.circle.Actions.ParenthesesAction;
 import com.example.circle.Actions.PlusAction;
+import com.example.circle.Actions.Solve;
 import com.example.circle.Actions.TimesAction;
 import com.example.circle.Actions.VarAction;
 
-public class EmilyView extends SurfaceView implements Runnable, OnTouchListener {
-	public Equation selected;
-	Thread thread = null;
-	SurfaceHolder surfaceHolder;
-	volatile boolean running = false;
+public class EmilyView extends SuperView {
 
 	/**
- 	* 	list of our buttons
- 	*/
-	ArrayList<Button> buttons = new ArrayList<Button>();
+	 * list of our buttons
+	 */
+
 	/**
 	 * list of our passed in variables
 	 */
 	ArrayList<Button> vars = new ArrayList<Button>();
-	ArrayList<Button> varList = new ArrayList<Button>();
-	EqualsEquation stupid;
-	
-	int width;
-	int height;
-	
-	TextPaint text = new TextPaint();
-	int highlight;
-	TextPaint bkg;
-	
+
 	public EmilyView(Context context) {
 		super(context);
 		init(context);
@@ -73,13 +55,11 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		init(context);
 	}
 
-	private void init(Context context) {
-		surfaceHolder = getHolder();
-		this.setOnTouchListener(this);
+	protected void init(Context context) {
 		stupid = new EqualsEquation(this);
 		Equation x = new PlaceholderEquation(this);
 		Equation y = new PlaceholderEquation(this);
-		Log.e("zoom?",(x==y)+"");
+		Log.e("zoom?", (x == y) + "");
 
 		/*
 		 * modified from Elliott Hughes' "Dalvik Explorer" app on
@@ -102,227 +82,139 @@ public class EmilyView extends SurfaceView implements Runnable, OnTouchListener 
 		 * (Exception ignored) { }
 		 */
 
-		
-		// Get the height of the whole display
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
-
-		DisplayMetrics metrics = new DisplayMetrics();
-		wm.getDefaultDisplay().getMetrics(metrics);
-
-		int screenheight = metrics.heightPixels; // get screen height (dependent
-													// on rotation)
-		int screenwidth = metrics.widthPixels; // get screen width (dependent on
-												// rotation)
-
-		Log.i("screenheight, screenwidth", screenheight + "," + screenwidth);
-
-		// Get the heights of status, title, decorations, etc.
-		Window win = ((Activity) context).getWindow();
-		Rect rect = new Rect();
-
-		win.getDecorView().getWindowVisibleDisplayFrame(rect);
-		int statusBarHeight = rect.top; // Get the height of the status bar
-		int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT)
-				.getTop(); // Get height occupied by decoration contents
-		int titleBarHeight = contentViewTop - statusBarHeight;
-
-		Log.i("statusBarHeight, contentViewTop, titleBarHeight",
-				statusBarHeight + "," + contentViewTop + "," + titleBarHeight);
-
-		// Get navigation bar height
-		int navBarHeight = 0;
-		/*
-		 * Resources resources = context.getResources(); int resourceId =
-		 * resources.getIdentifier("navigation_bar_height", "dimen", "android");
-		 * if (resourceId > 0) { navBarHeight =
-		 * resources.getDimensionPixelSize(resourceId); }
-		 * 
-		 * Log.i("navBarHeight", navBarHeight+"");
-		 */
-
-		// Calculate actual height
-		height = screenheight
-				- (titleBarHeight + statusBarHeight + navBarHeight);
-		width = screenwidth;
-
-		Log.i("actual height, width", height + ", " + width);
-		
-
-		text.setTextSize(30);
-		text.setTextAlign(Align.CENTER);
-		text.setColor(0xff000000);
-		
-		highlight = 0xff000000+(int)(Math.random()*0xffffff);
-		
-		bkg = new TextPaint();
-		bkg.setTextSize(30);
-		bkg.setTextAlign(Align.CENTER);
-		bkg.setColor(0x00000000);
-
-
-
 		for (int i = 0; i < 5; i++) {
-			buttons.add(new Button(i*width/11, (i+1)*width/11, 4*height/6, 5*height/6,
-					 i+1+"", text,bkg, highlight));
-			buttons.get(i).myAction = new NumberAction(this, i+1+"");
+			buttons.add(new Button(i * width / 11, (i + 1) * width / 11,
+					4 * height / 6, 5 * height / 6, i + 1 + "", text, bkg,
+					highlight));
+			buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
 		}
-		
-		Button parentheses = new Button(5*width/11, 6*width/11, 4*height/6, 5*height/6, "( )", text,bkg, highlight);
+
+		Button parentheses = new Button(5 * width / 11, 6 * width / 11,
+				4 * height / 6, 5 * height / 6, "( )", text, bkg, highlight);
 		parentheses.myAction = new ParenthesesAction(this);
-		
-		Button varX = new Button(8*width/11, 9*width/11, 4*height/6, 5*height/6, "x", text,bkg, highlight);
-		varX.myAction = new VarAction(this, varX.text);
-		
-		Button varY = new Button(9*width/11, 10*width/11, 4*height/6, 5*height/6,  "y", text,bkg, highlight);
-		varY.myAction = new VarAction(this, varY.text);
 
 		buttons.add(parentheses);
-		Button times = new Button(6*width/11, 7*width/11, 4*height/6, 5*height/6, "*", text,bkg, highlight);
+		Button times = new Button(6 * width / 11, 7 * width / 11,
+				4 * height / 6, 5 * height / 6, "*", text, bkg, highlight);
 		times.myAction = new TimesAction(this);
 		buttons.add(times);
-		
-		Button plus = new Button(7*width/11, 8*width/11, 4*height/6, 5*height/6,  "+", text,bkg, highlight);
+
+		Button plus = new Button(7 * width / 11, 8 * width / 11,
+				4 * height / 6, 5 * height / 6, "+", text, bkg, highlight);
 		plus.myAction = new PlusAction(this);
 		buttons.add(plus);
-		buttons.add(varX);
-		buttons.add(varY);
-		buttons.add(new Button(10*width/11, 11*width/11, 4*height/6, 5*height/6,  "VAR", text,bkg, highlight));
 
-		
+		Button varX = new Button(8 * width / 11, 9 * width / 11,
+				4 * height / 6, 5 * height / 6, "x", text, bkg, highlight);
+		varX.myAction = new VarAction(this, varX.text);
+		buttons.add(varX);
+
+		Button varY = new Button(9 * width / 11, 10 * width / 11,
+				4 * height / 6, 5 * height / 6, "y", text, bkg, highlight);
+		varY.myAction = new VarAction(this, varY.text);
+		buttons.add(varY);
+
+		buttons.add(new Button(10 * width / 11, 11 * width / 11,
+				4 * height / 6, 5 * height / 6, "VAR", text, bkg, highlight));
+
 		for (int i = 0; i < 4; i++) {
-			buttons.add(new Button((int)((i+0.5)*width/11), (int) ((i+1.5)*width/11), 5*height/6, height, i+6+"", text,bkg, highlight));
-			buttons.get(i+11).myAction = new NumberAction(this, i+6+"");
+			buttons.add(new Button((int) ((i + 0.5) * width / 11),
+					(int) ((i + 1.5) * width / 11), 5 * height / 6, height, i
+							+ 6 + "", text, bkg, highlight));
+			buttons.get(i + 11).myAction = new NumberAction(this, i + 6 + "");
 		}
-		
-		Button delete= new Button((int) ((9 + 0.5) * width / 11), (int) ((10 + 0.5)
-				* width / 11), 5 * height / 6, height,  "DEL", text,bkg, highlight);
+
+		Button delete = new Button((int) ((9 + 0.5) * width / 11),
+				(int) ((10 + 0.5) * width / 11), 5 * height / 6, height, "DEL",
+				text, bkg, highlight);
 		delete.myAction = new DeleteAction(this);
-		
-		
 
 		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
-				* width / 11), 5 * height / 6, height,  "0", text,bkg, highlight));
+				* width / 11), 5 * height / 6, height, "0", text, bkg,
+				highlight));
 		buttons.get(15).myAction = new NumberAction(this, "0");
 		buttons.add(new Button((int) ((5 + 0.5) * width / 11), (int) ((6 + 0.5)
-				* width / 11), 5 * height / 6, height,  ".", text,bkg, highlight));
+				* width / 11), 5 * height / 6, height, ".", text, bkg,
+				highlight));
 		buttons.get(16).myAction = new DecimalAction(this, ".");
-		Button div =new Button((int) ((6 + 0.5) * width / 11), (int) ((7 + 0.5)
-				* width / 11), 5 * height / 6, height,  "÷", text,bkg, highlight);
+		Button div = new Button((int) ((6 + 0.5) * width / 11),
+				(int) ((7 + 0.5) * width / 11), 5 * height / 6, height, "÷",
+				text, bkg, highlight);
 		div.myAction = new DivAction(this);
 		buttons.add(div);
-		
-		Button minus = new Button((int) ((7 + 0.5) * width / 11), (int) ((8 + 0.5)
-				* width / 11), 5 * height / 6, height,  "-", text,bkg, highlight);
+
+		Button minus = new Button((int) ((7 + 0.5) * width / 11),
+				(int) ((8 + 0.5) * width / 11), 5 * height / 6, height, "-",
+				text, bkg, highlight);
 		minus.myAction = new MinusAction(this);
 		buttons.add(minus);
 		buttons.add(new Button((int) ((8 + 0.5) * width / 11), (int) ((9 + 0.5)
-				* width / 11), 5 * height / 6, height,  "MORE", text,bkg, highlight));
+				* width / 11), 5 * height / 6, height, "MORE", text, bkg,
+				highlight));
 		buttons.add(delete);
-		
+
+		Button solve = new Button(0, width, 0, 1 * height / 6, "solve", text,
+				bkg, highlight);
+		solve.myAction = new Solve(this);
+		buttons.add(solve);
+
 		/*
-		AddEquation add1 = new AddEquation();
-		add1.add(new NumConstEquation("3"));
-		add1.add(new NumConstEquation("4"));
-		AddEquation add2 = new AddEquation();
-		add2.add(new NumConstEquation("2"));
-		add2.add(new NumConstEquation("5"));
-		AddEquation add3 = new AddEquation();
-		add3.add(new NumConstEquation("1"));
-		add3.add(new NumConstEquation("6"));
-		stupid.add(add1);
-		stupid.add(add2);
-		stupid.add(add3); */
-		
+		 * AddEquation add1 = new AddEquation(); add1.add(new
+		 * NumConstEquation("3")); add1.add(new NumConstEquation("4"));
+		 * AddEquation add2 = new AddEquation(); add2.add(new
+		 * NumConstEquation("2")); add2.add(new NumConstEquation("5"));
+		 * AddEquation add3 = new AddEquation(); add3.add(new
+		 * NumConstEquation("1")); add3.add(new NumConstEquation("6"));
+		 * stupid.add(add1); stupid.add(add2); stupid.add(add3);
+		 */
+
 		PlaceholderEquation empty1 = new PlaceholderEquation(this);
 		empty1.setSelected(true);
 		PlaceholderEquation empty2 = new PlaceholderEquation(this);
 		stupid.add(empty1);
 		stupid.add(empty2);
-		
-		
-		buttons.get(10).myAction = new Action(this){
-			 int count =0;
+
+		buttons.get(10).myAction = new Action(this) {
+			int count = 0;
 
 			@Override
 			public void act() {
 
-				//TODO while there is room:
-				//TODO allow the player to enter a var name
-				//TODO it would be cool if you could swipe up or something to delete these
-				
-				Button tempButton = new Button(width*(10-count)/11, width*(11-count)/11, 3*height/6, 4*height/6, "A"+count, text,bkg, highlight);
+				// TODO while there is room:
+				// TODO allow the player to enter a var name
+				// TODO it would be cool if you could swipe up or something to
+				// delete these
+
+				Button tempButton = new Button(width * (10 - count) / 11, width
+						* (11 - count) / 11, 3 * height / 6, 4 * height / 6,
+						"A" + count, text, bkg, highlight);
 				tempButton.myAction = new VarAction(emilyView, tempButton.text);
-				
+
 				vars.add(tempButton);
-				
+
 				count++;
 			}
-			
+
 		};
-		
+
 	};
 
-	public void onResume() {
-		running = true;
-		thread = new Thread(this);
-		thread.start();
-	}
-
-	public void onPause() {
-		boolean retry = true;
-		running = false;
-		while (retry) {
-			try {
-				thread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	@Override
-	public void run() {
-		while (running) {
-			if (surfaceHolder.getSurface().isValid()) {
-				Canvas canvas = surfaceHolder.lockCanvas();
-				myDraw(canvas);
-				surfaceHolder.unlockCanvasAndPost(canvas);
-			}
-		}
-	}
+	protected void myDraw(Canvas canvas) {
+		super.myDraw(canvas);
 
-	private void myDraw(Canvas canvas) {
-		//canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
-		canvas.drawColor(0xFFFFFFFF, Mode.ADD);
-		for (int i = 0; i < buttons.size(); i++) {
-			buttons.get(i).draw(canvas);
-		}
-		
 		for (int i = 0; i < vars.size(); i++) {
 			vars.get(i).draw(canvas);
 		}
-		
-		stupid.draw(canvas, width/2, height/3);
-		
 	}
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_UP) {
-
-			for (int i = 0; i < buttons.size(); i++) {
-				buttons.get(i).click(event);
-								
-			}
-			
 			for (int i = 0; i < vars.size(); i++) {
 				vars.get(i).click(event);
 			}
-			stupid.onAny(event.getX(), event.getY());
 		}
-
-		return true;
+		return super.onTouch(view, event);
 	}
 }

@@ -14,8 +14,7 @@ public class TimesAction extends Action {
 
 	@Override
 	public void act() {
-		// if you have an add equation selected add a new element
-		if (emilyView.selected instanceof MultiDivSuperEquation) {
+		if (emilyView.selected instanceof MultiEquation) {
 			Equation oldEq = emilyView.selected;
 			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
 			oldEq.add(newEq);
@@ -23,7 +22,6 @@ public class TimesAction extends Action {
 
 		} else
 
-		// if what you have selected is part of a add equation
 		if (emilyView.selected.parent instanceof MultiEquation) {
 			Equation oldEq = emilyView.selected.parent;
 			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
@@ -31,7 +29,6 @@ public class TimesAction extends Action {
 			newEq.setSelected(true);
 		}
 
-		// otherwise create a new add equation
 		else {
 			Equation oldEq = emilyView.selected;
 			MultiEquation newEq = new MultiEquation(emilyView);
