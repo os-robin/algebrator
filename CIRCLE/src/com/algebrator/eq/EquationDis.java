@@ -60,15 +60,15 @@ public class EquationDis implements Comparable<EquationDis> {
 	private boolean tryX(DragEquation dragging) {
 		if (dragging.add) {
 			if (equation.x > x) {
-				return equation.tryAddLeft(dragging);
+				return equation.tryOp(dragging,false,Equation.Op.ADD);
 			} else {
-				return equation.tryAddRight(dragging);
+				return equation.tryOp(dragging,true,Equation.Op.ADD);
 			}
 		}else{
 			if (equation.x > x) {
-				return equation.tryMultiLeft(dragging);
+				return equation.tryOp(dragging,false,Equation.Op.MULTI);
 			} else {
-				return equation.tryMultiRight(dragging);
+				return equation.tryOp(dragging,true,Equation.Op.MULTI);
 			}
 		}
 	}
@@ -77,7 +77,11 @@ public class EquationDis implements Comparable<EquationDis> {
 		if (dragging.add) {
 			return false;
 		}else{
-			return equation.tryDiv(dragging);
+			if (equation.x > x) {
+				return equation.tryOp(dragging,false,Equation.Op.DIV);
+			} else {
+				return equation.tryOp(dragging,true,Equation.Op.DIV);
+			}
 		}
 	}
 }
