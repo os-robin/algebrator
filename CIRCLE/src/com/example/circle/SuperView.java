@@ -209,14 +209,24 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 			// if we are dragging something move it
 			if (inBox == false && dragging != null) {
 				ArrayList<EquationDis> closest = stupid.closest(event.getX(),
-						event.getX());
+						event.getY());
+				
+				//debug
+				String whatdowehavehere = "";
+				for (int i=0;i<closest.size();i++){
+					whatdowehavehere+= closest.get(i).equation.hashCode() + "|" + closest.get(i).equation.getDisplay(0) + " ";
+				}
+				Log.i("closest",whatdowehavehere);
+				
 				boolean found = false;
 				for (int i = 0; i < closest.size() && !found; i++) {
 					if (demo.deepContains(closest.get(i).equation)) {
 						found = true;
 						Log.i("drag","no Move");
 					} else {
+						
 						found = closest.get(i).tryInsert(dragging);
+						
 						if (dragging.demo.parent == null){
 							@SuppressWarnings("unused")
 							int dbg = 0;
@@ -225,6 +235,7 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 					}
 				}
 				if (stupid.lastPoint.size()==0){
+					@SuppressWarnings("unused")
 					int debug =5;
 				}
 				if ((dragging.add) &&
@@ -321,7 +332,6 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 			}
 		}
 		selectingSet = new HashSet<Equation>();
-
 	}
 
 }
