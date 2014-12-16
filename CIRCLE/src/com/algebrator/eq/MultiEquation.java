@@ -11,6 +11,7 @@ import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 public class MultiEquation extends FlexEquation implements MultiDivSuperEquation {
 
@@ -38,16 +39,20 @@ public class MultiEquation extends FlexEquation implements MultiDivSuperEquation
 	public boolean onTop(Equation equation){
 		boolean currentTop= true;
 		Equation current = equation;
+		String debug = current.hashCode() + ", ";
 		while (true){
-			//TODO if current is an EqualsEquation Error out
-			//TODO if we hit something that is not a div or multi error out
-			if (current.parent.equals(this)){
+			
+			if (current.equals(this)){
 				return currentTop;
 			}
 			if (current.parent instanceof DivEquation){
 				currentTop = ((DivEquation)current.parent).onTop(current) == currentTop;
 			}
 			current = current.parent;
+			if (current == null){
+				Log.i("bad",debug + " this is: " + this.hashCode());
+			}
+			debug += current.hashCode()+",";
 		}
 	}
 
@@ -57,6 +62,5 @@ public class MultiEquation extends FlexEquation implements MultiDivSuperEquation
 
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
-		// TODO Auto-generated constructor stub
 	}
 }

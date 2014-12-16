@@ -119,17 +119,24 @@ public class DivEquation extends FixEquation implements MultiDivSuperEquation {
 		}
 		return totalHeight;
 	}
+	
+	@Override
+	public boolean remove(Object e) {
+		if (e instanceof Equation && this.contains(e)){
+			remove(indexOf(e));
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public Equation remove(int pos) {
 		if (pos == 0) {
 			Equation result = get(0);
-			set(0, new NumConstEquation("1", owner));
+			this.get(0).replace(new NumConstEquation("1", owner));
 			return result;
 		} else if (pos == 1) {
-			parent.set(parent.indexOf(this), get(0));
-			parent = null;
-			set(0, new NumConstEquation("1", owner));
+			this.replace(get(0));
 			return this;
 		}
 		return parent;

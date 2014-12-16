@@ -31,6 +31,8 @@ abstract public class Equation extends ArrayList<Equation> {
 	public ArrayList<Point> lastPoint = new ArrayList<Point>();
 	protected int myWidth;
 	protected int myHeight;
+	private int id;
+	private static int idBacker=0;
 	
 
 	public void setDisplay(String display) {
@@ -43,6 +45,7 @@ abstract public class Equation extends ArrayList<Equation> {
 
 	public Equation(SuperView owner2) {
 		owner = owner2;
+		id = idBacker++;
 
 		textPaint = new Paint();
 		textPaint.setTextSize(30);
@@ -165,15 +168,16 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 
 	public boolean deepContains(Equation equation) {
-		if (contains(equation)) {
-			return true;
-		}
-		for (int i = 0; i < size(); i++) {
-			if (get(i).deepContains(equation)) {
+		Equation current = equation;
+		while (true){
+			if (current.equals(this)){
 				return true;
+			}if (current.parent == null){
+				return false;
+			}else{
+				current = current.parent;
 			}
 		}
-		return false;
 	}
 
 	public float measureHeight(){
@@ -258,6 +262,10 @@ abstract public class Equation extends ArrayList<Equation> {
 		// TODO slow
 		Equation at = this;
 		while (true) {
+			if (at==null){
+				@SuppressWarnings("unused")
+				int dug = 1+1;
+			}
 			if (at.deepContains(eq)) {
 				return at;
 			} else {
@@ -287,7 +295,7 @@ abstract public class Equation extends ArrayList<Equation> {
 	public boolean addContain(Equation equation) {
 		Equation current = equation;
 		while (true) {
-			 if (!(current instanceof AddEquation || current instanceof EqualsEquation || current instanceof  LeafEquation)) {
+			 if (!(current instanceof AddEquation || current instanceof EqualsEquation || current.equals(equation))) {
 				return false;
 			} else if (current.equals(this)) {
 				return true;
@@ -316,7 +324,7 @@ abstract public class Equation extends ArrayList<Equation> {
 	public boolean DivMultiContain(Equation equation) {
 		Equation current = equation;
 		while (true) {
-			 if (!(current instanceof MultiDivSuperEquation || current instanceof EqualsEquation || current instanceof  LeafEquation)) {
+			 if (!(current instanceof MultiDivSuperEquation || current instanceof EqualsEquation || current.equals(equation))) {
 				return false;
 			} else if (current.equals(this)) {
 				return true;
@@ -326,28 +334,40 @@ abstract public class Equation extends ArrayList<Equation> {
 		}
 	}
 
-	@Override
-	public boolean equals(Object x) {
-		return this == x;
-	}
-
 	public void replace(Equation eq) {
 		int index = parent.indexOf(this);
 		this.parent.set(index, eq);
 		eq.parent = this.parent;
-		eq.setSelected(true);
+		if (this.selected){
+			eq.setSelected(true);
+		}
 
 		if (this instanceof LeafEquation && eq instanceof LeafEquation) {
 			((LeafEquation) eq).negative = ((LeafEquation) this).negative;
 			// TODO parathesis?
 		}
 	}
+	
+	@Override
+	public boolean equals(Object other){
+		if (other instanceof Equation){
+			return ((Equation)other).hashCode() == hashCode();
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode(){
+		return id;
+	}
 
 	public void remove() {
+		//TODO if we kill the selected we should handle that
 		
 		if (parent instanceof EqualsEquation){
 			int myIndex = parent.indexOf(this);
 			parent.remove(this);
+			//TODO this is only sort right
 			NumConstEquation num = new NumConstEquation("0", owner);
 			parent.add(myIndex,num);
 		}else{
@@ -385,11 +405,6 @@ abstract public class Equation extends ArrayList<Equation> {
 		return false;
 	}
 
-	public Equation pop() {
-		remove();
-		return this;
-	}
-
 	public void isDemo(boolean b) {
 		if (b){
 			if (owner.demo !=null){
@@ -405,16 +420,15 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 
 	public int side() {
-		Equation at = this.parent;
-		while (!(at instanceof EqualsEquation)){
-			at = at.parent;
-		}
-		return ((EqualsEquation)at).side(this);
+		return getEquals().side(this);
 	}
 	
 	public enum Op {ADD,DIV,MULTI}
 	
 	boolean tryOp(DragEquation dragging,boolean right, Op op){
+		if (parent.indexOf(this) == -1){
+			Log.i("","dead on arival");
+		}
 		boolean can = false;
 		if (op == Op.ADD){
 			can = CanAdd(dragging);
@@ -425,11 +439,12 @@ abstract public class Equation extends ArrayList<Equation> {
 		}
 		
 		if (can){
-			if (side() != dragging.demo.side()){
+			if (op == Op.ADD && side() != dragging.demo.side()){
 				dragging.demo.negative = !dragging.demo.negative;
 			}
 			dragging.demo.remove();
-			if (parent instanceof AddEquation){
+			if ((parent instanceof AddEquation && op == Op.ADD) || 
+					(parent instanceof MultiEquation && op == Op.MULTI)){
 				int myIndex = parent.indexOf(this);
 				if (dragging.demo.x < x){
 					parent.add(myIndex+1,dragging.demo);
@@ -445,33 +460,35 @@ abstract public class Equation extends ArrayList<Equation> {
 					newEq = new DivEquation(owner);
 				}else if (op == Op.MULTI){
 					newEq = new MultiEquation(owner);
-				}else{
-					//ERROR
 				}
 				
 				if (oldEq.parentheses){
 					oldEq.parentheses = false;
 					newEq.parentheses = true;
 				}
-				oldEq.replace(newEq);
-				if (right){
-					newEq.add(dragging.demo);
-					newEq.add(oldEq);
+				if (op != Op.DIV){
+					
+					oldEq.replace(newEq);
+					if (right){
+						newEq.add(dragging.demo);
+						newEq.add(oldEq);
+					}else{
+						newEq.add(oldEq);
+						newEq.add(dragging.demo);
+					}
 				}else{
+					oldEq.replace(newEq);
 					newEq.add(oldEq);
 					newEq.add(dragging.demo);
 				}
+				
 			}
 			return true;
 		}
 		if (parent instanceof EqualsEquation){
 			return false;
 		}
-		if (right){
-			return parent.tryOp(dragging,right, op);
-		}else{
-			return parent.tryOp( dragging, right, op);
-		}
+		return parent.tryOp( dragging, right, op);
 	}
 	
 	private boolean CanAdd(DragEquation dragging) {
@@ -505,18 +522,25 @@ abstract public class Equation extends ArrayList<Equation> {
 		// if these are in the same multi block
 		if (lcc instanceof MultiDivSuperEquation && lcc.DivMultiContain(this) && lcc.DivMultiContain(dragging.demo)){
 				MultiDivSuperEquation lccmdse = (MultiDivSuperEquation) lcc;
-				return (lccmdse.onTop(this) == lccmdse.onTop(dragging.demo) ^ (!multi) );
+				return ((lccmdse.onTop(this) == lccmdse.onTop(dragging.demo)) != (!multi) );
 		}
 		// if they are only div/multi away form the equals
 		if (lcc instanceof EqualsEquation){
 			EqualsEquation ee = (EqualsEquation) lcc;
 			if (ee.DivMultiContain(dragging.demo) && ee.DivMultiContain(this)){
 			
-			MultiDivSuperEquation myTop = (MultiDivSuperEquation) ee
-					.get(ee.side(this));
-			MultiDivSuperEquation eqTop = (MultiDivSuperEquation) ee
-					.get(ee.side(dragging.demo));
-			return (myTop.onTop(this) != eqTop.onTop(dragging.demo) ^ (!multi));
+			// 1*2=_ the _ on top and multiDivContained by the equals	
+			boolean myTop=true;
+			if (ee.get(ee.side(this)) instanceof MultiDivSuperEquation){
+				myTop= ((MultiDivSuperEquation) ee
+					.get(ee.side(this))).onTop(this);
+			}
+			boolean eqTop=true;
+			if (ee.get(ee.side(dragging.demo)) instanceof MultiDivSuperEquation){
+				eqTop= ((MultiDivSuperEquation) ee
+					.get(ee.side(dragging.demo))).onTop(dragging.demo);
+			}
+			return ((myTop != eqTop) != (!multi));
 		}
 		}
 		return false;

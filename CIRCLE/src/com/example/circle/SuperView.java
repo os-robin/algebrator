@@ -212,18 +212,24 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 						event.getX());
 				boolean found = false;
 				for (int i = 0; i < closest.size() && !found; i++) {
-					if (demo.deepContains(closest.get(i).equation) || demo.equals(closest.get(i).equation)) {
+					if (demo.deepContains(closest.get(i).equation)) {
 						found = true;
 						Log.i("drag","no Move");
 					} else {
 						found = closest.get(i).tryInsert(dragging);
+						if (dragging.demo.parent == null){
+							@SuppressWarnings("unused")
+							int dbg = 0;
+							Log.i("weee","I am null!");
+						}
 					}
 				}
 				if (stupid.lastPoint.size()==0){
 					int debug =5;
 				}
-				if ((dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x)
-					|| (dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x)){
+				if ((dragging.add) &&
+						((dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x)
+					|| (dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x))){
 					dragging.eq.negative = ! dragging.eq.negative;
 				}
 

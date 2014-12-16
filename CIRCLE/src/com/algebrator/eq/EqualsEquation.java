@@ -11,7 +11,7 @@ public class EqualsEquation extends FixEquation {
 	
 	public EqualsEquation(SuperView owner) {
 		super(owner);
-		display ="=";
+		display = "=";
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
 	}
@@ -25,10 +25,6 @@ public class EqualsEquation extends FixEquation {
 		}
 		// else error out
 		return -1;
-	}
-
-	public static int otherSide(int side) {
-		return (side ==1?0:1);
 	}
 
 	@Override
