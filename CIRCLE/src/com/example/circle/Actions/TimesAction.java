@@ -14,34 +14,37 @@ public class TimesAction extends Action {
 
 	@Override
 	public void act() {
-		if (emilyView.selected instanceof MultiEquation) {
-			Equation oldEq = emilyView.selected;
-			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
-			oldEq.add(newEq);
-			newEq.setSelected(true);
+		if (emilyView.selected != null) {
+			if (emilyView.selected instanceof MultiEquation) {
+				Equation oldEq = emilyView.selected;
+				PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
+				oldEq.add(newEq);
+				newEq.setSelected(true);
 
-		} else
+			} else
 
-		if (emilyView.selected.parent instanceof MultiEquation) {
-			Equation oldEq = emilyView.selected.parent;
-			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
-			oldEq.add(newEq);
-			newEq.setSelected(true);
-		}
-
-		else {
-			Equation oldEq = emilyView.selected;
-			MultiEquation newEq = new MultiEquation(emilyView);
-			if (oldEq.parentheses){
-				oldEq.parentheses = false;
-				newEq.parentheses = true;
+			if (emilyView.selected.parent instanceof MultiEquation) {
+				Equation oldEq = emilyView.selected.parent;
+				PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
+				oldEq.add(newEq);
+				newEq.setSelected(true);
 			}
-			oldEq.replace(newEq);
-			newEq.add(oldEq);
 
-			PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
-			newEq.add(rightAdd);
-			rightAdd.setSelected(true);
+			else {
+				Equation oldEq = emilyView.selected;
+				MultiEquation newEq = new MultiEquation(emilyView);
+				if (oldEq.parentheses) {
+					oldEq.parentheses = false;
+					newEq.parentheses = true;
+				}
+				oldEq.replace(newEq);
+				newEq.add(oldEq);
+
+				PlaceholderEquation rightAdd = new PlaceholderEquation(
+						emilyView);
+				newEq.add(rightAdd);
+				rightAdd.setSelected(true);
+			}
 		}
 	}
 }

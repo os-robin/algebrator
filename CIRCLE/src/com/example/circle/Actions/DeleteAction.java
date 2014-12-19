@@ -16,6 +16,7 @@ public class DeleteAction extends Action {
 
 	@Override
 	public void act() {
+		Equation target = emilyView.selected;
 		if (emilyView.selected instanceof NumConstEquation) {
 			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
 				((NumConstEquation) emilyView.selected).setDisplay( (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
@@ -35,13 +36,20 @@ public class DeleteAction extends Action {
 		
 		else if (emilyView.selected instanceof PlaceholderEquation){
 			emilyView.selected.remove();
+			if (target.isSelected()){
+				target.setSelected(false);
+			}
 		}
 		
 		else if (!(emilyView.selected instanceof EqualsEquation)){
 			Equation oldEq =  emilyView.selected;
 			PlaceholderEquation temp = new PlaceholderEquation(emilyView);
 			oldEq.replace(temp);
+			if (target.isSelected()){
+				target.setSelected(false);
+			}
 		}
+		
 		
 		//else if (emilyView.selected instanceof EqualsEquation){
 		//	emilyView.selected.remove();

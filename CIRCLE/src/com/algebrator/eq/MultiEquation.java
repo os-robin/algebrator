@@ -13,7 +13,7 @@ import com.example.circle.SuperView;
 import android.graphics.Canvas;
 import android.util.Log;
 
-public class MultiEquation extends FlexEquation implements MultiDivSuperEquation {
+public class MultiEquation extends Operation implements MultiDivSuperEquation {
 
 	@Override
 	public Equation copy() {
@@ -62,5 +62,19 @@ public class MultiEquation extends FlexEquation implements MultiDivSuperEquation
 
 		myWidth = DEFAULT_SIZE;
 		myHeight = DEFAULT_SIZE;
+	}
+	
+	public void tryOperator(Equation a, Equation b){
+		if (a instanceof NumConstEquation && b instanceof NumConstEquation){
+			NumConstEquation aa = (NumConstEquation)a;
+			NumConstEquation bb= (NumConstEquation)b;
+			double newValue= aa.getValue()*bb.getValue();
+			NumConstEquation result = new NumConstEquation(Math.abs(newValue)+"",owner);
+			if (newValue < 0){result.negative = true;}
+			int index = Math.min(indexOf(a), indexOf(b));
+			add(index,result);
+			remove(a);
+			remove(b);
+		}
 	}
 }

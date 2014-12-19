@@ -13,7 +13,7 @@ import android.util.Log;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
-public abstract class LeafEquation extends FixEquation {
+public abstract class LeafEquation extends Equation {
 
 	public LeafEquation(SuperView owner) {
 		super(owner);
@@ -50,7 +50,7 @@ public abstract class LeafEquation extends FixEquation {
 		}
 		return result;
 	}
-
+	
 
 	@Override
 	public ArrayList<EquationDis> closest(float x, float y){
@@ -103,4 +103,6 @@ public abstract class LeafEquation extends FixEquation {
 		point.y = (int) y;
 		lastPoint.add(point);
 	}
+	
+	public void tryOperator(Equation a, Equation b){}
 }

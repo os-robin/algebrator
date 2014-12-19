@@ -109,7 +109,7 @@ abstract public class Equation extends ArrayList<Equation> {
 		return result;
 	}
 
-	public abstract boolean isFlex();
+	//public abstract boolean isFlex();
 
 	public float measureWidth(){
 		float totalWidth = (size() - 1) * myWidth;
@@ -224,6 +224,19 @@ abstract public class Equation extends ArrayList<Equation> {
 		return result;
 	}
 
+	public void tryOperator(float x, float y) {
+		 Object[] ons = onAny(x, y).toArray();
+		 if (ons.length==2){
+			 if (((Equation)ons[0]).parent == ((Equation)ons[1]).parent){
+				 ((Equation)ons[0]).parent.tryOperator((Equation)ons[0],(Equation)ons[1]);
+			 }else{
+				 Log.e("","ons have different parents");
+			 }
+		 }
+	}
+	
+	public abstract void tryOperator(Equation equation, Equation equation2);
+
 	protected Paint getPaint() {
 		Paint temp;
 		if (parent!= null){
@@ -333,18 +346,60 @@ abstract public class Equation extends ArrayList<Equation> {
 			}
 		}
 	}
+	
+	@Override
+	public boolean remove(Object e) {
+		if (e instanceof Equation && this.contains(e)){
+			remove(indexOf(e));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Equation remove(int pos) {
+		Equation result =super.remove(pos);
+		if (result != null){
+			if (this.size() == 1) {
+				this.replace(get(0));
+			} else if (size() == 0) {
+				remove();
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public Equation set(int index, Equation eq){
+		Equation result = super.set(index, eq);
+		eq.parent =this;
+		
+		return result;
+		
+	}
+	
+	public boolean same(Equation eq){
+		for (Equation e: eq){
+			boolean any = false;
+			for (Equation ee: this){
+				if (ee.same(e)){
+					any = true;
+					break;
+				}
+			}
+			if (!any){
+				return false;
+			}
+		}
+		return true;
+		
+	}
 
 	public void replace(Equation eq) {
 		int index = parent.indexOf(this);
 		this.parent.set(index, eq);
-		eq.parent = this.parent;
-		if (this.selected){
+		if (this.isSelected()){
 			eq.setSelected(true);
-		}
-
-		if (this instanceof LeafEquation && eq instanceof LeafEquation) {
-			((LeafEquation) eq).negative = ((LeafEquation) this).negative;
-			// TODO parathesis?
 		}
 	}
 	
@@ -362,48 +417,33 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 
 	public void remove() {
-		//TODO if we kill the selected we should handle that
-		
-		if (parent instanceof EqualsEquation){
-			int myIndex = parent.indexOf(this);
-			parent.remove(this);
-			//TODO this is only sort right
-			NumConstEquation num = new NumConstEquation("0", owner);
-			parent.add(myIndex,num);
-		}else{
-			parent.remove(this);
-			if (parent.size() == 1) {
-				parent.replace(parent.get(0));
-			} else if (parent.size() == 0) {
-				parent.remove();
-			}
-		}
+		parent.remove(this);
 	}
 
-	public boolean canPop() {
-		// we can remove if it is equals equations all the way up
-		Equation at = parent;
-		while (at instanceof AddEquation || at instanceof EqualsEquation){
-			if (at instanceof EqualsEquation){
-				return true;
-			}
-			at = at.parent;
-		}
-		
-		// or if multiDivSupers all the way up
-		// and if not like a/(b/c) can't remove b ... but we will let you
-		// if a/(b/c) you can drag c to be (a*c)/b
-		
-		at = parent;
-		while (at instanceof MultiDivSuperEquation || at instanceof EqualsEquation){
-			if (at instanceof EqualsEquation){
-				return true;
-			}
-			at = at.parent;
-		}
-		
-		return false;
-	}
+//	public boolean canPop() {
+//		// we can remove if it is equals equations all the way up
+//		Equation at = parent;
+//		while (at instanceof AddEquation || at instanceof EqualsEquation){
+//			if (at instanceof EqualsEquation){
+//				return true;
+//			}
+//			at = at.parent;
+//		}
+//		
+//		// or if multiDivSupers all the way up
+//		// and if not like a/(b/c) can't remove b ... but we will let you
+//		// if a/(b/c) you can drag c to be (a*c)/b
+//		
+//		at = parent;
+//		while (at instanceof MultiDivSuperEquation || at instanceof EqualsEquation){
+//			if (at instanceof EqualsEquation){
+//				return true;
+//			}
+//			at = at.parent;
+//		}
+//		
+//		return false;
+//	}
 
 	public void isDemo(boolean b) {
 		if (b){
@@ -444,16 +484,20 @@ abstract public class Equation extends ArrayList<Equation> {
 			if (op == Op.ADD && side() != dragging.demo.side()){
 				dragging.demo.negative = !dragging.demo.negative;
 			}
-			dragging.demo.remove();
+			
 			if ((parent instanceof AddEquation && op == Op.ADD) || 
 					(parent instanceof MultiEquation && op == Op.MULTI)){
+				dragging.demo.justRemove();
 				int myIndex = parent.indexOf(this);
+				Log.i("","added to existing");
 				if (dragging.demo.x < x){
 					parent.add(myIndex+1,dragging.demo);
 				}else{
 					parent.add(myIndex,dragging.demo);
 				}
 			}else{
+				dragging.demo.remove();
+				Log.i("","added to new");
 				Equation oldEq = this;
 				Equation newEq = null;
 				if (op == Op.ADD){
@@ -493,6 +537,14 @@ abstract public class Equation extends ArrayList<Equation> {
 		return parent.tryOp( dragging, right, op);
 	}
 	
+	public void justRemove() {
+		parent.justRemove(this);
+	}
+
+	public void justRemove(Equation equation) {
+		super.remove(equation);
+	}
+
 	private boolean CanAdd(DragEquation dragging) {
 		Equation lcc = lowestCommonContainer(dragging.demo);
 		
@@ -517,7 +569,22 @@ abstract public class Equation extends ArrayList<Equation> {
 	public boolean canDiv(DragEquation dragging) {
 		return canMultiDiv(dragging,false);
 	}
-
+	
+	@Override
+	public String toString(){
+		String internals = "";
+		for (int i=0;i<size();i++){
+			internals+=get(i).toString();
+			if (i!=size()-1){
+				internals+=",";
+			}
+		}
+		if (internals!=""){
+			internals = "("+internals+")";
+		}
+		return display + internals;
+	}
+	
 	private boolean canMultiDiv(DragEquation dragging, boolean multi) {
 		boolean result = false;
 		Equation lcc = lowestCommonContainer(dragging.demo);

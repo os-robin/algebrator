@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
+import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.text.TextPaint;
@@ -27,7 +28,7 @@ import com.algebrator.eq.DragEquation;
 import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
-import com.algebrator.eq.FlexEquation;
+import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
 
 public abstract class SuperView extends SurfaceView implements Runnable,
@@ -172,106 +173,162 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 		}
 
 		stupid.draw(canvas, width / 2, height / 3);
+		Log.i("",stupid.toString());
 	}
 
 	public HashSet<Equation> selectingSet = new HashSet<Equation>();
 	public boolean startedInBox;
 	public boolean inBox;
+	public boolean startedOne;
+	private long startTime;
+	private long tapTime = 1000;
+	private long lastTapTime;
+	private long doubleTapSpacing=1000;
+	private Point lastTapPoint;
+	private float doubleTapDistance = 20;
 
 	@Override
 	public synchronized boolean onTouch(View view, MotionEvent event) {
-		// we need to know if they started in the box
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			startedInBox = stupid.inBox(event.getX(), event.getY());
-			inBox = startedInBox;
-		}
+		// if its one finger:
+		if (event.getPointerCount() == 1) {
 
-		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			// check if they selected anything
-			if (inBox) {
-				HashSet<Equation> ons = stupid
-						.onAny(event.getX(), event.getY());
-				selectingSet.addAll(ons);
+			// we need to know if they started in the box
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				startedInBox = stupid.inBox(event.getX(), event.getY());
+				inBox = startedInBox;
+				startedOne = true;
+				startTime = System.currentTimeMillis();
 			}
+			if (startedOne) {
+				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+					// check if they selected anything
+					if (inBox) {
+						HashSet<Equation> ons = stupid.onAny(event.getX(),
+								event.getY());
+						selectingSet.addAll(ons);
+					}
 
-			// see if they left the box
-			if (inBox && !stupid.inBox(event.getX(), event.getY())) {
-				inBox = false;
-				resolveSelected();
-				if (selected.canPop()) {
-					selected.isDemo(true);
-					dragging = new DragEquation(selected);
-					dragging.eq.x = event.getX();
-					dragging.eq.y = event.getY();
-				}
-			}
-
-			// if we are dragging something move it
-			if (inBox == false && dragging != null) {
-				ArrayList<EquationDis> closest = stupid.closest(event.getX(),
-						event.getY());
-				
-				//debug
-				String whatdowehavehere = "";
-				for (int i=0;i<closest.size();i++){
-					whatdowehavehere+= closest.get(i).equation.hashCode() + "|" + closest.get(i).equation.getDisplay(0) + " ";
-				}
-				Log.i("closest",whatdowehavehere);
-				
-				boolean found = false;
-				for (int i = 0; i < closest.size() && !found; i++) {
-					if (demo.deepContains(closest.get(i).equation)) {
-						found = true;
-						Log.i("drag","no Move");
-					} else {
-						
-						found = closest.get(i).tryInsert(dragging);
-						
-						if (dragging.demo.parent == null){
-							@SuppressWarnings("unused")
-							int dbg = 0;
-							Log.i("weee","I am null!");
+					// see if they left the box
+					if (inBox && !stupid.inBox(event.getX(), event.getY())) {
+						inBox = false;
+						resolveSelected();
+						if (selected != null) {
+							//if (selected.canPop()) {
+								selected.isDemo(true);
+								dragging = new DragEquation(selected);
+								dragging.eq.x = event.getX();
+								dragging.eq.y = event.getY();
+							//}
 						}
 					}
-				}
-				if (stupid.lastPoint.size()==0){
-					@SuppressWarnings("unused")
-					int debug =5;
-				}
-				if ((dragging.add) &&
-						((dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x)
-					|| (dragging.eq.x < stupid.lastPoint.get(0).x &&  event.getX() >= stupid.lastPoint.get(0).x))){
-					dragging.eq.negative = ! dragging.eq.negative;
+
+					// if we are dragging something move it
+					if (inBox == false && dragging != null) {
+						ArrayList<EquationDis> closest = stupid.closest(
+								event.getX(), event.getY());
+
+						// debug
+						String whatdowehavehere = "";
+						for (int i = 0; i < closest.size(); i++) {
+							whatdowehavehere += closest.get(i).equation
+									.hashCode()
+									+ "|"
+									+ closest.get(i).equation.getDisplay(0)
+									+ " ";
+						}
+						Log.i("closest", whatdowehavehere);
+
+						boolean found = false;
+						for (int i = 0; i < closest.size() && !found; i++) {
+							if (demo.deepContains(closest.get(i).equation)) {
+								found = true;
+								Log.i("drag", "no Move");
+							} else {
+
+								found = closest.get(i).tryInsert(dragging);
+
+								if (dragging.demo.parent == null) {
+									@SuppressWarnings("unused")
+									int dbg = 0;
+									Log.i("weee", "I am null!");
+								}
+							}
+						}
+						if ((dragging.add)
+								&& ((dragging.eq.x < stupid.lastPoint.get(0).x && event
+										.getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
+										.get(0).x && event.getX() >= stupid.lastPoint
+										.get(0).x))) {
+							dragging.eq.negative = !dragging.eq.negative;
+						}
+
+						dragging.eq.x = event.getX();
+						dragging.eq.y = event.getY();
+					}
 				}
 
-				dragging.eq.x = event.getX();
-				dragging.eq.y = event.getY();
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					// did we click anything?
+					endOnePointer(event);
+					long now = System.currentTimeMillis();
+					long totalTime = now - startTime;
+					if (totalTime < tapTime){
+						long tapSpacing = now - lastTapTime;
+						Point tapPoint = new Point();
+						tapPoint.x = (int) event.getX();
+						tapPoint.y = (int) event.getY();
+						if (tapSpacing < doubleTapSpacing && dis(tapPoint,lastTapPoint)< doubleTapDistance){
+							Log.i("","doubleTap! dis: " + dis(tapPoint,lastTapPoint) + " time: " +totalTime + " spacing: "+tapSpacing);
+							stupid.tryOperator(event.getX(),
+									event.getY());
+							
+							lastTapTime = 0;
+						}else{
+						lastTapTime = now;
+						lastTapPoint = tapPoint;
+						}
+					}
+					
+				}
+			}
+		} else if (event.getPointerCount() == 2) {
+			if (startedOne) {
+				endOnePointer(event);
+			} else {
+				startedOne = false;
 			}
 		}
-
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			// did we click anything?
-			if (!startedInBox) {
-				for (int i = 0; i < buttons.size(); i++) {
-					buttons.get(i).click(event);
-
-				}
-			}
-			if (inBox) {
-				// what did we select?
-				HashSet<Equation> ons = stupid
-						.onAny(event.getX(), event.getY());
-				selectingSet.addAll(ons);
-				resolveSelected();
-			}
-
-			// we are done dragging
-			dragging = null;
-			if (demo != null) {
-				demo.isDemo(false);
-			}
-		}
+		Log.i("",stupid.toString());
 		return true;
+	}
+
+	private float dis(Point a, Point b) {
+		// TODO Auto-generated method stub
+		double dx = a.x -b.x;
+		double dy = a.y - b.y;
+		return (float) Math.sqrt((dx*dx)+(dy*dy));
+	}
+
+	private void endOnePointer(MotionEvent event) {
+		if (!startedInBox) {
+			for (int i = 0; i < buttons.size(); i++) {
+				buttons.get(i).click(event);
+
+			}
+		}
+		if (inBox) {
+			// what did we select?
+			HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
+			selectingSet.addAll(ons);
+			resolveSelected();
+		}
+
+		// we are done dragging
+		dragging = null;
+		if (demo != null) {
+			demo.isDemo(false);
+		}
+
 	}
 
 	private void resolveSelected() {
@@ -286,7 +343,7 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 			}
 		}
 
-		if (lcp instanceof FlexEquation) {
+		if (!(lcp instanceof LeafEquation) && lcp != null ) {
 			// are they all next to each other?
 			int[] indexs = new int[selectingSet.size()];
 			int at = 0;
@@ -315,7 +372,7 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 					// new equation
 
 					for (Equation eq : selectingSet) {
-						lcp.remove(eq);
+						lcp.justRemove(eq);
 						toSelect.add(eq);
 					}
 					// insert the new equation in to lcp
@@ -329,9 +386,9 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 		} else {
 			if (lcp != null) {
 				lcp.setSelected(true);
+			} else {
 			}
 		}
 		selectingSet = new HashSet<Equation>();
 	}
-
 }

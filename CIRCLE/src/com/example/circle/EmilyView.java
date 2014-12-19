@@ -14,7 +14,6 @@ import android.view.View;
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
-import com.algebrator.eq.FlexEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.example.circle.Actions.Action;

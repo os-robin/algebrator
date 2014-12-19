@@ -20,4 +20,12 @@ public class VarEquation extends LeafEquation {
 
 		return result;
 	}
+	
+	@Override
+	public boolean same(Equation eq){
+		if (!(eq instanceof LeafEquation))
+			return false;
+		LeafEquation e = (LeafEquation)eq;
+		return display.equals(e.display);
+	}
 }

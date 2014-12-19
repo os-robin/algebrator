@@ -7,7 +7,7 @@ import android.graphics.Paint.Align;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
-public class EqualsEquation extends FixEquation {
+public class EqualsEquation extends Equation {
 	
 	public EqualsEquation(SuperView owner) {
 		super(owner);
@@ -57,4 +57,24 @@ public class EqualsEquation extends FixEquation {
 		return true;
 	}
 
+	public void tryOperator(Equation a, Equation b){}
+
+	
+	@Override
+	public Equation remove(int pos) {
+		Equation result = get(pos);
+		super.justRemove(get(pos));
+		//TODO this is only sort right
+		NumConstEquation num = new NumConstEquation("0", owner);
+		add(pos,num);
+		return result;
+	}
+	
+	@Override
+	public void justRemove(Equation equation) {
+		int pos = indexOf(equation);
+		super.justRemove(equation);
+		NumConstEquation num = new NumConstEquation("0", owner);
+		add(pos,num);
+	}
 }

@@ -3,16 +3,13 @@ package com.algebrator.eq;
 import java.util.ArrayList;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.Paint.Align;
+import android.util.Log;
 
-import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
-public class DivEquation extends FixEquation implements MultiDivSuperEquation {
+public class DivEquation extends Operation implements MultiDivSuperEquation {
 	private final int BUFFER = 15;
 
 	@Override
@@ -32,6 +29,9 @@ public class DivEquation extends FixEquation implements MultiDivSuperEquation {
 
 	@Override
 	public boolean onTop(Equation eq) {
+		if (equals(eq)) {
+			return true;
+		}
 		if (eq.equals(get(0))) {
 			return true;
 		}
@@ -50,6 +50,7 @@ public class DivEquation extends FixEquation implements MultiDivSuperEquation {
 				return !next.onTop(eq);
 			}
 		}
+		Log.e("123","onTop for something this does not contain ");
 		return false;
 	}
 
@@ -119,10 +120,10 @@ public class DivEquation extends FixEquation implements MultiDivSuperEquation {
 		}
 		return totalHeight;
 	}
-	
+
 	@Override
 	public boolean remove(Object e) {
-		if (e instanceof Equation && this.contains(e)){
+		if (e instanceof Equation && this.contains(e)) {
 			remove(indexOf(e));
 			return true;
 		}
@@ -137,9 +138,28 @@ public class DivEquation extends FixEquation implements MultiDivSuperEquation {
 			return result;
 		} else if (pos == 1) {
 			this.replace(get(0));
-			return this;
+			return get(1);
 		}
-		return parent;
+		return null;
+	}
+	
+	@Override
+	public boolean same(Equation eq){
+		if (!(eq instanceof DivEquation))
+			return false;
+		DivEquation e = (DivEquation)eq;
+		return get(0).same(e.get(0)) && get(1).same(e.get(1));
+	}
+	
+	public void tryOperator(Equation a, Equation b){
+		if (a instanceof NumConstEquation && b instanceof NumConstEquation){
+			NumConstEquation aa = (NumConstEquation)a;
+			NumConstEquation bb= (NumConstEquation)b;
+			double newValue= (indexOf(aa) < indexOf(bb)?aa.getValue()/bb.getValue():bb.getValue()/aa.getValue());
+			NumConstEquation result = new NumConstEquation(Math.abs(newValue)+"",owner);
+			if (newValue < 0){result.negative = true;}
+			this.replace(result);
+		}
 	}
 
 }
