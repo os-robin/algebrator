@@ -42,11 +42,11 @@ public class AddEquation extends Operation {
 
 		empty = new NumConstEquation("0", owner);
 	}
-
 	public void tryOperator(Equation a, Equation b) {
 		if (indexOf(a) != Math.min(indexOf(a), indexOf(b))) {
 			Log.e("", "noo good");
 		}
+		int at = Math.min(indexOf(a), indexOf(b));
 
 		while (a instanceof AddEquation) {
 			a = a.get(a.size() - 1);
@@ -55,87 +55,98 @@ public class AddEquation extends Operation {
 			b = b.get(b.size() - 1);
 		}
 		Equation result = null;
-		if (a instanceof NumConstEquation && b instanceof NumConstEquation) {
-			NumConstEquation aa = (NumConstEquation) a;
-			NumConstEquation bb = (NumConstEquation) b;
-			double newValue = aa.getValue() + bb.getValue();
-			result = new NumConstEquation(Math.abs(newValue) + "", owner);
-			if (newValue < 0) {
-				result.negative = true;
-			}
+		Equation top=null;
+		Equation bottom=null;
+		Equation left = null;
+		Equation right = null;
+		
+		operateRemove(a, b);
+		
+		CountData cd1 = new CountData(a);
+		CountData cd2 = new CountData(b);
 
-		} else {
-			HashSet<CountData> counts = new HashSet<CountData>();
+		// find a common demoniator and adjust both sides acordingly
+		HashSet<Equation> commonOver = cd1.over.common(cd2.over);
+		cd1.over.remainder(commonOver);
+		cd2.over.remainder(commonOver);
 
-			for (Equation e : new Equation[] { a, b }) {
-				updateCounts(e, counts);
-			}
-			result = new MultiEquation(owner);
-			// if there is only one term #*keys...
-			if (counts.size() == 1) {
-				CountData cd = (CountData) counts.toArray()[0];
-				result.add(new NumConstEquation(cd.value + "", owner));
-				for (Equation eq : cd.key) {
-					result.add(eq);
-				}
-			} else {
-				// there must be 2
-				CountData cd1 = (CountData) counts.toArray()[0];
-				CountData cd2 = (CountData) counts.toArray()[1];
-				HashSet<Equation> common = cd1.common(cd2);
-				// if there is multiple and they have no commonality - cancel
-				if (common.size() == 0) {
-					return;
-					// if they have commonality write (X+Y)*COMMON
-				} else {
-					cd1.rem = cd1.remainder(common);
-					cd2.rem = cd2.remainder(common);
-					result = new MultiEquation(owner);
-					ArrayList<CountData> x = new ArrayList<CountData>();
-					x.add(cd1);
-					x.add(cd2);
-					AddEquation add = new AddEquation(owner);
-					for (CountData cd : x) {
-						if (cd.rem.size() == 0) {
-							NumConstEquation num = new NumConstEquation(cd.value
-									+ "", owner);
-							add.add(num);
-						} else {
-							MultiEquation me = new MultiEquation(owner);
-							if (cd.value != 1) {
-								NumConstEquation num = new NumConstEquation(
-										cd.value + "", owner);
-								me.add(num);
-							}
-							for (Equation e : cd.rem) {
-								me.add(e);
-							}
-							add.add(me);
-						}
-					}
-					result.add(add);
-					// now we add common:
-					if (common.size() == 1) {
-						result.add((Equation) common.toArray()[0]);
-					} else {
-						MultiEquation me = new MultiEquation(owner);
-						for (Equation e : common) {
-							me.add(e);
-						}
-						result.add(me);
-					}
-				}
-			}
+		cd1.key.addAll(cd2.over.rem);
+		cd1.value *= cd2.over.value;
+		cd2.key.addAll(cd1.over.rem);
+		cd2.value *= cd1.over.value;
 
+		commonOver.addAll(cd1.over.rem);
+		commonOver.addAll(cd2.over.rem);
+
+		CountData bot = new CountData();
+		bot.key = commonOver;
+		bot.value = cd1.over.value * cd2.over.value;
+
+		// if there is anything on bottom set that up
+		if (bot.value != 1 && bot.key.size() != 0) {
+			bottom = bot.toEquation(owner);
 		}
-		add(indexOf(b), result);
-		a.remove();
-		b.remove();
+
+		HashSet<Equation> common = cd1.common(cd2);
+		// we need to figure out the bottom
+
+		cd1.remainder(common);
+		cd2.remainder(common);
+		
+		top = new AddEquation(owner);
+		Equation e1 = cd1.remToEquation(owner);
+		Equation e2 = cd2.remToEquation(owner);
+		
+		if ((e1 instanceof NumConstEquation )&&(e2 instanceof NumConstEquation)){
+			double addTo = ((NumConstEquation)e1).getValue() + ((NumConstEquation)e2).getValue();
+			left = new NumConstEquation (addTo +"",owner);
+		}else{
+			left = new AddEquation(owner);
+			left.add(e1);
+			left.add(e2);
+		}
+		
+		
+		if (common.size() != 0){
+			// add common
+			if (common.size()==1){
+				right = (Equation) common.toArray()[0];
+			}else{
+				right = new MultiEquation(owner);
+				for (Equation e: common){
+					right.add(e);
+				}
+			}
+			top = new MultiEquation(owner);
+			top.add(left);
+			top.add(right);
+		}else{
+			top = left;
+		}
+
+		if (bottom != null){
+			result = new DivEquation(owner);
+			result.add(top);
+			result.add(bottom);
+		}else{
+			result = top;
+		}
+		
+		add(at, result);
+	}
+
+	private void operateRemove(Equation a, Equation b) {
+		for (Equation e : new Equation[] { a, b }) {
+			if (contains(e)) {
+				e.justRemove();
+			} else {
+				e.remove();
+			}
+		}
 	}
 
 	private CountData updateCounts(Equation e, HashSet<CountData> counts) {
-		CountData cd = new CountData();
-		updateKey(e, cd);
+		CountData cd = new CountData(e);
 
 		boolean hasMatch = false;
 		for (CountData countData : counts) {
@@ -151,33 +162,81 @@ public class AddEquation extends Operation {
 
 	}
 
-	private void updateKey(Equation e, CountData cd) {
-		if (e instanceof MultiEquation) {
-			for (Equation ee : e) {
-				updateKey(ee, cd);
-			}
-		} else if (e instanceof LeafEquation) {
-			if (e instanceof NumConstEquation) {
-				NumConstEquation ee = (NumConstEquation) e;
-				cd.value *= ee.getValue();
-			} else {
-				cd.key.add(e);
-			}
-		} else if (e instanceof DivEquation) {
-			Equation ee = e.copy();
-			ee.set(0, new NumConstEquation("1", owner));
-			cd.key.add(ee);
-			updateKey(e.get(0), cd);
-		}
-	}
 }
 
 class CountData {
 	public HashSet<Equation> rem;
 	public Double value = 1.0;
 	public HashSet<Equation> key = new HashSet<Equation>();
+	public CountData over = new CountData();
 
 	public CountData() {
+	}
+
+	public Equation remToEquation(SuperView owner) {
+		if (rem.size() == 0) {
+			return new NumConstEquation(value + "", owner);
+		} else if (value == 1 && rem.size() == 1) {
+			return (Equation) rem.toArray()[0];
+		} else if (value == 1) {
+			Equation result = new MultiEquation(owner);
+			for (Equation e : rem) {
+				result.add(e);
+			}
+			return result;
+		} else {
+			Equation result = new MultiEquation(owner);
+			result.add(new NumConstEquation(value + "", owner));
+			for (Equation e : rem) {
+				result.add(e);
+			}
+			return result;
+		}
+	}
+
+	public Equation toEquation(SuperView owner) {
+		if (key.size() == 0) {
+			return new NumConstEquation(value + "", owner);
+		} else if (value == 1 && key.size() == 1) {
+			return (Equation) key.toArray()[0];
+		} else if (value == 1) {
+			Equation result = new MultiEquation(owner);
+			for (Equation e : key) {
+				result.add(e);
+			}
+			return result;
+		} else {
+			Equation result = new MultiEquation(owner);
+			result.add(new NumConstEquation(value + "", owner));
+			for (Equation e : key) {
+				result.add(e);
+			}
+			return result;
+		}
+	}
+
+	public CountData(Equation e) {
+		updateKey(e);
+	}
+
+	public void updateKey(Equation e) {
+		if (e instanceof MultiEquation) {
+			for (Equation ee : e) {
+				this.updateKey(ee);
+			}
+		} else if (e instanceof LeafEquation) {
+			if (e instanceof NumConstEquation) {
+				NumConstEquation ee = (NumConstEquation) e;
+				this.value *= ee.getValue();
+			} else {
+				this.key.add(e);
+			}
+		} else if (e instanceof DivEquation) {
+			this.updateKey(e.get(0));
+			this.over.updateKey(e.get(1));
+		} else {
+			this.key.add(e);
+		}
 	}
 
 	/**
@@ -186,7 +245,7 @@ class CountData {
 	 * @param common
 	 * @return
 	 */
-	public HashSet<Equation> remainder(HashSet<Equation> common) {
+	public void remainder(HashSet<Equation> common) {
 		HashSet<Equation> result = new HashSet<Equation>();
 		for (Equation e : key) {
 			boolean pass = true;
@@ -200,7 +259,7 @@ class CountData {
 				result.add(e);
 			}
 		}
-		return result;
+		rem = result;
 	}
 
 	/**
@@ -224,6 +283,9 @@ class CountData {
 
 	public boolean matches(CountData cd) {
 		// if everything in this is the same as something in the other
+		if (key.size() != cd.key.size()) {
+			return false;
+		}
 		for (Equation e : key) {
 			boolean any = false;
 			for (Equation ee : cd.key) {
