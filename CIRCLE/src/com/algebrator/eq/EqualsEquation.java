@@ -3,13 +3,21 @@ package com.algebrator.eq;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
 public class EqualsEquation extends Equation {
-	
-	public EqualsEquation(SuperView owner) {
+
+    @Override
+    public void integrityCheck() {
+        if (size() != 2){
+            Log.e("ic", "this should always be size 2");
+        }
+    }
+
+    public EqualsEquation(SuperView owner) {
 		super(owner);
 		display = "=";
 		myWidth = DEFAULT_SIZE;

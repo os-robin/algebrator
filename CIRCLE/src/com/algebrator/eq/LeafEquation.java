@@ -15,6 +15,14 @@ import com.example.circle.SuperView;
 
 public abstract class LeafEquation extends Equation {
 
+    @Override
+    public void integrityCheck(){
+        if (size() != 0){
+            Log.e("ic","this should be size 0");
+        }
+    }
+
+
 	public LeafEquation(SuperView owner) {
 		super(owner);
 		myHeight = DEFAULT_SIZE;

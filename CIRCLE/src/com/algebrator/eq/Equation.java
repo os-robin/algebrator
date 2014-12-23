@@ -33,7 +33,8 @@ abstract public class Equation extends ArrayList<Equation> {
 	protected int myHeight;
 	private int id;
 	private static int idBacker=0;
-	
+
+    public abstract void  integrityCheck();
 
 	public void setDisplay(String display) {
 		this.display = display;
@@ -410,6 +411,16 @@ abstract public class Equation extends ArrayList<Equation> {
 		}
 		return false;
 	}
+
+    protected void operateRemove(Equation a, Equation b) {
+        for (Equation e : new Equation[] { a, b }) {
+            if (contains(e)) {
+                e.justRemove();
+            } else {
+                e.remove();
+            }
+        }
+    }
 	
 	@Override
 	public int hashCode(){
@@ -462,8 +473,15 @@ abstract public class Equation extends ArrayList<Equation> {
 	public int side() {
 		return getEquals().side(this);
 	}
-	
-	public enum Op {ADD,DIV,MULTI}
+
+    public void integrityCheckOuter() {
+        integrityCheck();
+        for (Equation e: this){
+            e.integrityCheckOuter();
+        }
+    }
+
+    public enum Op {ADD,DIV,MULTI}
 	
 	boolean tryOp(DragEquation dragging,boolean right, Op op){
 		Log.i("try",this.hashCode()+" "+ this.display);

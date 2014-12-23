@@ -10,6 +10,13 @@ import com.example.circle.SuperView;
 public class AddEquation extends Operation {
 	Equation empty;
 
+    @Override
+    public void integrityCheck(){
+        if (size() < 2){
+            Log.e("ic","this should be at least size 2");
+        }
+    }
+
 	@Override
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
@@ -28,7 +35,7 @@ public class AddEquation extends Operation {
 	public String getDisplay(int pos) {
 		if (pos >= 0 && pos < size()) {
 			if (get(pos).negative) {
-				return "–";
+				return "-";
 			}
 		}
 		return display;
@@ -43,9 +50,7 @@ public class AddEquation extends Operation {
 		empty = new NumConstEquation("0", owner);
 	}
 	public void tryOperator(Equation a, Equation b) {
-		if (indexOf(a) != Math.min(indexOf(a), indexOf(b))) {
-			Log.e("", "noo good");
-		}
+
 		int at = Math.min(indexOf(a), indexOf(b));
 
 		while (a instanceof AddEquation) {
@@ -83,7 +88,7 @@ public class AddEquation extends Operation {
 		bot.value = cd1.over.value * cd2.over.value;
 
 		// if there is anything on bottom set that up
-		if (bot.value != 1 && bot.key.size() != 0) {
+		if (bot.value != 1 || bot.key.size() != 0) {
 			bottom = bot.toEquation(owner);
 		}
 
@@ -133,16 +138,9 @@ public class AddEquation extends Operation {
 		}
 		
 		add(at, result);
-	}
-
-	private void operateRemove(Equation a, Equation b) {
-		for (Equation e : new Equation[] { a, b }) {
-			if (contains(e)) {
-				e.justRemove();
-			} else {
-				e.remove();
-			}
-		}
+        if (this.size() ==1){
+            this.replace(this.get(0));
+        }
 	}
 
 	private CountData updateCounts(Equation e, HashSet<CountData> counts) {
@@ -168,7 +166,7 @@ class CountData {
 	public HashSet<Equation> rem;
 	public Double value = 1.0;
 	public HashSet<Equation> key = new HashSet<Equation>();
-	public CountData over = new CountData();
+	public CountData over = null;
 
 	public CountData() {
 	}
@@ -216,6 +214,7 @@ class CountData {
 	}
 
 	public CountData(Equation e) {
+        over = new CountData();
 		updateKey(e);
 	}
 

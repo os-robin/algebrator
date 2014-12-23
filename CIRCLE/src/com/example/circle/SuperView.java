@@ -42,6 +42,9 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 	public EqualsEquation stupid;
 	int width;
 	int height;
+    int offsetX=0;
+    int offsetY=0;
+
 	TextPaint text = new TextPaint();
 
 	int highlight;
@@ -162,6 +165,10 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 		}
 	}
 
+    private String lastLog = "";
+
+    private float friction= 0.8f;
+
 	protected void myDraw(Canvas canvas) {
 		// canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
 		canvas.drawColor(0xFFFFFFFF, Mode.ADD);
@@ -172,11 +179,33 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 			dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
 		}
 
-		stupid.draw(canvas, width / 2, height / 3);
-		Log.i("",stupid.toString());
+        if (slidding){
+            vx *= friction;
+            vy *= friction;
+            updateOffsetX(vx);
+            updateOffsetY(vy);
+        }
+
+		stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        stupid.integrityCheckOuter();
+        if (!stupid.toString().equals(lastLog)) {
+            Log.i("", stupid.toString());
+            lastLog = stupid.toString();
+        }
 	}
 
-	public HashSet<Equation> selectingSet = new HashSet<Equation>();
+    private void updateOffsetX(float vx) {
+        float tempOffset = offsetX + vx;
+        if (Math.abs(tempOffset) < (width + stupid.measureWidth())/2 - eqDragPadding ) {
+            offsetX = (int)tempOffset;
+        }
+    }
+
+    private void updateOffsetY(float vy) {
+        offsetY += vy;
+    }
+
+    public HashSet<Equation> selectingSet = new HashSet<Equation>();
 	public boolean startedInBox;
 	public boolean inBox;
 	public boolean startedOne;
@@ -186,6 +215,16 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 	private long doubleTapSpacing=1000;
 	private Point lastTapPoint;
 	private float doubleTapDistance = 20;
+
+    //moving the whole equation
+    private float lastX;
+    private float lastY;
+    private float eqDragPadding = 25;
+
+    //
+    private boolean slidding = false;
+    private float vx = 0;
+    private float vy = 0;
 
 	@Override
 	public synchronized boolean onTouch(View view, MotionEvent event) {
@@ -198,6 +237,12 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 				inBox = startedInBox;
 				startedOne = true;
 				startTime = System.currentTimeMillis();
+                lastX = event.getX();
+                lastY = event.getY();
+                // stop stupid sliding
+                slidding = false;
+                vx =0;
+                vy =0;
 			}
 			if (startedOne) {
 				if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -265,6 +310,19 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 						dragging.eq.x = event.getX();
 						dragging.eq.y = event.getY();
 					}
+
+                    // if they are moving the equation
+                    if (!startedInBox){
+                        float dx = event.getX() -  lastX;
+                        float dy = event.getY() -  lastY;
+                        updateOffsetX(dx);
+                        updateOffsetY(dy);
+                        lastX = event.getX();
+                        lastY = event.getY();
+
+                        vx = (3f*vx + dx)/4f;
+                        vx = (3f*vx + dy)/4f;
+                    }
 				}
 
 				if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -288,6 +346,11 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 						lastTapPoint = tapPoint;
 						}
 					}
+
+                    // if we were dragging everything around
+                    if (!startedInBox) {
+                        slidding = true;
+                    }
 					
 				}
 			}

@@ -1,6 +1,7 @@
 package com.algebrator.eq;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -11,6 +12,13 @@ import com.example.circle.SuperView;
 
 public class DivEquation extends Operation implements MultiDivSuperEquation {
 	private final int BUFFER = 15;
+
+    @Override
+    public void integrityCheck(){
+        if (size() != 2){
+            Log.e("ic","this should be size 2");
+        }
+    }
 
 	@Override
 	public Equation copy() {
@@ -152,14 +160,83 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	}
 	
 	public void tryOperator(Equation a, Equation b){
-		if (a instanceof NumConstEquation && b instanceof NumConstEquation){
-			NumConstEquation aa = (NumConstEquation)a;
-			NumConstEquation bb= (NumConstEquation)b;
-			double newValue= (indexOf(aa) < indexOf(bb)?aa.getValue()/bb.getValue():bb.getValue()/aa.getValue());
-			NumConstEquation result = new NumConstEquation(Math.abs(newValue)+"",owner);
-			if (newValue < 0){result.negative = true;}
-			this.replace(result);
-		}
+        //it should cancel any commonalties
+        //if you have .../1 it should handle that
+        //if youhave 0/... needs to handle that too
+        // (6 + 5) / x -> 6/x + 5/x
+        //
+
+
+
+        Equation result =null;
+        if (get(0) instanceof AddEquation){
+            result = new AddEquation(owner);
+            for (Equation e:get(0)){
+                // figure out what is common
+                MultiCountData top = new MultiCountData(e);
+                MultiCountData bot = new MultiCountData(get(1));
+                MultiCountData common = common(top,bot);
+                top.removeCommon(common);
+                bot.removeCommon(common);
+                if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
+                    Equation inner = new DivEquation(owner);
+                    inner.add(top.getEquation(owner));
+                    inner.add(bot.getEquation(owner));
+                    result.add(inner);
+                }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0 )){
+                    result.add(top.getEquation(owner));
+                }
+            }
+            if (result.size() == 1){
+                result = result.get(0);
+            }
+        }else {
+            // figure out what is common
+            MultiCountData top = new MultiCountData(get(0));
+            MultiCountData bot = new MultiCountData(get(1));
+            MultiCountData common = common(top,bot);
+            top.removeCommon(common);
+            bot.removeCommon(common);
+
+            if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
+                Equation inner = new DivEquation(owner);
+                inner.add(top.getEquation(owner));
+                inner.add(bot.getEquation(owner));
+                result = inner;
+            }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0)){
+                result = top.getEquation(owner);
+            }
+        }
+        replace(result);
+
 	}
+
+    private MultiCountData common(MultiCountData top, MultiCountData bot) {
+        MultiCountData result = new MultiCountData();
+        for (Equation b:top.key){
+            for (Equation a:bot.key){
+                if (a.same(b)){
+                    result.key.add(a);
+                }
+            }
+        }
+        result.value =bot.value;
+        return result;
+    }
+
+    private double gcd(double a, double b){
+        while (b > 0)
+        {
+            double temp = b;
+            b = a % b; // % is remainder
+            a = temp;
+        }
+        return a;
+    }
+
+    private double lcm(double a, double b)
+    {
+        return a * (b / gcd(a, b));
+    }
 
 }
