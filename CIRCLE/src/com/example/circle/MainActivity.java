@@ -4,19 +4,43 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.content.res.Configuration;
 
 public class MainActivity extends Activity {
-	SuperView superView;
+    SuperView myView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        lookAt(new EmilyView(this));
-        
+
+        WindowManager wm = (WindowManager) this
+                .getSystemService(this.WINDOW_SERVICE);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+
+        Algebrator.getAlgebrator().TEXT_SIZE = (int) ((metrics.densityDpi  / 160f) * 30);
+        Algebrator.getAlgebrator().DEFAULT_SIZE = (int) ((metrics.densityDpi  / 160f) * 50);
+
+        if ( Algebrator.getAlgebrator().superView ==null){
+            Algebrator.getAlgebrator().superView = new EmilyView(this);
+        }
+        myView = Algebrator.getAlgebrator().superView;
+        lookAt(myView);
+        Log.i("lifeCycle","MainActivity-onCreate");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        //super.onConfigurationChanged(newConfig);
+        //setContentView(superView);
+        Log.i("lifeCycle","MainActivity-onConfigurationChanged");
     }
 
 
@@ -48,20 +72,27 @@ public class MainActivity extends Activity {
      	ActionBar actionBar = getActionBar();
      	actionBar.hide();
      }
-     
-     superView.onResume();
+
+        myView.onResume();
+
+     Log.i("lifeCycle","MainActivity-onResume");
     }
     
     @Override
     protected void onPause() {
      super.onPause();
-     superView.onPause();
+        myView.onPause();
+        Log.i("lifeCycle","MainActivity-onResume");
     }
 
 
 	public void lookAt(SuperView view) {
+        if (view.getParent() != null){
+            ((ViewGroup)view.getParent()).removeView(view);
+        }
 		setContentView(view);
-		superView = view;
+        view.measureScreen(this);
+        myView = view;
 	}
     
 }

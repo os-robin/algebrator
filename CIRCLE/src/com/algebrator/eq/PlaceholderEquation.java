@@ -4,6 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -12,8 +13,8 @@ public class PlaceholderEquation extends LeafEquation {
 	public PlaceholderEquation(SuperView owner) {
 		super(owner);
 		display = "_";
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 
 	}
 	

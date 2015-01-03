@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -20,8 +21,8 @@ public class EqualsEquation extends Equation {
     public EqualsEquation(SuperView owner) {
 		super(owner);
 		display = "=";
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 
 	public int side(Equation equation)  {

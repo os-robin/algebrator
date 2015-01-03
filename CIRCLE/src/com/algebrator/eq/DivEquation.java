@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
 public class DivEquation extends Operation implements MultiDivSuperEquation {
@@ -65,8 +66,8 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	public DivEquation(SuperView owner) {
 		super(owner);
 
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 
 	@Override
@@ -165,8 +166,6 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
         //if youhave 0/... needs to handle that too
         // (6 + 5) / x -> 6/x + 5/x
         //
-
-
 
         Equation result =null;
         if (get(0) instanceof AddEquation){

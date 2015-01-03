@@ -82,77 +82,77 @@ public class EmilyView extends SuperView {
 		 */
 
 		for (int i = 0; i < 5; i++) {
-			buttons.add(new Button(i * width / 11, (i + 1) * width / 11,
-					4 * height / 6, 5 * height / 6, i + 1 + "", text, bkg,
+			buttons.add(new Button(i  / 11f, (i + 1)  / 11f,
+					4  / 6f, 5  / 6f, i + 1 + "", text, bkg,
 					highlight));
 			buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
 		}
 
-		Button parentheses = new Button(5 * width / 11, 6 * width / 11,
-				4 * height / 6, 5 * height / 6, "( )", text, bkg, highlight);
+		Button parentheses = new Button(5f  / 11f, 6f  / 11f,
+				4f / 6f, 5f / 6f, "( )", text, bkg, highlight);
 		parentheses.myAction = new ParenthesesAction(this);
 
 		buttons.add(parentheses);
-		Button times = new Button(6 * width / 11, 7 * width / 11,
-				4 * height / 6, 5 * height / 6, "*", text, bkg, highlight);
+		Button times = new Button(6f / 11f, 7f / 11f,
+				4f / 6f, 5f / 6f, "*", text, bkg, highlight);
 		times.myAction = new TimesAction(this);
 		buttons.add(times);
 
-		Button plus = new Button(7 * width / 11, 8 * width / 11,
-				4 * height / 6, 5 * height / 6, "+", text, bkg, highlight);
+		Button plus = new Button(7f / 11f, 8f / 11f,
+				4f / 6f, 5f / 6f, "+", text, bkg, highlight);
 		plus.myAction = new PlusAction(this);
 		buttons.add(plus);
 
-		Button varX = new Button(8 * width / 11, 9 * width / 11,
-				4 * height / 6, 5 * height / 6, "x", text, bkg, highlight);
+		Button varX = new Button(8f / 11f, 9f / 11f,
+				4f / 6f, 5f  / 6f, "x", text, bkg, highlight);
 		varX.myAction = new VarAction(this, varX.text);
 		buttons.add(varX);
 
-		Button varY = new Button(9 * width / 11, 10 * width / 11,
-				4 * height / 6, 5 * height / 6, "y", text, bkg, highlight);
+		Button varY = new Button(9f / 11f, 10f / 11f,
+				4f / 6f, 5f / 6f, "y", text, bkg, highlight);
 		varY.myAction = new VarAction(this, varY.text);
 		buttons.add(varY);
 
-		buttons.add(new Button(10 * width / 11, 11 * width / 11,
-				4 * height / 6, 5 * height / 6, "VAR", text, bkg, highlight));
+		buttons.add(new Button(10f / 11f, 11f / 11f,
+				4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
 
 		for (int i = 0; i < 4; i++) {
-			buttons.add(new Button((int) ((i + 0.5) * width / 11),
-					(int) ((i + 1.5) * width / 11), 5 * height / 6, height, i
+			buttons.add(new Button( (i + 0.5f) / 11f,
+					 (i + 1.5f) / 11f, 5f / 6f, 1, i
 							+ 6 + "", text, bkg, highlight));
 			buttons.get(i + 11).myAction = new NumberAction(this, i + 6 + "");
 		}
 
-		Button delete = new Button((int) ((9 + 0.5) * width / 11),
-				(int) ((10 + 0.5) * width / 11), 5 * height / 6, height, "DEL",
+		Button delete = new Button( (9f + 0.5f) / 11f,
+				(10f + 0.5f) / 11, 5f / 6f, 1, "DEL",
 				text, bkg, highlight);
 		delete.myAction = new DeleteAction(this);
 
-		buttons.add(new Button((int) ((4 + 0.5) * width / 11), (int) ((5 + 0.5)
-				* width / 11), 5 * height / 6, height, "0", text, bkg,
+		buttons.add(new Button((4f + 0.5f)  / 11f, (5f + 0.5f)
+				/ 11f, 5f / 6f, 1, "0", text, bkg,
 				highlight));
 		buttons.get(15).myAction = new NumberAction(this, "0");
-		buttons.add(new Button((int) ((5 + 0.5) * width / 11), (int) ((6 + 0.5)
-				* width / 11), 5 * height / 6, height, ".", text, bkg,
+		buttons.add(new Button((5f + 0.5f)  / 11f, (6f + 0.5f)
+				 / 11f, 5f / 6f, 1, ".", text, bkg,
 				highlight));
 		buttons.get(16).myAction = new DecimalAction(this, ".");
-		Button div = new Button((int) ((6 + 0.5) * width / 11),
-				(int) ((7 + 0.5) * width / 11), 5 * height / 6, height, "÷",
+		Button div = new Button((6f + 0.5f) / 11f,
+				(7f + 0.5f) / 11f, 5f / 6f, 1, "/",
 				text, bkg, highlight);
 		div.myAction = new DivAction(this);
 		buttons.add(div);
 
-		Button minus = new Button((int) ((7 + 0.5) * width / 11),
-				(int) ((8 + 0.5) * width / 11), 5 * height / 6, height, "-",
+		Button minus = new Button((7f + 0.5f) / 11f,
+				(8f + 0.5f) / 11, 5f / 6f, 1, "-",
 				text, bkg, highlight);
 		minus.myAction = new MinusAction(this);
 		buttons.add(minus);
-		buttons.add(new Button((int) ((8 + 0.5) * width / 11), (int) ((9 + 0.5)
-				* width / 11), 5 * height / 6, height, "MORE", text, bkg,
+		buttons.add(new Button((8f + 0.5f) / 11f, (9f + 0.5f)
+				/ 11f, 5f / 6f, 1, "MORE", text, bkg,
 				highlight));
 		buttons.add(delete);
 
-		Button solve = new Button(0, width, 0, 1 * height / 6, "solve", text,
+		Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
 				bkg, highlight);
 		solve.myAction = new Solve(this);
 		buttons.add(solve);
@@ -184,8 +184,7 @@ public class EmilyView extends SuperView {
 				// TODO it would be cool if you could swipe up or something to
 				// delete these
 
-				Button tempButton = new Button(width * (10 - count) / 11, width
-						* (11 - count) / 11, 3 * height / 6, 4 * height / 6,
+				Button tempButton = new Button((10f - count) / 11f, (11f - count) / 11f, 3f / 6f, 4f/ 6f,
 						"A" + count, text, bkg, highlight);
 				tempButton.myAction = new VarAction(emilyView, tempButton.text);
 
@@ -199,8 +198,8 @@ public class EmilyView extends SuperView {
 	};
 
 	@Override
-	protected void myDraw(Canvas canvas) {
-		super.myDraw(canvas);
+	protected synchronized void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
 
 		for (int i = 0; i < vars.size(); i++) {
 			vars.get(i).draw(canvas);

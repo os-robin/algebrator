@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -69,8 +70,8 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
 		super(owner);
 		display = "*";
 
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 	
 	public void tryOperator(Equation a, Equation b){
@@ -85,7 +86,7 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
 
         Equation top = null;
         Equation bottom = null;
-        Equation result = null;
+        Equation result;
 
         operateRemove(a, b);
         // for the bottom and the top
@@ -96,8 +97,7 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
             HashSet<Equation> right =new HashSet<Equation>();
             findEquation(onTop,b,right);
             // multiply && combine like terms
-            HashSet<MultiCountData> fullSet = Multiply(left,right);
-
+            HashSet<MultiCountData> fullSet = Multiply(left,right, (onTop==OnTop.TOP?true:false));
 
             Equation innerResult = null;
             if (fullSet.size()==1){
@@ -117,7 +117,10 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
             }
         }
 
-        if (bottom!= null){
+        if ((top instanceof  NumConstEquation && ((NumConstEquation) top).getValue()==0)&&
+                !( bottom != null && bottom instanceof NumConstEquation && ((NumConstEquation) bottom).getValue()==0)){
+            result = top;
+        }else if (bottom!= null && !(bottom instanceof NumConstEquation && ((NumConstEquation) bottom).getValue()==1)){
             result = new DivEquation(owner);
             result.add(top);
             result.add(bottom);
@@ -131,8 +134,16 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
         }
 	}
 
-    private HashSet<MultiCountData> Multiply(HashSet<Equation> left, HashSet<Equation> right) {
+    private HashSet<MultiCountData> Multiply(HashSet<Equation> left, HashSet<Equation> right, boolean top) {
         HashSet<MultiCountData> result = new HashSet<MultiCountData>();
+        if (!top){
+            if (left.size() ==0){
+                left.add(new NumConstEquation("1",owner));
+            }
+            if (right.size() ==0){
+                right.add(new NumConstEquation("1",owner));
+            }
+        }
         for (Equation a : right){
             for (Equation b: left){
                 MultiCountData toAdd =Multiply(a.copy(),b.copy());

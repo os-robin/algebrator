@@ -4,12 +4,21 @@ import com.example.circle.Actions.Action;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.text.TextPaint;
 import android.view.MotionEvent;
 
 public class Button {
+    // in percent of width (1 = full width)
 	float left;
+    // in percent of width (1 = full width)
 	float right;
+    // in percent of height (1 = full height)
 	float top;
+    //  in percent of height (1 = full height)
+
+    float canvasWidth;
+    float canvasHeight;
+
 	float bottom;
 	Paint bkgPaint;
 	Paint textPaint;
@@ -28,12 +37,15 @@ public class Button {
 		this.text = text;
 		this.bkgPaint=new Paint(bkgPaint);
 		bkgColor = bkgPaint.getColor();
-		this.textPaint = new Paint(textPaint);
+		this.textPaint = new TextPaint(textPaint);
 		this.highlightColor = highlightColor;
 	}
 
 	
 	public void draw(Canvas canvas) {
+
+        canvasHeight = canvas.getHeight();
+        canvasWidth = canvas.getWidth();
 		
 		int currentColor = bkgPaint.getColor();
 		int currentAlpha = android.graphics.Color.alpha(currentColor);
@@ -51,15 +63,32 @@ public class Button {
 		
 		bkgPaint.setColor(currentColor);
 		
-		canvas.drawRect(left, top, right, bottom, bkgPaint);
+		canvas.drawRect(left(), top(), right(), bottom(), bkgPaint);
 		//Log.i("I drew!", left+","+ top+","+ right+","+ bottom);
-		canvas.drawText(text, (right+left)/2, (bottom+top)/2, textPaint);
+		canvas.drawText(text, (right()+left())/2, (bottom()+top())/2, textPaint);
 		//Log.i("I wrote!", text);
 	}
-	
-	
-	public void click(MotionEvent event) {
-		if (event.getX()<right && event.getX()>left && event.getY()<bottom && event.getY()>top){
+
+    private float top() {
+        return top* canvasHeight;
+    }
+
+    private float left() {
+        return left*canvasWidth;
+    }
+
+    private float bottom() {
+        return bottom* canvasHeight;
+    }
+
+    private float right() {
+
+        return right*canvasWidth;
+    }
+
+
+    public void click(MotionEvent event) {
+		if (event.getX()<right() && event.getX()>left() && event.getY()<bottom() && event.getY()>top()){
 			bkgPaint.setColor(highlightColor);
 			if (myAction != null){
 				myAction.act();

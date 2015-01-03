@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
 import android.graphics.Point;
@@ -31,12 +32,12 @@ import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
 
-public abstract class SuperView extends SurfaceView implements Runnable,
-		OnTouchListener {
+public abstract class SuperView extends View implements
+		OnTouchListener {//Runnable,
 	public Equation selected;
 	public DragEquation dragging;
 	public Equation demo;
-	SurfaceHolder surfaceHolder;
+	//SurfaceHolder surfaceHolder;
 	Thread thread = null;
 	volatile boolean running = false;
 	public EqualsEquation stupid;
@@ -45,14 +46,14 @@ public abstract class SuperView extends SurfaceView implements Runnable,
     int offsetX=0;
     int offsetY=0;
 
-	TextPaint text = new TextPaint();
+	public TextPaint text = new TextPaint();
 
 	int highlight;
 	TextPaint bkg;
 
 	ArrayList<Button> buttons = new ArrayList<Button>();
 
-	public SuperView(Context context) {
+    public SuperView(Context context) {
 		super(context);
 		init(context);
 	}
@@ -68,108 +69,121 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 	}
 
 	private void init(Context context) {
-		surfaceHolder = getHolder();
+		//surfaceHolder = getHolder();
 		this.setOnTouchListener(this);
 
-		// Get the height of the whole display
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
+        measureScreen(context);
 
-		DisplayMetrics metrics = new DisplayMetrics();
-		wm.getDefaultDisplay().getMetrics(metrics);
-
-		int screenheight = metrics.heightPixels; // get screen height (dependent
-													// on rotation)
-		int screenwidth = metrics.widthPixels; // get screen width (dependent on
-												// rotation)
-
-		Log.i("screenheight, screenwidth", screenheight + "," + screenwidth);
-
-		// Get the heights of status, title, decorations, etc.
-		Window win = ((Activity) context).getWindow();
-		Rect rect = new Rect();
-
-		win.getDecorView().getWindowVisibleDisplayFrame(rect);
-		int statusBarHeight = rect.top; // Get the height of the status bar
-		int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT)
-				.getTop(); // Get height occupied by decoration contents
-		int titleBarHeight = contentViewTop - statusBarHeight;
-
-		Log.i("statusBarHeight, contentViewTop, titleBarHeight",
-				statusBarHeight + "," + contentViewTop + "," + titleBarHeight);
-
-		// Get navigation bar height
-		int navBarHeight = 0;
-		/*
-		 * Resources resources = context.getResources(); int resourceId =
-		 * resources.getIdentifier("navigation_bar_height", "dimen", "android");
-		 * if (resourceId > 0) { navBarHeight =
-		 * resources.getDimensionPixelSize(resourceId); }
-		 * 
-		 * Log.i("navBarHeight", navBarHeight+"");
-		 */
-
-		// Calculate actual height
-		height = screenheight
-				- (titleBarHeight + statusBarHeight + navBarHeight);
-		width = screenwidth;
-
-		Log.i("actual height, width", height + ", " + width);
-
-		text.setTextSize(30);
+		text.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
+        //text.setAntiAlias(true);
+        //text.setDither(true);
+        //text.setSubpixelText(true);
 		text.setTextAlign(Align.CENTER);
 		text.setColor(0xff000000);
 
 		highlight = 0xff000000 + (int) (Math.random() * 0xffffff);
 
 		bkg = new TextPaint();
-		bkg.setTextSize(30);
+		bkg.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
 		bkg.setTextAlign(Align.CENTER);
 		bkg.setColor(0x00000000);
 
+        Log.i("lifeCycle","SuperView-init");
 	}
 
-	public void onResume() {
-		running = true;
-		thread = new Thread(this);
-		thread.start();
+    public void measureScreen(Context context) {
+        // Get the height of the whole display
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+
+        int screenheight = metrics.heightPixels; // get screen height (dependent
+        // on rotation)
+        int screenwidth = metrics.widthPixels; // get screen width (dependent on
+        // rotation)
+
+        Log.i("screenheight, screenwidth", screenheight + "," + screenwidth);
+
+        // Get the heights of status, title, decorations, etc.
+        Window win = ((Activity) context).getWindow();
+        Rect rect = new Rect();
+
+        win.getDecorView().getWindowVisibleDisplayFrame(rect);
+        int statusBarHeight = rect.top; // Get the height of the status bar
+        int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT)
+                .getTop(); // Get height occupied by decoration contents
+        int titleBarHeight = contentViewTop - statusBarHeight;
+
+        Log.i("statusBarHeight, contentViewTop, titleBarHeight",
+                statusBarHeight + "," + contentViewTop + "," + titleBarHeight);
+
+        // Get navigation bar height
+        int navBarHeight = 0;
+		/*
+		 * Resources resources = context.getResources(); int resourceId =
+		 * resources.getIdentifier("navigation_bar_height", "dimen", "android");
+		 * if (resourceId > 0) { navBarHeight =
+		 * resources.getDimensionPixelSize(resourceId); }
+		 *
+		 * Log.i("navBarHeight", navBarHeight+"");
+		 */
+
+        // Calculate actual height
+        height = screenheight
+                - (titleBarHeight + statusBarHeight + navBarHeight);
+        width = screenwidth;
+
+        Log.i("actual height, width", height + ", " + width);
+
+    }
+
+    public void onResume() {
+		//super.onResume();
+		//running = true;
+		//thread = new Thread(this);
+		//thread.start();
+        Log.i("lifeCycle","SuperView-onResume");
 	}
 
 	public void onPause() {
-		boolean retry = true;
-		running = false;
-		while (retry) {
-			try {
-				thread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		//boolean retry = true;
+		//running = false;
+		//while (retry) {
+		//	try {
+		//		thread.join();
+		//		retry = false;
+		//	} catch (InterruptedException e) {
+		//		e.printStackTrace();
+		//	}
+		//}
+        Log.i("lifeCycle","SuperView-onPause");
 	}
 
-	@Override
-	public synchronized void run() {
-		while (running) {
-			if (surfaceHolder.getSurface().isValid()) {
-				Canvas canvas = surfaceHolder.lockCanvas();
-				myDraw(canvas);
-				surfaceHolder.unlockCanvasAndPost(canvas);
-				try {
-					wait(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+//	@Override
+//	public synchronized void run() {
+//		while (running) {
+//			if (surfaceHolder.getSurface().isValid()) {
+//				Canvas canvas = surfaceHolder.lockCanvas();
+//				myDraw(canvas);
+//				surfaceHolder.unlockCanvasAndPost(canvas);
+//				try {
+//					wait(100);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 
     private String lastLog = "";
 
     private float friction= 0.8f;
 
-	protected void myDraw(Canvas canvas) {
+    @Override
+	protected synchronized void onDraw(Canvas canvas) {
 		// canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
 		canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 		for (int i = 0; i < buttons.size(); i++) {
@@ -192,6 +206,8 @@ public abstract class SuperView extends SurfaceView implements Runnable,
             Log.i("", stupid.toString());
             lastLog = stupid.toString();
         }
+
+        invalidate ();
 	}
 
     private void updateOffsetX(float vx) {
@@ -221,7 +237,7 @@ public abstract class SuperView extends SurfaceView implements Runnable,
     private float lastY;
     private float eqDragPadding = 25;
 
-    //
+    // TODO I think we can remove slidding
     private boolean slidding = false;
     private float vx = 0;
     private float vy = 0;
@@ -454,4 +470,13 @@ public abstract class SuperView extends SurfaceView implements Runnable,
 		}
 		selectingSet = new HashSet<Equation>();
 	}
+
+    public void configChange() {
+        Log.i("","config chagnged");
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Log.i("orientation", "landscape");
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Log.i("orientation", "portrait");
+//        }
+    }
 }

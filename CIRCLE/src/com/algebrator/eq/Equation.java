@@ -13,11 +13,11 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
 abstract public class Equation extends ArrayList<Equation> {
-	protected static final int DEFAULT_SIZE = 50;
 	public Equation parent;
 	protected String display = "";
 	Paint textPaint;
@@ -48,10 +48,11 @@ abstract public class Equation extends ArrayList<Equation> {
 		owner = owner2;
 		id = idBacker++;
 
-		textPaint = new Paint();
-		textPaint.setTextSize(30);
-		textPaint.setTextAlign(Align.CENTER);
-		textPaint.setColor(0xff000000);
+		textPaint = new Paint(owner.text);
+        // probably not needed
+        textPaint.setAntiAlias(true);
+        textPaint.setDither(true);
+        textPaint.setSubpixelText(true);
 	}
 
 	// we could template this in C++ can we in java?

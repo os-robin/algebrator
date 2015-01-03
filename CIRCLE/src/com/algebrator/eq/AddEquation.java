@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
 public class AddEquation extends Operation {
@@ -44,8 +45,8 @@ public class AddEquation extends Operation {
 	public AddEquation(SuperView owner) {
 		super(owner);
 		display = "+";
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 
 		empty = new NumConstEquation("0", owner);
 	}

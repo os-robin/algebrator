@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
-import com.example.circle.BigDaddy;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 

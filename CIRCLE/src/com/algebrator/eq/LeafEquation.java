@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -25,8 +26,8 @@ public abstract class LeafEquation extends Equation {
 
 	public LeafEquation(SuperView owner) {
 		super(owner);
-		myHeight = DEFAULT_SIZE;
-		myWidth = DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 	
 	@Override
@@ -70,7 +71,7 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public float measureWidth() {
 		// not tested
-		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
+		float totalWidth= myWidth+textPaint.measureText(display); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
 		if (parentheses){
 			totalWidth += PARN_WIDTH_ADDITION;
