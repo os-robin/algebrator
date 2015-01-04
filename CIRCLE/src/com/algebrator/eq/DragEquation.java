@@ -1,7 +1,9 @@
 package com.algebrator.eq;
 
 public class DragEquation {
+    // this is the on we draw
 	public Equation eq;
+    // this is the one in the equation
 	public Equation demo;
 	public boolean add;
 	

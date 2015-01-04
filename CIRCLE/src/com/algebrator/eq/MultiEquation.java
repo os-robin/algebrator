@@ -16,7 +16,7 @@ import android.graphics.Canvas;
 import android.location.GpsStatus;
 import android.util.Log;
 
-public class MultiEquation extends Operation implements MultiDivSuperEquation {
+public class MultiEquation extends FlexOperation implements MultiDivSuperEquation {
 
     @Override
     public void integrityCheck(){
@@ -138,10 +138,10 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
         HashSet<MultiCountData> result = new HashSet<MultiCountData>();
         if (!top){
             if (left.size() ==0){
-                left.add(new NumConstEquation("1",owner));
+                left.add(new NumConstEquation(1,owner));
             }
             if (right.size() ==0){
-                right.add(new NumConstEquation("1",owner));
+                right.add(new NumConstEquation(1,owner));
             }
         }
         for (Equation a : right){
@@ -261,14 +261,14 @@ class MultiCountData {
 
     public Equation getEquation(SuperView owner) {
         if ( key.size() ==0){
-            return new NumConstEquation(value +"",owner);
+            return new NumConstEquation(value ,owner);
         }else{
             if (key.size() ==1 && value ==1){
                 return (Equation) key.toArray()[0];
             }
             Equation result = new MultiEquation(owner);
             if (value!=1){
-                result.add(new NumConstEquation(value +"",owner));
+                result.add(new NumConstEquation(value ,owner));
             }
             for (Equation e: key){
                 result.add(e);
@@ -278,7 +278,9 @@ class MultiCountData {
     }
 
     public void removeCommon(MultiCountData common) {
-        this.value /=common.value;
+        if (common.value != 0) {
+            this.value /= common.value;
+        }
         for (Equation e:common.key){
             for (Equation ee:key) {
                 if (ee.same(e)) {

@@ -18,10 +18,8 @@ public class Solve extends Action {
 		emilyView.onPause();
 		Context c = emilyView.getContext();
 		ColinView colinView = new ColinView(c);
+        colinView.stupid = emilyView.stupid;
 		((MainActivity)c).lookAt(colinView);
 		colinView.onResume();
-		colinView.stupid = emilyView.stupid;
-
 	}
-
 }

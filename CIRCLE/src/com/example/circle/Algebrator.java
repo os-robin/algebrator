@@ -8,7 +8,7 @@ import android.app.Application;
 public class Algebrator extends Application {
     private static Algebrator instance;
     public int TEXT_SIZE;
-    SuperView superView = null;
+    public SuperView superView = null;
     public int DEFAULT_SIZE;
 
     @Override

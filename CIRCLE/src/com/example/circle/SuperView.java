@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
@@ -34,62 +35,62 @@ import com.algebrator.eq.MultiEquation;
 
 public abstract class SuperView extends View implements
 		OnTouchListener {//Runnable,
-	public Equation selected;
-	public DragEquation dragging;
-	public Equation demo;
-	//SurfaceHolder surfaceHolder;
-	Thread thread = null;
-	volatile boolean running = false;
-	public EqualsEquation stupid;
-	int width;
-	int height;
-    int offsetX=0;
-    int offsetY=0;
+    public Equation selected;
+    public DragEquation dragging;
+    public Equation demo;
+    //SurfaceHolder surfaceHolder;
+    Thread thread = null;
+    volatile boolean running = false;
+    public EqualsEquation stupid;
+    int width;
+    int height;
+    int offsetX = 0;
+    int offsetY = 0;
 
-	public TextPaint text = new TextPaint();
+    public TextPaint text = new TextPaint();
 
-	int highlight;
-	TextPaint bkg;
+    int highlight;
+    Paint bkg;
 
-	ArrayList<Button> buttons = new ArrayList<Button>();
+    ArrayList<Button> buttons = new ArrayList<Button>();
 
     public SuperView(Context context) {
-		super(context);
-		init(context);
-	}
+        super(context);
+        init(context);
+    }
 
-	public SuperView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		init(context);
-	}
+    public SuperView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
 
-	public SuperView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		init(context);
-	}
+    public SuperView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
 
-	private void init(Context context) {
-		//surfaceHolder = getHolder();
-		this.setOnTouchListener(this);
+    private void init(Context context) {
+        //surfaceHolder = getHolder();
+        this.setOnTouchListener(this);
 
         measureScreen(context);
 
-		text.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
+        text.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
         //text.setAntiAlias(true);
         //text.setDither(true);
         //text.setSubpixelText(true);
-		text.setTextAlign(Align.CENTER);
-		text.setColor(0xff000000);
+        text.setTextAlign(Align.CENTER);
+        text.setColor(0xff000000);
 
-		highlight = 0xff000000 + (int) (Math.random() * 0xffffff);
+        highlight = 0xff000000 + (int) (Math.random() * 0xffffff);
 
-		bkg = new TextPaint();
-		bkg.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
-		bkg.setTextAlign(Align.CENTER);
-		bkg.setColor(0x00000000);
+        bkg = new Paint();
+        bkg.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
+        bkg.setTextAlign(Align.CENTER);
+        bkg.setColor(0xff000000 + (int) (Math.random() * 0xffffff));
 
-        Log.i("lifeCycle","SuperView-init");
-	}
+        Log.i("lifeCycle", "SuperView-init");
+    }
 
     public void measureScreen(Context context) {
         // Get the height of the whole display
@@ -140,26 +141,26 @@ public abstract class SuperView extends View implements
     }
 
     public void onResume() {
-		//super.onResume();
-		//running = true;
-		//thread = new Thread(this);
-		//thread.start();
-        Log.i("lifeCycle","SuperView-onResume");
-	}
+        //super.onResume();
+        //running = true;
+        //thread = new Thread(this);
+        //thread.start();
+        Log.i("lifeCycle", "SuperView-onResume");
+    }
 
-	public void onPause() {
-		//boolean retry = true;
-		//running = false;
-		//while (retry) {
-		//	try {
-		//		thread.join();
-		//		retry = false;
-		//	} catch (InterruptedException e) {
-		//		e.printStackTrace();
-		//	}
-		//}
-        Log.i("lifeCycle","SuperView-onPause");
-	}
+    public void onPause() {
+        //boolean retry = true;
+        //running = false;
+        //while (retry) {
+        //	try {
+        //		thread.join();
+        //		retry = false;
+        //	} catch (InterruptedException e) {
+        //		e.printStackTrace();
+        //	}
+        //}
+        Log.i("lifeCycle", "SuperView-onPause");
+    }
 
 //	@Override
 //	public synchronized void run() {
@@ -180,40 +181,40 @@ public abstract class SuperView extends View implements
 
     private String lastLog = "";
 
-    private float friction= 0.8f;
+    private float friction = 0.9f;
 
     @Override
-	protected synchronized void onDraw(Canvas canvas) {
-		// canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
-		canvas.drawColor(0xFFFFFFFF, Mode.ADD);
-		for (int i = 0; i < buttons.size(); i++) {
-			buttons.get(i).draw(canvas);
-		}
-		if (dragging != null) {
-			dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
-		}
+    protected synchronized void onDraw(Canvas canvas) {
+        // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
+        canvas.drawColor(0xFFFFFFFF, Mode.ADD);
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).draw(canvas);
+        }
+        if (dragging != null) {
+            dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
+        }
 
-        if (slidding){
+        if (slidding) {
             vx *= friction;
             vy *= friction;
             updateOffsetX(vx);
             updateOffsetY(vy);
         }
 
-		stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        stupid.drawCentered(canvas, width / 2 + offsetX, height / 3 + offsetY);
         stupid.integrityCheckOuter();
         if (!stupid.toString().equals(lastLog)) {
             Log.i("", stupid.toString());
             lastLog = stupid.toString();
         }
 
-        invalidate ();
-	}
+        invalidate();
+    }
 
     private void updateOffsetX(float vx) {
         float tempOffset = offsetX + vx;
-        if (Math.abs(tempOffset) < (width + stupid.measureWidth())/2 - eqDragPadding ) {
-            offsetX = (int)tempOffset;
+        if (Math.abs(tempOffset) < (width + stupid.measureWidth()) / 2 - eqDragPadding) {
+            offsetX = (int) tempOffset;
         }
     }
 
@@ -222,15 +223,12 @@ public abstract class SuperView extends View implements
     }
 
     public HashSet<Equation> selectingSet = new HashSet<Equation>();
-	public boolean startedInBox;
-	public boolean inBox;
-	public boolean startedOne;
-	private long startTime;
-	private long tapTime = 1000;
-	private long lastTapTime;
-	private long doubleTapSpacing=1000;
-	private Point lastTapPoint;
-	private float doubleTapDistance = 20;
+    private long startTime;
+    private long tapTime = 1000;
+    private long lastTapTime;
+    private long doubleTapSpacing = 1000;
+    private Point lastTapPoint;
+    private float doubleTapDistance = 20;
 
     //moving the whole equation
     private float lastX;
@@ -242,144 +240,176 @@ public abstract class SuperView extends View implements
     private float vx = 0;
     private float vy = 0;
 
-	@Override
-	public synchronized boolean onTouch(View view, MotionEvent event) {
-		// if its one finger:
-		if (event.getPointerCount() == 1) {
+    public void updateOwner() {
+        stupid.updateOwner(this);
+    }
 
-			// we need to know if they started in the box
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				startedInBox = stupid.inBox(event.getX(), event.getY());
-				inBox = startedInBox;
-				startedOne = true;
-				startTime = System.currentTimeMillis();
+    enum TouchMode {BUTTON, DRAG, SELECT, MOVE, ZOOM, DEAD}
+
+    ;
+    private TouchMode myMode;
+
+    @Override
+    public synchronized boolean onTouch(View view, MotionEvent event) {
+        if (event.getPointerCount() == 1) {
+            // we need to know if they started in the box
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // figure out the mode;
+                if (stupid.inBox(event.getX(), event.getY())) {
+                    myMode = TouchMode.SELECT;
+                } else if (inButtons(event)) {
+                    myMode = TouchMode.BUTTON;
+                } else {
+                    myMode = TouchMode.MOVE;
+                    if (selected != null) {
+                        selected.setSelected(false);
+                    }
+                }
+                startTime = System.currentTimeMillis();
                 lastX = event.getX();
                 lastY = event.getY();
                 // stop stupid sliding
                 slidding = false;
-                vx =0;
-                vy =0;
-			}
-			if (startedOne) {
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
-					// check if they selected anything
-					if (inBox) {
-						HashSet<Equation> ons = stupid.onAny(event.getX(),
-								event.getY());
-						selectingSet.addAll(ons);
-					}
+                vx = 0;
+                vy = 0;
+            }
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                // check if they selected anything
+                if (myMode == TouchMode.SELECT) {
+                    HashSet<Equation> ons = stupid.onAny(event.getX(),
+                            event.getY());
+                    selectingSet.addAll(ons);
 
-					// see if they left the box
-					if (inBox && !stupid.inBox(event.getX(), event.getY())) {
-						inBox = false;
-						resolveSelected();
-						if (selected != null) {
-							//if (selected.canPop()) {
-								selected.isDemo(true);
-								dragging = new DragEquation(selected);
-								dragging.eq.x = event.getX();
-								dragging.eq.y = event.getY();
-							//}
-						}
-					}
-
-					// if we are dragging something move it
-					if (inBox == false && dragging != null) {
-						ArrayList<EquationDis> closest = stupid.closest(
-								event.getX(), event.getY());
-
-						// debug
-						String whatdowehavehere = "";
-						for (int i = 0; i < closest.size(); i++) {
-							whatdowehavehere += closest.get(i).equation
-									.hashCode()
-									+ "|"
-									+ closest.get(i).equation.getDisplay(0)
-									+ " ";
-						}
-						Log.i("closest", whatdowehavehere);
-
-						boolean found = false;
-						for (int i = 0; i < closest.size() && !found; i++) {
-							if (demo.deepContains(closest.get(i).equation)) {
-								found = true;
-								Log.i("drag", "no Move");
-							} else {
-
-								found = closest.get(i).tryInsert(dragging);
-
-								if (dragging.demo.parent == null) {
-									@SuppressWarnings("unused")
-									int dbg = 0;
-									Log.i("weee", "I am null!");
-								}
-							}
-						}
-						if ((dragging.add)
-								&& ((dragging.eq.x < stupid.lastPoint.get(0).x && event
-										.getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
-										.get(0).x && event.getX() >= stupid.lastPoint
-										.get(0).x))) {
-							dragging.eq.negative = !dragging.eq.negative;
-						}
-
-						dragging.eq.x = event.getX();
-						dragging.eq.y = event.getY();
-					}
-
-                    // if they are moving the equation
-                    if (!startedInBox){
-                        float dx = event.getX() -  lastX;
-                        float dy = event.getY() -  lastY;
-                        updateOffsetX(dx);
-                        updateOffsetY(dy);
-                        lastX = event.getX();
-                        lastY = event.getY();
-
-                        vx = (3f*vx + dx)/4f;
-                        vx = (3f*vx + dy)/4f;
+                    // see if they left the box
+                    if (!stupid.inBox(event.getX(), event.getY())) {
+                        resolveSelected();
+                        if (selected != null) {
+                            myMode = TouchMode.DRAG;
+                            //if (selected.canPop()) {
+                            selected.isDemo(true);
+                            dragging = new DragEquation(selected);
+                            dragging.eq.x = event.getX();
+                            dragging.eq.y = event.getY();
+                            //}
+                        } else {
+                            myMode = TouchMode.DEAD;
+                        }
                     }
-				}
+                }
 
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					// did we click anything?
-					endOnePointer(event);
-					long now = System.currentTimeMillis();
-					long totalTime = now - startTime;
-					if (totalTime < tapTime){
-						long tapSpacing = now - lastTapTime;
-						Point tapPoint = new Point();
-						tapPoint.x = (int) event.getX();
-						tapPoint.y = (int) event.getY();
-						if (tapSpacing < doubleTapSpacing && dis(tapPoint,lastTapPoint)< doubleTapDistance){
-							Log.i("","doubleTap! dis: " + dis(tapPoint,lastTapPoint) + " time: " +totalTime + " spacing: "+tapSpacing);
-							stupid.tryOperator(event.getX(),
-									event.getY());
-							
-							lastTapTime = 0;
-						}else{
-						lastTapTime = now;
-						lastTapPoint = tapPoint;
-						}
-					}
+                // if we are dragging something move it
+                if (myMode == TouchMode.DRAG) {
+                    ArrayList<EquationDis> closest = stupid.closest(
+                            event.getX(), event.getY());
 
-                    // if we were dragging everything around
-                    if (!startedInBox) {
-                        slidding = true;
+                    // debug
+                    String whatdowehavehere = "";
+                    for (int i = 0; i < closest.size(); i++) {
+                        whatdowehavehere += closest.get(i).equation
+                                .hashCode()
+                                + "|"
+                                + closest.get(i).equation.getDisplay(0)
+                                + " ";
                     }
-					
-				}
-			}
-		} else if (event.getPointerCount() == 2) {
-			if (startedOne) {
-				endOnePointer(event);
-			} else {
-				startedOne = false;
-			}
-		}
-		Log.i("",stupid.toString());
-		return true;
-	}
+                    Log.i("closest", whatdowehavehere);
+
+                    boolean found = false;
+                    for (int i = 0; i < closest.size() && !found; i++) {
+                        if (demo.deepContains(closest.get(i).equation)) {
+                            found = true;
+                            Log.i("drag", "no Move");
+                        } else {
+
+                            found = closest.get(i).tryInsert(dragging);
+
+                            if (dragging.demo.parent == null) {
+                                @SuppressWarnings("unused")
+                                int dbg = 0;
+                                Log.i("weee", "I am null!");
+                            }
+                        }
+                    }
+                    if ((dragging.add)
+                            && ((dragging.eq.x < stupid.lastPoint.get(0).x && event
+                            .getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
+                            .get(0).x && event.getX() >= stupid.lastPoint
+                            .get(0).x))) {
+                        dragging.eq.negative = !dragging.eq.negative;
+                    }
+
+                    dragging.eq.x = event.getX();
+                    dragging.eq.y = event.getY();
+                }
+
+                // if they are moving the equation
+                if (myMode == TouchMode.MOVE) {
+                    float dx = event.getX() - lastX;
+                    float dy = event.getY() - lastY;
+                    updateOffsetX(dx);
+                    updateOffsetY(dy);
+                    lastX = event.getX();
+                    lastY = event.getY();
+
+                    vx = (3f * vx + dx) / 4f;
+                    vy = (3f * vy + dy) / 4f;
+                }
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // did we click anything?
+                endOnePointer(event);
+                long now = System.currentTimeMillis();
+                long totalTime = now - startTime;
+                if (totalTime < tapTime) {
+                    long tapSpacing = now - lastTapTime;
+                    Point tapPoint = new Point();
+                    tapPoint.x = (int) event.getX();
+                    tapPoint.y = (int) event.getY();
+                    if (tapSpacing < doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance) {
+                        Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
+                        stupid.tryOperator(event.getX(),
+                                event.getY());
+
+                        lastTapTime = 0;
+                    } else {
+                        lastTapTime = now;
+                        lastTapPoint = tapPoint;
+                    }
+                }
+
+                // if we were dragging everything around
+                if (myMode == TouchMode.MOVE) {
+                    slidding = true;
+                }
+
+            }
+
+        } else if (event.getPointerCount() == 2) {
+            if (myMode != TouchMode.ZOOM) {
+                endOnePointer(event);
+                myMode = TouchMode.ZOOM;
+            }
+
+    }
+
+    else
+
+    {
+        myMode = TouchMode.DEAD;
+    }
+
+    Log.i("",stupid.toString());
+    return true;
+}
+
+    protected boolean inButtons(MotionEvent event){
+        for (Button b : buttons){
+            if (b.couldClick(event)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 	private float dis(Point a, Point b) {
 		// TODO Auto-generated method stub
@@ -389,24 +419,27 @@ public abstract class SuperView extends View implements
 	}
 
 	private void endOnePointer(MotionEvent event) {
-		if (!startedInBox) {
+		if (myMode == TouchMode.BUTTON) {
 			for (int i = 0; i < buttons.size(); i++) {
 				buttons.get(i).click(event);
-
 			}
 		}
-		if (inBox) {
+		else if (myMode == TouchMode.SELECT) {
 			// what did we select?
 			HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
 			selectingSet.addAll(ons);
 			resolveSelected();
-		}
+		}else if (myMode == TouchMode.DRAG){
+            stupid.fixIntegrety();
 
-		// we are done dragging
-		dragging = null;
-		if (demo != null) {
-			demo.isDemo(false);
-		}
+            demo.isDemo(false);
+            dragging = null;
+
+            if (selected != null) {
+                selected.setSelected(false);
+            }
+        }
+
 
 	}
 

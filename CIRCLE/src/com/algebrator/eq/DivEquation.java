@@ -143,7 +143,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	public Equation remove(int pos) {
 		if (pos == 0) {
 			Equation result = get(0);
-			this.get(0).replace(new NumConstEquation("1", owner));
+			this.get(0).replace(new NumConstEquation(1, owner));
 			return result;
 		} else if (pos == 1) {
 			this.replace(get(0));
@@ -202,7 +202,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
                 inner.add(top.getEquation(owner));
                 inner.add(bot.getEquation(owner));
                 result = inner;
-            }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0)){
+            }else{
                 result = top.getEquation(owner);
             }
         }

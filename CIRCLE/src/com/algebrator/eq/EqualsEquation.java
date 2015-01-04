@@ -68,13 +68,19 @@ public class EqualsEquation extends Equation {
 
 	public void tryOperator(Equation a, Equation b){}
 
-	
-	@Override
+
+    public void drawCentered(Canvas canvas, float x, float y) {
+        // we need to figure out where the equals is
+        float diffX = +this.measureWidth()/2 - get(0).measureWidth() - myWidth/2;
+        super.draw(canvas, x+diffX, y);
+    }
+
+    @Override
 	public Equation remove(int pos) {
 		Equation result = get(pos);
 		super.justRemove(get(pos));
 		//TODO this is only sort right
-		NumConstEquation num = new NumConstEquation("0", owner);
+		NumConstEquation num = new NumConstEquation(0, owner);
 		add(pos,num);
 		return result;
 	}
@@ -83,7 +89,7 @@ public class EqualsEquation extends Equation {
 	public void justRemove(Equation equation) {
 		int pos = indexOf(equation);
 		super.justRemove(equation);
-		NumConstEquation num = new NumConstEquation("0", owner);
+		NumConstEquation num = new NumConstEquation(0, owner);
 		add(pos,num);
 	}
 }

@@ -18,12 +18,14 @@ public class DecimalAction extends Action {
 	
 		if (emilyView.selected instanceof PlaceholderEquation) {
 			PlaceholderEquation oldEq = (PlaceholderEquation)emilyView.selected;
-			NumConstEquation numEq = new NumConstEquation("0.", emilyView);
+			NumConstEquation numEq = new NumConstEquation(0, emilyView);
+            numEq.setDisplay(numEq.getDisplay(0)+".");
 			oldEq.replace(numEq);
 		}
 		
 		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.getDisplay(-1).contains(".") == false) {
-			emilyView.selected.setDisplay(emilyView.selected.getDisplay(-1) + dec);
+            String toSet = emilyView.selected.getDisplay(0) + dec;
+			emilyView.selected.setDisplay(toSet);
 		}
 		
 	}

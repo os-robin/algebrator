@@ -8,8 +8,7 @@ import android.util.Log;
 import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
-public class AddEquation extends Operation {
-	Equation empty;
+public class AddEquation extends FlexOperation {
 
     @Override
     public void integrityCheck(){
@@ -47,8 +46,6 @@ public class AddEquation extends Operation {
 		display = "+";
 		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
-
-		empty = new NumConstEquation("0", owner);
 	}
 	public void tryOperator(Equation a, Equation b) {
 
@@ -105,7 +102,7 @@ public class AddEquation extends Operation {
 		
 		if ((e1 instanceof NumConstEquation )&&(e2 instanceof NumConstEquation)){
 			double addTo = ((NumConstEquation)e1).getValue() + ((NumConstEquation)e2).getValue();
-			left = new NumConstEquation (addTo +"",owner);
+			left = new NumConstEquation (addTo,owner);
 		}else{
 			left = new AddEquation(owner);
 			left.add(e1);
@@ -174,7 +171,7 @@ class CountData {
 
 	public Equation remToEquation(SuperView owner) {
 		if (rem.size() == 0) {
-			return new NumConstEquation(value + "", owner);
+			return new NumConstEquation(value, owner);
 		} else if (value == 1 && rem.size() == 1) {
 			return (Equation) rem.toArray()[0];
 		} else if (value == 1) {
@@ -185,7 +182,7 @@ class CountData {
 			return result;
 		} else {
 			Equation result = new MultiEquation(owner);
-			result.add(new NumConstEquation(value + "", owner));
+			result.add(new NumConstEquation(value , owner));
 			for (Equation e : rem) {
 				result.add(e);
 			}
@@ -195,7 +192,7 @@ class CountData {
 
 	public Equation toEquation(SuperView owner) {
 		if (key.size() == 0) {
-			return new NumConstEquation(value + "", owner);
+			return new NumConstEquation(value, owner);
 		} else if (value == 1 && key.size() == 1) {
 			return (Equation) key.toArray()[0];
 		} else if (value == 1) {
@@ -206,7 +203,7 @@ class CountData {
 			return result;
 		} else {
 			Equation result = new MultiEquation(owner);
-			result.add(new NumConstEquation(value + "", owner));
+			result.add(new NumConstEquation(value , owner));
 			for (Equation e : key) {
 				result.add(e);
 			}
@@ -265,7 +262,7 @@ class CountData {
 	/**
 	 * things in this.key also in cd2.key
 	 * 
-	 * @param common
+	 * @param cd2
 	 * @return
 	 */
 	public HashSet<Equation> common(CountData cd2) {
@@ -300,4 +297,6 @@ class CountData {
 		}
 		return true;
 	}
+
+
 }

@@ -17,42 +17,47 @@ public class DeleteAction extends Action {
 	@Override
 	public void act() {
 		Equation target = emilyView.selected;
-		if (emilyView.selected instanceof NumConstEquation) {
-			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
-				((NumConstEquation) emilyView.selected).setDisplay( (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
-						.subSequence(0,
-								((NumConstEquation) emilyView.selected).getDisplay(-1)
-										.length() - 1));
-			}
-			if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() == 0) {
-				PlaceholderEquation temp = new PlaceholderEquation(emilyView);
-				int at = emilyView.selected.parent
-						.lastIndexOf(emilyView.selected);
-				emilyView.selected.parent.set(at, temp);
-				temp.parent = emilyView.selected.parent;
-				temp.setSelected(true);
-			}
-		}
-		
-		else if (emilyView.selected instanceof PlaceholderEquation){
-			emilyView.selected.remove();
-			if (target.isSelected()){
-				target.setSelected(false);
-			}
-		}
-		
-		else if (!(emilyView.selected instanceof EqualsEquation)){
-			Equation oldEq =  emilyView.selected;
-			PlaceholderEquation temp = new PlaceholderEquation(emilyView);
-			oldEq.replace(temp);
-			if (target.isSelected()){
-				target.setSelected(false);
-			}
-		}
-		
-		
+        if (target != null) {
+            if (emilyView.selected instanceof NumConstEquation) {
+                if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
+                    String toSet = (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
+                            .subSequence(0,
+                                    ((NumConstEquation) emilyView.selected).getDisplay(-1)
+                                            .length() - 1);
+                    if (toSet.length() != 0&& toSet.charAt(0) == '-'){
+                        toSet = toSet.substring(1,toSet.length());
+                    }
+                        ((NumConstEquation) emilyView.selected).setDisplay(toSet);
+                }
+                if (((NumConstEquation) emilyView.selected).getDisplay(0).length() == 0) {
+                    delete();
+                }
+            } else if (emilyView.selected instanceof PlaceholderEquation) {
+                emilyView.selected.remove();
+                if (target.isSelected()) {
+                    target.setSelected(false);
+                }
+            } else if (!(emilyView.selected instanceof EqualsEquation)) {
+                Equation oldEq = emilyView.selected;
+                PlaceholderEquation temp = new PlaceholderEquation(emilyView);
+                oldEq.replace(temp);
+                if (target.isSelected()) {
+                    target.setSelected(false);
+                }
+            }
+
+        }
 		//else if (emilyView.selected instanceof EqualsEquation){
 		//	emilyView.selected.remove();
 		//}
 	}
+
+    private void delete() {
+        PlaceholderEquation temp = new PlaceholderEquation(emilyView);
+        int at = emilyView.selected.parent
+                .lastIndexOf(emilyView.selected);
+        emilyView.selected.parent.set(at, temp);
+        temp.parent = emilyView.selected.parent;
+        temp.setSelected(true);
+    }
 }

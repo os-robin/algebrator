@@ -90,6 +90,14 @@ public class MainActivity extends Activity {
         if (view.getParent() != null){
             ((ViewGroup)view.getParent()).removeView(view);
         }
+        Algebrator.getAlgebrator().superView = view;
+        Algebrator.getAlgebrator().superView.updateOwner();
+
+        if (view instanceof ColinView && ((ColinView) view).history.size() ==0){
+            if (((ColinView) view).history.size()==0) {
+                ((ColinView) view).history.add(new EquationButton(view.stupid.copy()));
+            }
+        }
 		setContentView(view);
         view.measureScreen(this);
         myView = view;

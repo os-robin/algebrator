@@ -9,9 +9,22 @@ import com.example.circle.SuperView;
 
 public class NumConstEquation extends LeafEquation {
 	
-	public NumConstEquation(String display, SuperView owner) {
+	public NumConstEquation(double number, SuperView owner) {
 		super(owner);
-		this.display = display;
+        if (number <0){
+            negative =true;
+            number = -number;
+        }
+		this.display = number+"";
+        if (display.contains(".")) {
+            while (display.charAt(display.length() - 1) == '0' || display.charAt(display.length() - 1) == '.') {
+                if (display.charAt(display.length() - 1) == '.'){
+                    display = display.substring(0, display.length() - 1);
+                    break;
+                }
+                display = display.substring(0, display.length() - 1);
+            }
+        }
 
 	}
 	
@@ -22,7 +35,7 @@ public class NumConstEquation extends LeafEquation {
 	
 	@Override
 	public Equation copy() {
-		Equation result = new NumConstEquation(this.display, this.owner);
+		Equation result = new NumConstEquation(this.getValue(), this.owner);
 
 		result.parentheses = this.parentheses;
 

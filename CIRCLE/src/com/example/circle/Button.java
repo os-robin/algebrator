@@ -23,25 +23,29 @@ public class Button {
 	Paint bkgPaint;
 	Paint textPaint;
 	int highlightColor;
-	int bkgColor;
+	int targetBkgColor;
 	String text;
-	
 	Action myAction;
-	
+
+    public Button (){
+
+    }
+
 	public Button(float left, float right, float top, float bottom, String text, Paint textPaint,Paint bkgPaint, int highlightColor) {
 		super();
-		this.left = left;
+
+        this.left = left;
 		this.right = right;
 		this.top = top;
 		this.bottom = bottom;
 		this.text = text;
 		this.bkgPaint=new Paint(bkgPaint);
-		bkgColor = bkgPaint.getColor();
+		targetBkgColor = bkgPaint.getColor();
 		this.textPaint = new TextPaint(textPaint);
 		this.highlightColor = highlightColor;
 	}
 
-	
+	final int SCALE = 10;
 	public void draw(Canvas canvas) {
 
         canvasHeight = canvas.getHeight();
@@ -52,14 +56,17 @@ public class Button {
 		int currentRed = android.graphics.Color.red(currentColor);
 		int currentGreen = android.graphics.Color.green(currentColor);
 		int currentBlue = android.graphics.Color.blue(currentColor);
-//		int targetAlpha = android.graphics.Color.alpha(bkgColor);
-//		int targetRed = android.graphics.Color.red(bkgColor);
-//		int targetGreen = android.graphics.Color.green(bkgColor);
-//		int targetBlue = android.graphics.Color.blue(bkgColor);
+		int targetAlpha = android.graphics.Color.alpha(targetBkgColor);
+		int targetRed = android.graphics.Color.red(targetBkgColor);
+		int targetGreen = android.graphics.Color.green(targetBkgColor);
+		int targetBlue = android.graphics.Color.blue(targetBkgColor);
 		
-		if(currentAlpha > 0) {
-			currentColor = android.graphics.Color.argb(currentAlpha-17, currentRed, currentGreen, currentBlue);
-		}
+		//if(currentAlpha > 0) {
+			currentColor = android.graphics.Color.argb(((SCALE-1)*currentAlpha+targetAlpha)/SCALE,
+                    ((SCALE-1)*currentRed+targetRed)/SCALE,
+                    ((SCALE-1)*currentGreen+targetGreen)/SCALE,
+                    ((SCALE-1)*currentBlue+targetBlue)/SCALE);
+		//}
 		
 		bkgPaint.setColor(currentColor);
 		
@@ -84,6 +91,10 @@ public class Button {
     private float right() {
 
         return right*canvasWidth;
+    }
+
+    public boolean couldClick(MotionEvent event){
+          return (event.getX()<right() && event.getX()>left() && event.getY()<bottom() && event.getY()>top());
     }
 
 

@@ -18,11 +18,11 @@ public class NumberAction extends Action {
 	
 		if (emilyView.selected instanceof PlaceholderEquation) {
 			PlaceholderEquation oldEq = (PlaceholderEquation) emilyView.selected;
-			oldEq.replace(new NumConstEquation(num, emilyView));
+			oldEq.replace(new NumConstEquation(Integer.parseInt(num), emilyView));
 		}
 		
 		else if (emilyView.selected instanceof NumConstEquation && ! emilyView.selected.getDisplay(-1).equals("0")) {
-			emilyView.selected.setDisplay( emilyView.selected.getDisplay(-1) + num);
+			emilyView.selected.setDisplay( emilyView.selected.getDisplay(0) + num);
 		}
 		
 		else if (emilyView.selected instanceof NumConstEquation && emilyView.selected.getDisplay(-1).equals("0")) {

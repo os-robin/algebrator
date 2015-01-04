@@ -20,12 +20,12 @@ import com.example.circle.SuperView;
 abstract public class Equation extends ArrayList<Equation> {
 	public Equation parent;
 	protected String display = "";
-	Paint textPaint;
+	public Paint textPaint;
 	SuperView owner;
 	public boolean parentheses;
 	protected boolean selected = false;
 	public boolean negative = false;
-	private boolean demo = false;
+	public boolean demo = false;
 	public float x=0;
 	public float y=0;
 	public ArrayList<Point> lastPoint = new ArrayList<Point>();
@@ -262,14 +262,14 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 
 	protected void drawBkgBox(Canvas canvas, float x, float y) {
-		Rect r = new Rect((int) (x - measureWidth() / 2),
-				(int) (y - measureHeight() / 2),
-				(int) (x + measureWidth() / 2), (int) (y + measureHeight() / 2));
-		Paint p = new Paint();
-		p.setAlpha(255 / 2);
-		Random rand = new Random();
-		p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
-		canvas.drawRect(r, p);
+//		Rect r = new Rect((int) (x - measureWidth() / 2),
+//				(int) (y - measureHeight() / 2),
+//				(int) (x + measureWidth() / 2), (int) (y + measureHeight() / 2));
+//		Paint p = new Paint();
+//		p.setAlpha(255 / 2);
+//		Random rand = new Random();
+//		p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
+//		canvas.drawRect(r, p);
 
 	}
 
@@ -381,6 +381,9 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 	
 	public boolean same(Equation eq){
+        if (!this.getClass().equals(eq.getClass())){
+            return false;
+        }
 		for (Equation e: eq){
 			boolean any = false;
 			for (Equation ee: this){
@@ -482,6 +485,19 @@ abstract public class Equation extends ArrayList<Equation> {
         }
     }
 
+    public void fixIntegrety() {
+        for (Equation e: this){
+            e.fixIntegrety();
+        }
+    }
+
+    public void updateOwner(SuperView sv){
+        owner = sv;
+        for (Equation e:this){
+            e.updateOwner(sv);
+        }
+    }
+
     public enum Op {ADD,DIV,MULTI}
 	
 	boolean tryOp(DragEquation dragging,boolean right, Op op){
@@ -503,10 +519,20 @@ abstract public class Equation extends ArrayList<Equation> {
 			if (op == Op.ADD && side() != dragging.demo.side()){
 				dragging.demo.negative = !dragging.demo.negative;
 			}
-			
-			if ((parent instanceof AddEquation && op == Op.ADD) || 
+			if (this instanceof NumConstEquation && ((NumConstEquation)this).getValue() ==0 && op == Op.ADD ){
+                dragging.demo.remove();
+                this.replace(dragging.demo);
+            }else if (this instanceof NumConstEquation && ((NumConstEquation)this).getValue() ==1 && op == Op.MULTI ){
+                dragging.demo.remove();
+                this.replace(dragging.demo);
+            }else
+            if ((parent instanceof AddEquation && op == Op.ADD) ||
 					(parent instanceof MultiEquation && op == Op.MULTI)){
-				dragging.demo.justRemove();
+                if (parent.equals(dragging.demo.parent)) {
+                    dragging.demo.justRemove();
+                }else{
+                    dragging.demo.remove();
+                }
 				int myIndex = parent.indexOf(this);
 				Log.i("","added to existing");
 				if (dragging.demo.x < x){

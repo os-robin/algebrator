@@ -117,14 +117,14 @@ public class EmilyView extends SuperView {
 				4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
 
 		for (int i = 0; i < 4; i++) {
-			buttons.add(new Button( (i + 0.5f) / 11f,
+			buttons.add(new Button( ((i + 0.5f)==.5f?0:(i + 0.5f)) / 11f,
 					 (i + 1.5f) / 11f, 5f / 6f, 1, i
 							+ 6 + "", text, bkg, highlight));
 			buttons.get(i + 11).myAction = new NumberAction(this, i + 6 + "");
 		}
 
 		Button delete = new Button( (9f + 0.5f) / 11f,
-				(10f + 0.5f) / 11, 5f / 6f, 1, "DEL",
+				1, 5f / 6f, 1, "DEL",
 				text, bkg, highlight);
 		delete.myAction = new DeleteAction(this);
 
