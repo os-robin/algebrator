@@ -32,13 +32,7 @@ public abstract class LeafEquation extends Equation {
 	
 	@Override
 	public String getDisplay(int pos){
-		if (parent instanceof AddEquation && parent.indexOf(this) != 0){
-			return display;
-		}
-		if (pos != -1){
-			return display;
-		}
-		return (negative?"-":"")+display;
+	    return display;
 	}
 	
 	@Override
@@ -113,5 +107,5 @@ public abstract class LeafEquation extends Equation {
 		lastPoint.add(point);
 	}
 	
-	public void tryOperator(Equation a, Equation b){}
+	public void tryOperator(ArrayList< Equation> yos){}
 }

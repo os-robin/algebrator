@@ -3,7 +3,7 @@ package com.algebrator.eq;
 import android.util.Log;
 
 public class EquationDis implements Comparable<EquationDis> {
-	float dis;
+	public float dis;
 	public LeafEquation equation;
 	float x;
 	float y;

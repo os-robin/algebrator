@@ -9,6 +9,8 @@ import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
+import java.util.ArrayList;
+
 public class EqualsEquation extends Equation {
 
     @Override
@@ -66,7 +68,7 @@ public class EqualsEquation extends Equation {
 		return true;
 	}
 
-	public void tryOperator(Equation a, Equation b){}
+	public void tryOperator(ArrayList<Equation> eqs){}
 
 
     public void drawCentered(Canvas canvas, float x, float y) {

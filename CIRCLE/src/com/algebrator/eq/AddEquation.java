@@ -17,6 +17,31 @@ public class AddEquation extends FlexOperation {
         }
     }
 
+    public boolean canFlatten(Equation a, Equation b){
+        Equation lcc = a.lowestCommonContainer(b);
+        return (lcc.addContain(a) && lcc.addContain(b));
+    }
+
+    public void flatten(Equation a, Equation b){
+        Equation lcc = a.lowestCommonContainer(b);
+        // we need to work our way up from a to lcc
+        // and on each step pull everthing from the level we are at up a level
+        for (Equation x: new Equation[]{a,b}) {
+            Equation at = x;
+            while (!at.equals(lcc)) {
+                if (at instanceof AddEquation){
+                    Equation oldEq = at.parent;
+                    int loc = oldEq.indexOf(at);
+                    at.justRemove();
+                    for (Equation e : at) {
+                        oldEq.add(loc++, e);
+                    }
+                }
+                at = at.parent;
+            }
+        }
+    }
+
 	@Override
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
@@ -33,11 +58,12 @@ public class AddEquation extends FlexOperation {
 	}
 
 	public String getDisplay(int pos) {
-		if (pos >= 0 && pos < size()) {
-			if (get(pos).negative) {
-				return "-";
-			}
-		}
+        if (pos ==-1){
+            return display;
+        }
+        if (get(pos) instanceof MinusEquation){
+            return "-";
+        }
 		return display;
 	}
 
@@ -47,16 +73,12 @@ public class AddEquation extends FlexOperation {
 		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
-	public void tryOperator(Equation a, Equation b) {
-
+	public void tryOperator(ArrayList<Equation> eqs) {
+        //TODO handle inbeddedness
+        Equation a = eqs.get(0);
+        Equation b = eqs.get(1);
 		int at = Math.min(indexOf(a), indexOf(b));
 
-		while (a instanceof AddEquation) {
-			a = a.get(a.size() - 1);
-		}
-		while (b instanceof AddEquation) {
-			b = b.get(b.size() - 1);
-		}
 		Equation result = null;
 		Equation top=null;
 		Equation bottom=null;
@@ -100,9 +122,14 @@ public class AddEquation extends FlexOperation {
 		Equation e1 = cd1.remToEquation(owner);
 		Equation e2 = cd2.remToEquation(owner);
 		
-		if ((e1 instanceof NumConstEquation )&&(e2 instanceof NumConstEquation)){
-			double addTo = ((NumConstEquation)e1).getValue() + ((NumConstEquation)e2).getValue();
-			left = new NumConstEquation (addTo,owner);
+		if ( sortaNumber(e1) && sortaNumber(e2)){
+			double addTo = getValue(e1) + getValue(e2);
+            if (addTo < 0){
+                left = new MinusEquation(owner);
+                left.add( new NumConstEquation (-addTo,owner));
+            }else {
+                left = new NumConstEquation(addTo, owner);
+            }
 		}else{
 			left = new AddEquation(owner);
 			left.add(e1);
@@ -141,7 +168,9 @@ public class AddEquation extends FlexOperation {
         }
 	}
 
-	private CountData updateCounts(Equation e, HashSet<CountData> counts) {
+
+
+    private CountData updateCounts(Equation e, HashSet<CountData> counts) {
 		CountData cd = new CountData(e);
 
 		boolean hasMatch = false;
@@ -171,7 +200,13 @@ class CountData {
 
 	public Equation remToEquation(SuperView owner) {
 		if (rem.size() == 0) {
-			return new NumConstEquation(value, owner);
+            if (value <0){
+                Equation minus = new MinusEquation(owner);
+                minus.add(new NumConstEquation(-value, owner));
+                return minus;
+            }else{
+                return new NumConstEquation(value, owner);
+            }
 		} else if (value == 1 && rem.size() == 1) {
 			return (Equation) rem.toArray()[0];
 		} else if (value == 1) {
@@ -217,6 +252,11 @@ class CountData {
 	}
 
 	public void updateKey(Equation e) {
+        if (e instanceof MinusEquation){
+            value *= -1;
+            e = e.get(0);
+        }
+
 		if (e instanceof MultiEquation) {
 			for (Equation ee : e) {
 				this.updateKey(ee);

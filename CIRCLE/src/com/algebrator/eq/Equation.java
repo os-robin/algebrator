@@ -24,7 +24,6 @@ abstract public class Equation extends ArrayList<Equation> {
 	SuperView owner;
 	public boolean parentheses;
 	protected boolean selected = false;
-	public boolean negative = false;
 	public boolean demo = false;
 	public float x=0;
 	public float y=0;
@@ -94,6 +93,22 @@ abstract public class Equation extends ArrayList<Equation> {
 		equation.parent = this;
 	}
 
+    protected double getValue(Equation e) {
+        int minus = 1;
+        while (e instanceof MinusEquation){
+            e = e.get(0);
+            minus*=-1;
+        }
+        return ((NumConstEquation)e).getValue()*minus;
+    }
+
+    protected boolean sortaNumber(Equation e) {
+        while (e instanceof MinusEquation){
+            e = e.get(0);
+        }
+        return e instanceof NumConstEquation;
+    }
+
 	/**
 	 * 
 	 * @param x
@@ -130,16 +145,16 @@ abstract public class Equation extends ArrayList<Equation> {
 	public void draw(Canvas canvas, float x, float y){
 		this.x=x;
 		this.y=y;
-		if (!demo){
+		//if (!demo){
+            drawBkgBox(canvas, x, y);
 			privateDraw(canvas,x,y);
-		}
+		//}
 	}
 	
 	/**
 	 * x,y is the center of the equation to be drawn
 	 */
 	protected void privateDraw(Canvas canvas, float x, float y){
-		drawBkgBox(canvas, x, y);
 		lastPoint = new ArrayList<Point>();
 		float totalWidth = measureWidth();
 		float currentX = 0;
@@ -205,8 +220,17 @@ abstract public class Equation extends ArrayList<Equation> {
 					&& x > lastPoint.get(i).x - myWidth / 2
 					&& y < lastPoint.get(i).y + myHeight / 2
 					&& y > lastPoint.get(i).y - myHeight / 2) {
-				result.add(get(i));
-				result.add(get(i + 1));
+                // we need to get the left
+                Equation at = get(i);
+                while (at instanceof  AddEquation || at instanceof MultiEquation ||at instanceof MinusEquation){
+                    at = at.get(at.size()-1);
+                }
+                result.add(at);
+                 at = get(i+1);
+                while (at instanceof  AddEquation || at instanceof MultiEquation ||at instanceof MinusEquation){
+                    at = at.get(0);
+                }
+                result.add(at);
 			}
 		}
 		return result;
@@ -228,16 +252,25 @@ abstract public class Equation extends ArrayList<Equation> {
 
 	public void tryOperator(float x, float y) {
 		 Object[] ons = onAny(x, y).toArray();
-		 if (ons.length==2){
-			 if (((Equation)ons[0]).parent == ((Equation)ons[1]).parent){
-				 ((Equation)ons[0]).parent.tryOperator((Equation)ons[0],(Equation)ons[1]);
+        if (ons.length ==1 && ons[0] instanceof MinusEquation){
+            ons[0] = ((Equation)ons[0]).get(0);
+        }
+         ArrayList<Equation> onsList = new ArrayList<Equation>();
+        boolean shareParent =true;
+         for (int i=0;i<ons.length && shareParent ;i++){
+             if (i != 0){
+                 shareParent = ((Equation)ons[i]).parent == ((Equation)ons[i-1]).parent;
+             }
+             onsList.add((Equation)ons[i]);
+         }
+	    if (shareParent && ons.length != 0){
+				 ((Equation)ons[0]).parent.tryOperator(onsList);
 			 }else{
 				 Log.e("","ons have different parents");
 			 }
-		 }
 	}
 	
-	public abstract void tryOperator(Equation equation, Equation equation2);
+	public abstract void tryOperator(ArrayList<Equation> equation);
 
 	protected Paint getPaint() {
 		Paint temp;
@@ -312,7 +345,7 @@ abstract public class Equation extends ArrayList<Equation> {
 		while (true) {
 			if (current.equals(this)) {
 				return true;
-			} else if (!(current instanceof AddEquation || current.equals(equation))) {
+			} else if (!(current instanceof AddEquation || current.equals(equation) || current instanceof MinusEquation)) {
 				return false;
 			} else {
 				current = current.parent;
@@ -341,7 +374,7 @@ abstract public class Equation extends ArrayList<Equation> {
 		while (true) {
 			if (current.equals(this)) {
 				return true;
-			} else if (!(current instanceof MultiDivSuperEquation || current.equals(equation))) {
+			} else if (!(current instanceof MinusEquation || current instanceof MultiDivSuperEquation || current.equals(equation))) {
 				return false;
 			} else {
 				current = current.parent;
@@ -462,13 +495,13 @@ abstract public class Equation extends ArrayList<Equation> {
 
 	public void isDemo(boolean b) {
 		if (b){
-			if (owner.demo !=null){
-				owner.demo.isDemo(false);
+			if (owner.dragging != null &&owner.dragging.demo !=null){
+				owner.dragging.demo.isDemo(false);
 			}
-			owner.demo = this;
+			owner.dragging.demo = this;
 			demo = true;
 		}else{
-			owner.demo = null;
+			owner.dragging.demo = null;
 			demo = false;
 		}
 		
@@ -480,6 +513,13 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public void integrityCheckOuter() {
         integrityCheck();
+        if (parent != null){
+            if (!parent.deepContains(this)){
+                Log.e("ic", "parent does not contain this");
+            }
+        }else if (!(this instanceof EqualsEquation)){
+            Log.e("ic","has no parent");
+        }
         for (Equation e: this){
             e.integrityCheckOuter();
         }
@@ -516,17 +556,29 @@ abstract public class Equation extends ArrayList<Equation> {
 		}
 		
 		if (can){
-			if (op == Op.ADD && side() != dragging.demo.side()){
-				dragging.demo.negative = !dragging.demo.negative;
-			}
+            boolean sameSide = (op == Op.ADD && side() != dragging.demo.side());
+            //peel off the minus signs
+            ArrayList<MinusEquation> minusSigns = new ArrayList<MinusEquation>();
+            while (this.parent instanceof MinusEquation){
+                minusSigns.add((MinusEquation) this.parent);
+                this.parent.replace(this);
+            }
+
 			if (this instanceof NumConstEquation && ((NumConstEquation)this).getValue() ==0 && op == Op.ADD ){
                 dragging.demo.remove();
-                this.replace(dragging.demo);
+                this.replace(dragging.getAndUpdateDemo(this,sameSide));
+                return true;
             }else if (this instanceof NumConstEquation && ((NumConstEquation)this).getValue() ==1 && op == Op.MULTI ){
                 dragging.demo.remove();
-                this.replace(dragging.demo);
-            }else
-            if ((parent instanceof AddEquation && op == Op.ADD) ||
+                this.replace(dragging.getAndUpdateDemo(this,sameSide));
+                // bring back the minus signs on demo
+                for (MinusEquation me:minusSigns){
+                    me.clear();
+                    dragging.demo.replace(me);
+                    me.add(dragging.demo);
+                }
+                return true;
+            }else if ((parent instanceof AddEquation && op == Op.ADD) ||
 					(parent instanceof MultiEquation && op == Op.MULTI)){
                 if (parent.equals(dragging.demo.parent)) {
                     dragging.demo.justRemove();
@@ -536,9 +588,9 @@ abstract public class Equation extends ArrayList<Equation> {
 				int myIndex = parent.indexOf(this);
 				Log.i("","added to existing");
 				if (dragging.demo.x < x){
-					parent.add(myIndex+1,dragging.demo);
+					parent.add(myIndex+1,dragging.getAndUpdateDemo(this,sameSide));
 				}else{
-					parent.add(myIndex,dragging.demo);
+					parent.add(myIndex,dragging.getAndUpdateDemo(this,sameSide));
 				}
 			}else{
 				dragging.demo.remove();
@@ -552,7 +604,7 @@ abstract public class Equation extends ArrayList<Equation> {
 				}else if (op == Op.MULTI){
 					newEq = new MultiEquation(owner);
 				}
-				
+
 				if (oldEq.parentheses){
 					oldEq.parentheses = false;
 					newEq.parentheses = true;
@@ -561,19 +613,26 @@ abstract public class Equation extends ArrayList<Equation> {
 					
 					oldEq.replace(newEq);
 					if (right){
-						newEq.add(dragging.demo);
+						newEq.add(dragging.getAndUpdateDemo(this,sameSide));
 						newEq.add(oldEq);
 					}else{
 						newEq.add(oldEq);
-						newEq.add(dragging.demo);
+						newEq.add(dragging.getAndUpdateDemo(this,sameSide));
 					}
 				}else{
 					oldEq.replace(newEq);
 					newEq.add(oldEq);
-					newEq.add(dragging.demo);
+					newEq.add(dragging.getAndUpdateDemo(this,sameSide));
 				}
 				
 			}
+            // bring back the minus signs
+            Equation at =this;
+            for (MinusEquation me:minusSigns){
+                me.clear();
+                at.replace(me);
+                me.add(at);
+            }
 			return true;
 		}
 		if (parent instanceof EqualsEquation){

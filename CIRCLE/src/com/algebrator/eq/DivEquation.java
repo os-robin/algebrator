@@ -160,7 +160,10 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		return get(0).same(e.get(0)) && get(1).same(e.get(1));
 	}
 	
-	public void tryOperator(Equation a, Equation b){
+	public void tryOperator(ArrayList<Equation> eqs) {
+
+        Equation a = eqs.get(0);
+        Equation b = eqs.get(1);
         //it should cancel any commonalties
         //if you have .../1 it should handle that
         //if youhave 0/... needs to handle that too
@@ -197,13 +200,23 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
             top.removeCommon(common);
             bot.removeCommon(common);
 
-            if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
+            if (!(sortaNumber(bot.getEquation(owner)) && Math.abs(getValue(bot.getEquation(owner)))  == 1)){
                 Equation inner = new DivEquation(owner);
                 inner.add(top.getEquation(owner));
                 inner.add(bot.getEquation(owner));
                 result = inner;
             }else{
-                result = top.getEquation(owner);
+                if (getValue(bot.getEquation(owner))== -1){
+                    if (top.getEquation(owner) instanceof MinusEquation){
+                        result = top.getEquation(owner).get(0);
+                    }else{
+                        Equation inner = top.getEquation(owner);
+                        result = new MinusEquation(owner);
+                        result.add(inner);
+                    }
+                }else {
+                    result = top.getEquation(owner);
+                }
             }
         }
         replace(result);

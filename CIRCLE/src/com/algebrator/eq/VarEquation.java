@@ -16,7 +16,6 @@ public class VarEquation extends LeafEquation {
 		Equation result = new VarEquation(this.display, this.owner);
 
 		result.parentheses = this.parentheses;
-		result.negative = this.negative;
 
 		return result;
 	}

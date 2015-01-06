@@ -74,15 +74,59 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 	
-	public void tryOperator(Equation a, Equation b){
-        while (a instanceof MultiEquation) {
-            a = a.get(a.size() - 1);
+	public void tryOperator(ArrayList<Equation> eqs) {
+        //TODO handle inbeddedness
+
+        int at = Math.min(indexOf(eqs.get(0)), indexOf(eqs.get(1)));
+
+        float aSign = 1;
+
+        Equation a = eqs.get(0);
+        // we need to digg throught all t
+        while (a instanceof MultiEquation || a instanceof MinusEquation){
+            if (a instanceof MinusEquation){
+                aSign*=-1;
+            }
+            a = a.get(0);
         }
-        while (b instanceof MultiEquation) {
-            b = b.get(b.size() - 1);
+        while (a instanceof  MinusEquation){
+            aSign *= -1;
+            a = a.parent;
+        }
+        if (aSign ==-1){
+            if (a instanceof MinusEquation){
+                a= a.get(0);
+            }else {
+                Equation old = a;
+                a = new MinusEquation(owner);
+                a.add(old);
+            }
         }
 
-        int at = Math.min(indexOf(a), indexOf(b));
+        float bSign = 1;
+
+        Equation b = eqs.get(1);
+        // we need to digg throught all t
+        while (b instanceof MultiEquation || b instanceof MinusEquation){
+            if (b instanceof MinusEquation){
+                bSign*=-1;
+            }
+            b = b.get(0);
+        }
+        while (b instanceof  MinusEquation){
+            bSign *= -1;
+            b = b.parent;
+        }
+
+        if (bSign ==-1){
+            if (b instanceof MinusEquation){
+                b= b.get(0);
+            }else {
+                Equation old = b;
+                b = new MinusEquation(owner);
+                b.add(old);
+            }
+        }
 
         Equation top = null;
         Equation bottom = null;
@@ -93,8 +137,10 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
         for (OnTop onTop: new OnTop[]{OnTop.TOP,OnTop.BOT}){
             // find all the equations on each side
             HashSet<Equation> left = new HashSet<Equation>();
+
             findEquation(onTop,a,left);
             HashSet<Equation> right =new HashSet<Equation>();
+
             findEquation(onTop,b,right);
             // multiply && combine like terms
             HashSet<MultiCountData> fullSet = Multiply(left,right, (onTop==OnTop.TOP?true:false));
@@ -173,8 +219,8 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
     }
 
     private void multiplyHelper(Equation e, MultiCountData result) {
-        if (e instanceof NumConstEquation){
-            result.value *= ((NumConstEquation) e).getValue();
+        if (sortaNumber(e)){
+            result.value *= getValue(e);
         }else if (e instanceof MultiEquation){
             for (Equation ee: e){
                 if (ee instanceof  MultiEquation) {
@@ -209,7 +255,7 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
                 }
             }
             return;
-        }else if (e instanceof  LeafEquation){
+        }else if (e instanceof  LeafEquation || e instanceof MinusEquation){
             if (onTop != OnTop.BOT) {
                 set.add(e);
             }
@@ -228,8 +274,13 @@ class MultiCountData {
     }
 
     private void update(Equation e) {
+        if (e instanceof MinusEquation){
+            value *= -1;
+            e = e.get(0);
+        }
+
         if (e instanceof NumConstEquation){
-            value=((NumConstEquation) e).getValue();
+            value*=((NumConstEquation) e).getValue();
         }else if (e instanceof MultiEquation){
             for (Equation ee:e){
                 update(ee);
@@ -261,7 +312,13 @@ class MultiCountData {
 
     public Equation getEquation(SuperView owner) {
         if ( key.size() ==0){
-            return new NumConstEquation(value ,owner);
+            if (value <0){
+                Equation minus = new MinusEquation(owner);
+                minus.add(new NumConstEquation(-value, owner));
+                return minus;
+            }else{
+                return new NumConstEquation(value, owner);
+            }
         }else{
             if (key.size() ==1 && value ==1){
                 return (Equation) key.toArray()[0];

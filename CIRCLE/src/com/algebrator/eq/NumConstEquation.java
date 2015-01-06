@@ -3,6 +3,7 @@ package com.algebrator.eq;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
@@ -12,8 +13,7 @@ public class NumConstEquation extends LeafEquation {
 	public NumConstEquation(double number, SuperView owner) {
 		super(owner);
         if (number <0){
-            negative =true;
-            number = -number;
+            Log.e("","should be positive");
         }
 		this.display = number+"";
         if (display.contains(".")) {
@@ -30,7 +30,7 @@ public class NumConstEquation extends LeafEquation {
 	
 	public double getValue(){
 		double value = Double.parseDouble(display);
-		return (this.negative?-value:value);
+		return value;
 	}
 	
 	@Override
