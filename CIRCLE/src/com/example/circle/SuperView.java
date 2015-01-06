@@ -3,6 +3,7 @@ package com.example.circle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,13 +32,14 @@ import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.LeafEquation;
+import com.algebrator.eq.MinusEquation;
 import com.algebrator.eq.MultiEquation;
+import com.algebrator.eq.PlaceholderEquation;
 
 public abstract class SuperView extends View implements
 		OnTouchListener {//Runnable,
     public Equation selected;
     public DragEquation dragging;
-    public Equation demo;
     //SurfaceHolder surfaceHolder;
     Thread thread = null;
     volatile boolean running = false;
@@ -172,7 +174,6 @@ public abstract class SuperView extends View implements
 //				try {
 //					wait(100);
 //				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 //			}
@@ -280,14 +281,31 @@ public abstract class SuperView extends View implements
                             event.getY());
                     selectingSet.addAll(ons);
 
+                    String toLog = "";
+                    for (Equation e: selectingSet){
+                        toLog += e.toString() + ",";
+                    }
+
+                    Log.i("selectingSet", toLog);
+
                     // see if they left the box
                     if (!stupid.inBox(event.getX(), event.getY())) {
-                        resolveSelected();
+                        //if (!(selectingSet.size() ==1 && selectingSet.toArray()[0] instanceof  MinusEquation)){
+                            resolveSelected();
+                        //}else{
+                        //    selected = (Equation)selectingSet.toArray()[0];
+                        //}
+
+
                         if (selected != null) {
                             myMode = TouchMode.DRAG;
+                            // we need to take all the - signs with us
+                            while (selected.parent instanceof MinusEquation){
+                                selected = selected.parent;
+                            }
                             //if (selected.canPop()) {
-                            selected.isDemo(true);
                             dragging = new DragEquation(selected);
+                            selected.isDemo(true);
                             dragging.eq.x = event.getX();
                             dragging.eq.y = event.getY();
                             //}
@@ -309,17 +327,18 @@ public abstract class SuperView extends View implements
                                 .hashCode()
                                 + "|"
                                 + closest.get(i).equation.getDisplay(0)
+                                + "|"
+                                + closest.get(i).dis
                                 + " ";
                     }
-                    Log.i("closest", whatdowehavehere);
+                    Log.i("closest", dragging.demo.hashCode()+ "|" + dragging.demo.toString()+" "+whatdowehavehere);
 
                     boolean found = false;
                     for (int i = 0; i < closest.size() && !found; i++) {
-                        if (demo.deepContains(closest.get(i).equation)) {
+                        if (dragging.demo.deepContains(closest.get(i).equation)) {
                             found = true;
                             Log.i("drag", "no Move");
                         } else {
-
                             found = closest.get(i).tryInsert(dragging);
 
                             if (dragging.demo.parent == null) {
@@ -334,7 +353,8 @@ public abstract class SuperView extends View implements
                             .getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
                             .get(0).x && event.getX() >= stupid.lastPoint
                             .get(0).x))) {
-                        dragging.eq.negative = !dragging.eq.negative;
+                        //TODO handle negetives
+                        //dragging.eq.negative = !dragging.eq.negative;
                     }
 
                     dragging.eq.x = event.getX();
@@ -365,7 +385,7 @@ public abstract class SuperView extends View implements
                     Point tapPoint = new Point();
                     tapPoint.x = (int) event.getX();
                     tapPoint.y = (int) event.getY();
-                    if (tapSpacing < doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance) {
+                    if (tapSpacing < doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode ==TouchMode.SELECT) {
                         Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
                         stupid.tryOperator(event.getX(),
                                 event.getY());
@@ -389,7 +409,6 @@ public abstract class SuperView extends View implements
                 endOnePointer(event);
                 myMode = TouchMode.ZOOM;
             }
-
     }
 
     else
@@ -432,84 +451,109 @@ public abstract class SuperView extends View implements
 		}else if (myMode == TouchMode.DRAG){
             stupid.fixIntegrety();
 
-            demo.isDemo(false);
+            dragging.demo.isDemo(false);
             dragging = null;
 
             if (selected != null) {
                 selected.setSelected(false);
             }
         }
-
-
 	}
 
-	private void resolveSelected() {
-		// now we need to figure out what we are selecting
-		// find the least commond parent
-		Equation lcp = null;
-		for (Equation eq : selectingSet) {
-			if (lcp == null) {
-				lcp = eq;
-			} else {
-				lcp = lcp.lowestCommonContainer(eq);
-			}
-		}
+    protected void resolveSelected() {
+        // now we need to figure out what we are selecting
+        // find the least commond parent
+        boolean shareParent=true;
+        Equation lcp = null;
+        if (selectingSet.size() ==1){
+            lcp = (Equation) selectingSet.toArray()[0];
+            shareParent = false;
+        }else {
+            for (Equation eq : selectingSet) {
+                if (lcp == null) {
+                    lcp = eq.parent;
+                } else if (!eq.parent.equals(lcp)) {
+                    shareParent = false;
+                    lcp = lcp.lowestCommonContainer(eq);
+                }
+            }
+        }
 
-		if (!(lcp instanceof LeafEquation) && lcp != null ) {
-			// are they all next to each other?
-			int[] indexs = new int[selectingSet.size()];
-			int at = 0;
-			for (Equation eq : selectingSet) {
-				indexs[at] = lcp.indexOf(eq);
-				at++;
-			}
-			Arrays.sort(indexs);
-			boolean pass = true;
-			for (int i = 0; i < indexs.length - 1 && pass; i++) {
-				if (indexs[i] + 1 != indexs[i + 1]) {
-					pass = false;
-				}
-			}
-			if (pass) {
-				// if they do not make up all of lcp
-				if (indexs.length != lcp.size()) {
-					// we make a new equation of the type of lcp
-					Equation toSelect = null;
-					if (lcp instanceof MultiEquation) {
-						toSelect = new MultiEquation(this);
-					} else if (lcp instanceof AddEquation) {
-						toSelect = new AddEquation(this);
-					}
-					// remove the selectingSet from lcp and add it to our
-					// new equation
+        // let's check if we can flatten
+        if (!shareParent && lcp instanceof AddEquation) {
+            boolean canFlatten = true;
+            Object[] array = selectingSet.toArray();
+            for (int i = 0; i < array.length - 1 && canFlatten; i++) {
+                canFlatten = ((AddEquation) lcp).canFlatten((Equation)array[i],(Equation)array[i+1]);
+            }
+            if (canFlatten){
+                for (int i = 0; i < array.length - 1 && canFlatten; i++) {
+                    ((AddEquation) lcp).flatten((Equation)array[i],(Equation)array[i+1]);
+                }
+                shareParent = true;
+            }
+        }
 
-					for (Equation eq : selectingSet) {
-						lcp.justRemove(eq);
-						toSelect.add(eq);
-					}
-					// insert the new equation in to lcp
-					lcp.add(indexs[0], toSelect);
-					// and select the new equation
-					toSelect.setSelected(true);
-				} else {
-					lcp.setSelected(true);
-				}
-			}
-		} else {
-			if (lcp != null) {
-				lcp.setSelected(true);
-			} else {
-			}
-		}
-		selectingSet = new HashSet<Equation>();
-	}
+        if (shareParent && lcp != null) {
+            // are they all next to each other?
+            int[] indexs = new int[selectingSet.size()];
+            int at = 0;
+            for (Equation eq : selectingSet) {
+                indexs[at] = lcp.indexOf(eq);
+                at++;
+            }
+            Arrays.sort(indexs);
+            boolean pass = true;
+            for (int i = 0; i < indexs.length - 1 && pass; i++) {
+                if (indexs[i] + 1 != indexs[i + 1]) {
+                    pass = false;
+                }
+            }
+            if (pass) {
+                // if they do not make up all of lcp
+                if (indexs.length != lcp.size()) {
+                    // we make a new equation of the type of lcp
+                    Equation toSelect = null;
+                    if (lcp instanceof MultiEquation) {
+                        toSelect = new MultiEquation(this);
+                    } else if (lcp instanceof AddEquation) {
+                        toSelect = new AddEquation(this);
+                    }
+                    //sort selected set
+                    ArrayList<Equation> selectedList = new ArrayList<Equation>();
+                    at = indexs[0];
+                    while (at <= indexs[indexs.length-1]){
+                        for (Equation e: selectingSet){
+                            if (lcp.indexOf(e)==at){
+                                selectedList.add(e);
+                                at++;
+                            }
+                        }
+                    }
 
-    public void configChange() {
-        Log.i("","config chagnged");
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Log.i("orientation", "landscape");
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Log.i("orientation", "portrait");
-//        }
+                    // remove the selectingSet from lcp and add it to our
+                    // new equation
+                    for (Equation eq : selectedList) {
+                        lcp.justRemove(eq);
+                        toSelect.add(eq);
+                    }
+                    // insert the new equation in to lcp
+                    lcp.add(indexs[0], toSelect);
+                    // and select the new equation
+                    toSelect.setSelected(true);
+                } else {
+                    lcp.setSelected(true);
+                }
+            }
+        } else {
+            if (lcp != null) {
+                lcp.setSelected(true);
+            } else {
+            }
+        }
+
+        selectingSet = new HashSet<Equation>();
     }
+
+
 }

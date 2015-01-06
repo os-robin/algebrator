@@ -45,7 +45,7 @@ public class Button {
 		this.highlightColor = highlightColor;
 	}
 
-	final int SCALE = 10;
+	final float SCALE = 10;
 	public void draw(Canvas canvas) {
 
         canvasHeight = canvas.getHeight();
@@ -62,10 +62,16 @@ public class Button {
 		int targetBlue = android.graphics.Color.blue(targetBkgColor);
 		
 		//if(currentAlpha > 0) {
-			currentColor = android.graphics.Color.argb(((SCALE-1)*currentAlpha+targetAlpha)/SCALE,
-                    ((SCALE-1)*currentRed+targetRed)/SCALE,
-                    ((SCALE-1)*currentGreen+targetGreen)/SCALE,
-                    ((SCALE-1)*currentBlue+targetBlue)/SCALE);
+        int lastColor = currentColor;
+
+			currentColor = android.graphics.Color.argb(
+                    (int)(((SCALE-1)*currentAlpha+targetAlpha)/SCALE),
+                    (int)(((SCALE-1)*currentRed+targetRed)/SCALE),
+                    (int)(((SCALE-1)*currentGreen+targetGreen)/SCALE),
+                    (int)(((SCALE-1)*currentBlue+targetBlue)/SCALE));
+        if (lastColor == currentColor){
+            currentColor = targetBkgColor;
+        }
 		//}
 		
 		bkgPaint.setColor(currentColor);

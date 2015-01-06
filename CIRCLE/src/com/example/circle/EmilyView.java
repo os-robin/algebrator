@@ -14,6 +14,7 @@ import android.view.View;
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.example.circle.Actions.Action;
@@ -113,8 +114,12 @@ public class EmilyView extends SuperView {
 		varY.myAction = new VarAction(this, varY.text);
 		buttons.add(varY);
 
-		buttons.add(new Button(10f / 11f, 11f / 11f,
-				4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
+		//buttons.add(new Button(10f / 11f, 11f / 11f,
+		//		4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
+        Button solve = new Button(10f / 11f, 11f / 11f,
+                		4f / 6f, 5f / 6f, "solve", text, bkg, highlight);
+        solve.myAction = new Solve(this);
+        buttons.add(solve);
 
 		for (int i = 0; i < 4; i++) {
 			buttons.add(new Button( ((i + 0.5f)==.5f?0:(i + 0.5f)) / 11f,
@@ -152,9 +157,9 @@ public class EmilyView extends SuperView {
 				highlight));
 		buttons.add(delete);
 
-		Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
-				bkg, highlight);
-		solve.myAction = new Solve(this);
+		//Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
+		//		bkg, highlight);
+		//solve.myAction = new Solve(this);
 		buttons.add(solve);
 
 		/*
@@ -173,27 +178,27 @@ public class EmilyView extends SuperView {
 		stupid.add(empty1);
 		stupid.add(empty2);
 
-		buttons.get(10).myAction = new Action(this) {
-			int count = 0;
-
-			@Override
-			public void act() {
-
-				// TODO while there is room:
-				// TODO allow the player to enter a var name
-				// TODO it would be cool if you could swipe up or something to
-				// delete these
-
-				Button tempButton = new Button((10f - count) / 11f, (11f - count) / 11f, 3f / 6f, 4f/ 6f,
-						"A" + count, text, bkg, highlight);
-				tempButton.myAction = new VarAction(emilyView, tempButton.text);
-
-				vars.add(tempButton);
-
-				count++;
-			}
-
-		};
+//		buttons.get(10).myAction = new Action(this) {
+//			int count = 0;
+//
+//			@Override
+//			public void act() {
+//
+//				// TODO while there is room:
+//				// TODO allow the player to enter a var name
+//				// TODO it would be cool if you could swipe up or something to
+//				// delete these
+//
+//				Button tempButton = new Button((10f - count) / 11f, (11f - count) / 11f, 3f / 6f, 4f/ 6f,
+//						"A" + count, text, bkg, highlight);
+//				tempButton.myAction = new VarAction(emilyView, tempButton.text);
+//
+//				vars.add(tempButton);
+//
+//				count++;
+//			}
+//
+//		};
 
 	};
 
@@ -215,4 +220,6 @@ public class EmilyView extends SuperView {
 		}
 		return super.onTouch(view, event);
 	}
+
+
 }
