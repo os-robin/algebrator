@@ -9,17 +9,17 @@ import com.example.circle.MainActivity;
 
 public class Solve extends Action {
 
-	public Solve(EmilyView emilyView) {
-		super(emilyView);
-	}
+    public Solve(EmilyView emilyView) {
+        super(emilyView);
+    }
 
-	@Override
-	public void act() {
-		emilyView.onPause();
-		Context c = emilyView.getContext();
-		ColinView colinView = new ColinView(c);
+    @Override
+    public void act() {
+        emilyView.onPause();
+        Context c = emilyView.getContext();
+        ColinView colinView = new ColinView(c);
         colinView.stupid = emilyView.stupid;
-		((MainActivity)c).lookAt(colinView);
-		colinView.onResume();
-	}
+        ((MainActivity) c).lookAt(colinView);
+        colinView.onResume();
+    }
 }

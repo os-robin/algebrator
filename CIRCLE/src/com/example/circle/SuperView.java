@@ -35,6 +35,7 @@ import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MinusEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
 
 public abstract class SuperView extends View implements
 		OnTouchListener {//Runnable,
@@ -43,7 +44,7 @@ public abstract class SuperView extends View implements
     //SurfaceHolder surfaceHolder;
     Thread thread = null;
     volatile boolean running = false;
-    public EqualsEquation stupid;
+    public Equation stupid;
     int width;
     int height;
     int offsetX = 0;
@@ -202,7 +203,7 @@ public abstract class SuperView extends View implements
             updateOffsetY(vy);
         }
 
-        stupid.drawCentered(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
         stupid.integrityCheckOuter();
         if (!stupid.toString().equals(lastLog)) {
             Log.i("", stupid.toString());
@@ -247,7 +248,8 @@ public abstract class SuperView extends View implements
 
     enum TouchMode {BUTTON, DRAG, SELECT, MOVE, ZOOM, DEAD}
 
-    ;
+    public boolean canDrag=false;
+
     private TouchMode myMode;
 
     @Override
@@ -258,11 +260,17 @@ public abstract class SuperView extends View implements
                 // figure out the mode;
                 if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
+                    if (selected instanceof PlaceholderEquation){
+                        if (!(selected.parent.size()==1 && selected.parent!= null)) {
+                            selected.remove();
+                        }
+                    }
                 } else if (inButtons(event)) {
                     myMode = TouchMode.BUTTON;
                 } else {
                     myMode = TouchMode.MOVE;
-                    if (selected != null) {
+
+                    if (selected != null && !(selected instanceof PlaceholderEquation)) {
                         selected.setSelected(false);
                     }
                 }
@@ -289,7 +297,7 @@ public abstract class SuperView extends View implements
                     Log.i("selectingSet", toLog);
 
                     // see if they left the box
-                    if (!stupid.inBox(event.getX(), event.getY())) {
+                    if (canDrag &&  !stupid.inBox(event.getX(), event.getY())) {
                         //if (!(selectingSet.size() ==1 && selectingSet.toArray()[0] instanceof  MinusEquation)){
                             resolveSelected();
                         //}else{
@@ -460,100 +468,6 @@ public abstract class SuperView extends View implements
         }
 	}
 
-    protected void resolveSelected() {
-        // now we need to figure out what we are selecting
-        // find the least commond parent
-        boolean shareParent=true;
-        Equation lcp = null;
-        if (selectingSet.size() ==1){
-            lcp = (Equation) selectingSet.toArray()[0];
-            shareParent = false;
-        }else {
-            for (Equation eq : selectingSet) {
-                if (lcp == null) {
-                    lcp = eq.parent;
-                } else if (!eq.parent.equals(lcp)) {
-                    shareParent = false;
-                    lcp = lcp.lowestCommonContainer(eq);
-                }
-            }
-        }
-
-        // let's check if we can flatten
-        if (!shareParent && lcp instanceof AddEquation) {
-            boolean canFlatten = true;
-            Object[] array = selectingSet.toArray();
-            for (int i = 0; i < array.length - 1 && canFlatten; i++) {
-                canFlatten = ((AddEquation) lcp).canFlatten((Equation)array[i],(Equation)array[i+1]);
-            }
-            if (canFlatten){
-                for (int i = 0; i < array.length - 1 && canFlatten; i++) {
-                    ((AddEquation) lcp).flatten((Equation)array[i],(Equation)array[i+1]);
-                }
-                shareParent = true;
-            }
-        }
-
-        if (shareParent && lcp != null) {
-            // are they all next to each other?
-            int[] indexs = new int[selectingSet.size()];
-            int at = 0;
-            for (Equation eq : selectingSet) {
-                indexs[at] = lcp.indexOf(eq);
-                at++;
-            }
-            Arrays.sort(indexs);
-            boolean pass = true;
-            for (int i = 0; i < indexs.length - 1 && pass; i++) {
-                if (indexs[i] + 1 != indexs[i + 1]) {
-                    pass = false;
-                }
-            }
-            if (pass) {
-                // if they do not make up all of lcp
-                if (indexs.length != lcp.size()) {
-                    // we make a new equation of the type of lcp
-                    Equation toSelect = null;
-                    if (lcp instanceof MultiEquation) {
-                        toSelect = new MultiEquation(this);
-                    } else if (lcp instanceof AddEquation) {
-                        toSelect = new AddEquation(this);
-                    }
-                    //sort selected set
-                    ArrayList<Equation> selectedList = new ArrayList<Equation>();
-                    at = indexs[0];
-                    while (at <= indexs[indexs.length-1]){
-                        for (Equation e: selectingSet){
-                            if (lcp.indexOf(e)==at){
-                                selectedList.add(e);
-                                at++;
-                            }
-                        }
-                    }
-
-                    // remove the selectingSet from lcp and add it to our
-                    // new equation
-                    for (Equation eq : selectedList) {
-                        lcp.justRemove(eq);
-                        toSelect.add(eq);
-                    }
-                    // insert the new equation in to lcp
-                    lcp.add(indexs[0], toSelect);
-                    // and select the new equation
-                    toSelect.setSelected(true);
-                } else {
-                    lcp.setSelected(true);
-                }
-            }
-        } else {
-            if (lcp != null) {
-                lcp.setSelected(true);
-            } else {
-            }
-        }
-
-        selectingSet = new HashSet<Equation>();
-    }
-
+    protected abstract void resolveSelected();
 
 }

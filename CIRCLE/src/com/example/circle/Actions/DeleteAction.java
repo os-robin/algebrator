@@ -1,6 +1,6 @@
 package com.example.circle.Actions;
 
-import com.algebrator.eq.EqualsEquation;
+import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -8,56 +8,48 @@ import com.example.circle.EmilyView;
 
 public class DeleteAction extends Action {
 
-	public String num;
+    public String num;
 
-	public DeleteAction(EmilyView emilyView) {
-		super(emilyView);
-	}
+    public DeleteAction(EmilyView emilyView) {
+        super(emilyView);
+    }
 
-	@Override
-	public void act() {
-		Equation target = emilyView.selected;
-        if (target != null) {
-            if (emilyView.selected instanceof NumConstEquation) {
-                if (((NumConstEquation) emilyView.selected).getDisplay(-1).length() != 0) {
-                    String toSet = (String) ((NumConstEquation) emilyView.selected).getDisplay(-1)
-                            .subSequence(0,
-                                    ((NumConstEquation) emilyView.selected).getDisplay(-1)
-                                            .length() - 1);
-                    if (toSet.length() != 0&& toSet.charAt(0) == '-'){
-                        toSet = toSet.substring(1,toSet.length());
+    @Override
+    public void act() {
+        if (emilyView.selected instanceof PlaceholderEquation) {
+            Equation l = emilyView.left();
+            if (l != null) {
+                if (l.parent instanceof DivEquation) {
+                    l.parent.replace(l);
+                    int pos = l.parent.indexOf(l);
+                    l.parent.add(pos + 1, emilyView.selected);
+                } else if (l instanceof NumConstEquation) {
+                    if (((NumConstEquation) l).getDisplay(-1).length() != 0) {
+                        String toSet = (String) ((NumConstEquation) l).getDisplay(-1)
+                                .subSequence(0,
+                                        ((NumConstEquation) l).getDisplay(-1)
+                                                .length() - 1);
+                        if (toSet.length() != 0 && toSet.charAt(0) == '-') {
+                            toSet = toSet.substring(1, toSet.length());
+                        }
+                        ((NumConstEquation) l).setDisplay(toSet);
                     }
-                        ((NumConstEquation) emilyView.selected).setDisplay(toSet);
-                }
-                if (((NumConstEquation) emilyView.selected).getDisplay(0).length() == 0) {
-                    delete();
-                }
-            } else if (emilyView.selected instanceof PlaceholderEquation) {
-                emilyView.selected.remove();
-                if (target.isSelected()) {
-                    target.setSelected(false);
-                }
-            } else if (!(emilyView.selected instanceof EqualsEquation)) {
-                Equation oldEq = emilyView.selected;
-                PlaceholderEquation temp = new PlaceholderEquation(emilyView);
-                oldEq.replace(temp);
-                if (target.isSelected()) {
-                    target.setSelected(false);
+                    if (((NumConstEquation) l).getDisplay(0).length() == 0) {
+                        l.remove();
+                    }
+                } else {
+                    l.remove();
                 }
             }
-
+        } else {
+            // if they have a stack of stuff selected kill it all and replace it wiht a new Placeholder
+            Equation newEq = new PlaceholderEquation(emilyView);
+            emilyView.selected.replace(newEq);
+            newEq.setSelected(true);
         }
-		//else if (emilyView.selected instanceof EqualsEquation){
-		//	emilyView.selected.remove();
-		//}
-	}
-
-    private void delete() {
-        PlaceholderEquation temp = new PlaceholderEquation(emilyView);
-        int at = emilyView.selected.parent
-                .lastIndexOf(emilyView.selected);
-        emilyView.selected.parent.set(at, temp);
-        temp.parent = emilyView.selected.parent;
-        temp.setSelected(true);
+        //else if (emilyView.selected instanceof EqualsEquation){
+        //	emilyView.selected.remove();
+        //}
     }
+
 }

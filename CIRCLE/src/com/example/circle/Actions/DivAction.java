@@ -7,28 +7,34 @@ import com.example.circle.EmilyView;
 
 public class DivAction extends Action {
 
-	public DivAction(EmilyView emilyView) {
-		super(emilyView);
-	}
+    public DivAction(EmilyView emilyView) {
+        super(emilyView);
+    }
 
-	@Override
-	public void act() {
+    @Override
+    public void act() {
 
-		Equation oldEq = emilyView.selected;
-		DivEquation newEq = new DivEquation(emilyView);
-		if (oldEq instanceof PlaceholderEquation){
-			if (oldEq.parentheses) {
-				oldEq.parentheses = false;
-				newEq.parentheses = true;
-			}
-		}
-		oldEq.replace(newEq);
-		newEq.add(oldEq);
+        if (emilyView.selected instanceof PlaceholderEquation) {
+            Equation l = emilyView.left();
+            if (l != null && !isOp(l)) {
+                emilyView.selected.justRemove();
+                Equation oldEq = l;
+                DivEquation newEq = new DivEquation(emilyView);
+                oldEq.replace(newEq);
+                newEq.add(oldEq);
+                newEq.add(emilyView.selected);
+            } else {
 
-		PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
-		newEq.add(rightAdd);
-		rightAdd.setSelected(true);
-
-	}
+            }
+        } else {
+            Equation oldEq = emilyView.selected;
+            DivEquation newEq = new DivEquation(emilyView);
+            oldEq.replace(newEq);
+            newEq.add(oldEq);
+            Equation placeHolder = new PlaceholderEquation(emilyView);
+            newEq.add(placeHolder);
+            placeHolder.setSelected(true);
+        }
+    }
 
 }

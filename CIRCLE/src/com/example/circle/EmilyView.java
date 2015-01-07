@@ -2,6 +2,7 @@ package com.example.circle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import android.content.Context;
@@ -16,7 +17,10 @@ import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
+import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
+import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.Actions.Action;
 import com.example.circle.Actions.DecimalAction;
 import com.example.circle.Actions.DeleteAction;
@@ -31,38 +35,41 @@ import com.example.circle.Actions.VarAction;
 
 public class EmilyView extends SuperView {
 
-	/**
-	 * list of our buttons
-	 */
+    /**
+     * list of our buttons
+     */
 
-	/**
-	 * list of our passed in variables
-	 */
-	ArrayList<Button> vars = new ArrayList<Button>();
+    /**
+     * list of our passed in variables
+     */
+    ArrayList<Button> vars = new ArrayList<Button>();
 
-	public EmilyView(Context context) {
-		super(context);
-		init(context);
-	}
+    public EmilyView(Context context) {
+        super(context);
+        init(context);
+    }
 
-	public EmilyView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		init(context);
-	}
+    public EmilyView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
 
-	public EmilyView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		init(context);
-	}
+    public EmilyView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
 
-	protected void init(Context context) {
-		stupid = new EqualsEquation(this);
-		Equation x = new PlaceholderEquation(this);
-		Equation y = new PlaceholderEquation(this);
-		Log.e("zoom?", (x == y) + "");
+    protected void init(Context context) {
+        stupid = new WritingEquation(this);
+        Equation empty = new PlaceholderEquation(this);
+        stupid.add(empty);
+        empty.setSelected(true);
+        //Equation x = new PlaceholderEquation(this);
+        //Equation y = new PlaceholderEquation(this);
+        //Log.e("zoom?", (x == y) + "");
 
 		/*
-		 * modified from Elliott Hughes' "Dalvik Explorer" app on
+         * modified from Elliott Hughes' "Dalvik Explorer" app on
 		 * http://stackoverflow
 		 * .com/questions/1016896/how-to-get-screen-dimensions
 		 * 
@@ -82,88 +89,88 @@ public class EmilyView extends SuperView {
 		 * (Exception ignored) { }
 		 */
 
-		for (int i = 0; i < 5; i++) {
-			buttons.add(new Button(i  / 11f, (i + 1)  / 11f,
-					4  / 6f, 5  / 6f, i + 1 + "", text, bkg,
-					highlight));
-			buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
-		}
+        for (int i = 0; i < 5; i++) {
+            buttons.add(new Button(i / 11f, (i + 1) / 11f,
+                    4 / 6f, 5 / 6f, i + 1 + "", text, bkg,
+                    highlight));
+            buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
+        }
 
-		Button parentheses = new Button(5f  / 11f, 6f  / 11f,
-				4f / 6f, 5f / 6f, "( )", text, bkg, highlight);
-		parentheses.myAction = new ParenthesesAction(this);
+        Button parentheses = new Button(5f / 11f, 6f / 11f,
+                4f / 6f, 5f / 6f, "( )", text, bkg, highlight);
+        parentheses.myAction = new ParenthesesAction(this);
 
-		buttons.add(parentheses);
-		Button times = new Button(6f / 11f, 7f / 11f,
-				4f / 6f, 5f / 6f, "*", text, bkg, highlight);
-		times.myAction = new TimesAction(this);
-		buttons.add(times);
+        buttons.add(parentheses);
+        Button times = new Button(6f / 11f, 7f / 11f,
+                4f / 6f, 5f / 6f, "*", text, bkg, highlight);
+        times.myAction = new TimesAction(this);
+        buttons.add(times);
 
-		Button plus = new Button(7f / 11f, 8f / 11f,
-				4f / 6f, 5f / 6f, "+", text, bkg, highlight);
-		plus.myAction = new PlusAction(this);
-		buttons.add(plus);
+        Button plus = new Button(7f / 11f, 8f / 11f,
+                4f / 6f, 5f / 6f, "+", text, bkg, highlight);
+        plus.myAction = new PlusAction(this);
+        buttons.add(plus);
 
-		Button varX = new Button(8f / 11f, 9f / 11f,
-				4f / 6f, 5f  / 6f, "x", text, bkg, highlight);
-		varX.myAction = new VarAction(this, varX.text);
-		buttons.add(varX);
+        Button varX = new Button(8f / 11f, 9f / 11f,
+                4f / 6f, 5f / 6f, "x", text, bkg, highlight);
+        varX.myAction = new VarAction(this, varX.text);
+        buttons.add(varX);
 
-		Button varY = new Button(9f / 11f, 10f / 11f,
-				4f / 6f, 5f / 6f, "y", text, bkg, highlight);
-		varY.myAction = new VarAction(this, varY.text);
-		buttons.add(varY);
+        Button varY = new Button(9f / 11f, 10f / 11f,
+                4f / 6f, 5f / 6f, "y", text, bkg, highlight);
+        varY.myAction = new VarAction(this, varY.text);
+        buttons.add(varY);
 
-		//buttons.add(new Button(10f / 11f, 11f / 11f,
-		//		4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
+        //buttons.add(new Button(10f / 11f, 11f / 11f,
+        //		4f / 6f, 5f / 6f, "VAR", text, bkg, highlight));
         Button solve = new Button(10f / 11f, 11f / 11f,
-                		4f / 6f, 5f / 6f, "solve", text, bkg, highlight);
+                4f / 6f, 5f / 6f, "solve", text, bkg, highlight);
         solve.myAction = new Solve(this);
         buttons.add(solve);
 
-		for (int i = 0; i < 4; i++) {
-			buttons.add(new Button( ((i + 0.5f)==.5f?0:(i + 0.5f)) / 11f,
-					 (i + 1.5f) / 11f, 5f / 6f, 1, i
-							+ 6 + "", text, bkg, highlight));
-			buttons.get(i + 11).myAction = new NumberAction(this, i + 6 + "");
-		}
+        for (int i = 0; i < 4; i++) {
+            buttons.add(new Button(((i + 0.5f) == .5f ? 0 : (i + 0.5f)) / 11f,
+                    (i + 1.5f) / 11f, 5f / 6f, 1, i
+                    + 6 + "", text, bkg, highlight));
+            buttons.get(i + 11).myAction = new NumberAction(this, i + 6 + "");
+        }
 
-		Button delete = new Button( (9f + 0.5f) / 11f,
-				1, 5f / 6f, 1, "DEL",
-				text, bkg, highlight);
-		delete.myAction = new DeleteAction(this);
+        Button delete = new Button((9f + 0.5f) / 11f,
+                1, 5f / 6f, 1, "DEL",
+                text, bkg, highlight);
+        delete.myAction = new DeleteAction(this);
 
-		buttons.add(new Button((4f + 0.5f)  / 11f, (5f + 0.5f)
-				/ 11f, 5f / 6f, 1, "0", text, bkg,
-				highlight));
-		buttons.get(15).myAction = new NumberAction(this, "0");
-		buttons.add(new Button((5f + 0.5f)  / 11f, (6f + 0.5f)
-				 / 11f, 5f / 6f, 1, ".", text, bkg,
-				highlight));
-		buttons.get(16).myAction = new DecimalAction(this, ".");
-		Button div = new Button((6f + 0.5f) / 11f,
-				(7f + 0.5f) / 11f, 5f / 6f, 1, "/",
-				text, bkg, highlight);
-		div.myAction = new DivAction(this);
-		buttons.add(div);
+        buttons.add(new Button((4f + 0.5f) / 11f, (5f + 0.5f)
+                / 11f, 5f / 6f, 1, "0", text, bkg,
+                highlight));
+        buttons.get(15).myAction = new NumberAction(this, "0");
+        buttons.add(new Button((5f + 0.5f) / 11f, (6f + 0.5f)
+                / 11f, 5f / 6f, 1, ".", text, bkg,
+                highlight));
+        buttons.get(16).myAction = new DecimalAction(this, ".");
+        Button div = new Button((6f + 0.5f) / 11f,
+                (7f + 0.5f) / 11f, 5f / 6f, 1, "/",
+                text, bkg, highlight);
+        div.myAction = new DivAction(this);
+        buttons.add(div);
 
-		Button minus = new Button((7f + 0.5f) / 11f,
-				(8f + 0.5f) / 11, 5f / 6f, 1, "-",
-				text, bkg, highlight);
-		minus.myAction = new MinusAction(this);
-		buttons.add(minus);
-		buttons.add(new Button((8f + 0.5f) / 11f, (9f + 0.5f)
-				/ 11f, 5f / 6f, 1, "MORE", text, bkg,
-				highlight));
-		buttons.add(delete);
+        Button minus = new Button((7f + 0.5f) / 11f,
+                (8f + 0.5f) / 11, 5f / 6f, 1, "-",
+                text, bkg, highlight);
+        minus.myAction = new MinusAction(this);
+        buttons.add(minus);
+        buttons.add(new Button((8f + 0.5f) / 11f, (9f + 0.5f)
+                / 11f, 5f / 6f, 1, "MORE", text, bkg,
+                highlight));
+        buttons.add(delete);
 
-		//Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
-		//		bkg, highlight);
-		//solve.myAction = new Solve(this);
-		buttons.add(solve);
+        //Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
+        //		bkg, highlight);
+        //solve.myAction = new Solve(this);
+        buttons.add(solve);
 
 		/*
-		 * AddEquation add1 = new AddEquation(); add1.add(new
+         * AddEquation add1 = new AddEquation(); add1.add(new
 		 * NumConstEquation("3")); add1.add(new NumConstEquation("4"));
 		 * AddEquation add2 = new AddEquation(); add2.add(new
 		 * NumConstEquation("2")); add2.add(new NumConstEquation("5"));
@@ -172,11 +179,11 @@ public class EmilyView extends SuperView {
 		 * stupid.add(add1); stupid.add(add2); stupid.add(add3);
 		 */
 
-		PlaceholderEquation empty1 = new PlaceholderEquation(this);
-		empty1.setSelected(true);
-		PlaceholderEquation empty2 = new PlaceholderEquation(this);
-		stupid.add(empty1);
-		stupid.add(empty2);
+        //PlaceholderEquation empty1 = new PlaceholderEquation(this);
+        //empty1.setSelected(true);
+        //PlaceholderEquation empty2 = new PlaceholderEquation(this);
+        //stupid.add(empty1);
+        //stupid.add(empty2);
 
 //		buttons.get(10).myAction = new Action(this) {
 //			int count = 0;
@@ -200,26 +207,149 @@ public class EmilyView extends SuperView {
 //
 //		};
 
-	};
+    }
 
-	@Override
-	protected synchronized void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+    ;
 
-		for (int i = 0; i < vars.size(); i++) {
-			vars.get(i).draw(canvas);
-		}
-	}
+    @Override
+    protected synchronized void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
-	@Override
-	public boolean onTouch(View view, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			for (int i = 0; i < vars.size(); i++) {
-				vars.get(i).click(event);
-			}
-		}
-		return super.onTouch(view, event);
-	}
+        for (int i = 0; i < vars.size(); i++) {
+            vars.get(i).draw(canvas);
+        }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            for (int i = 0; i < vars.size(); i++) {
+                vars.get(i).click(event);
+            }
+        }
+        return super.onTouch(view, event);
+    }
 
 
+    @Override
+    protected void resolveSelected() {
+        // now we need to figure out what we are selecting
+        // find the least commond parent
+        boolean shareParent = true;
+        Equation lcp = null;
+        if (selectingSet.size() == 1) {
+            lcp = (Equation) selectingSet.toArray()[0];
+            shareParent = false;
+        } else {
+            for (Equation eq : selectingSet) {
+                if (lcp == null) {
+                    lcp = eq.parent;
+                } else if (!eq.parent.equals(lcp)) {
+                    shareParent = false;
+                    lcp = lcp.lowestCommonContainer(eq);
+                }
+            }
+        }
+
+        if (shareParent && lcp != null) {
+            // make sure they are a continous block
+
+            ArrayList<Integer> indexs = new ArrayList<Integer>();
+            int at = 0;
+            for (Equation eq : selectingSet) {
+                indexs.add(lcp.indexOf(eq));
+                at++;
+            }
+            Collections.sort(indexs);
+            int min = indexs.get(0);
+            int max = indexs.get(indexs.size() - 1);
+            for (int i = min+1; i < max; i++) {
+                if (!indexs.contains(i)) {
+                    selectingSet.add(lcp.get(i));
+                    indexs.add(i);
+                    Collections.sort(indexs);
+                }
+            }
+
+            // if they do not make up all of lcp
+            if (indexs.size() != lcp.size()) {
+                // we make a new equation of the type of lcp
+                Equation toSelect = null;
+                if (lcp instanceof MultiEquation) {
+                    toSelect = new MultiEquation(this);
+                } else if (lcp instanceof AddEquation) {
+                    toSelect = new AddEquation(this);
+                } else if (lcp instanceof WritingEquation) {
+                    toSelect = new WritingEquation(this);
+                }
+                //sort selected set
+                ArrayList<Equation> selectedList = new ArrayList<Equation>();
+                at = indexs.get(0);
+                while (at <= indexs.get(indexs.size() - 1)) {
+                    for (Equation e : selectingSet) {
+                        if (lcp.indexOf(e) == at) {
+                            selectedList.add(e);
+                            at++;
+                        }
+                    }
+                }
+
+                // remove the selectingSet from lcp and add it to our
+                // new equation
+                for (Equation eq : selectedList) {
+                    lcp.justRemove(eq);
+                    toSelect.add(eq);
+                }
+                // insert the new equation in to lcp
+                lcp.add(indexs.get(0), toSelect);
+                // and select the new equation
+                toSelect.setSelected(true);
+            } else {
+                lcp.setSelected(true);
+            }
+        } else {
+            if (lcp!= null){
+                lcp.setSelected(true);
+            }
+        }
+        selectingSet = new HashSet<Equation>();
+
+    }
+    // returns the equation left of the selected
+    public Equation left(){
+        Equation at = selected;
+        while (at.parent != null && at.parent.indexOf(at) == 0){
+            at = at.parent;
+            if (at.parent ==null){
+                break;
+            }
+        }
+        if (at.parent == null){
+            return null;
+        }else{
+            return at.parent.get(at.parent.indexOf(at)-1);
+        }
+    }
+
+    public void insert(Equation newEq) {
+        Equation l = left();
+        if (l != null) {
+            if (l.parent instanceof WritingEquation) {
+                if (l instanceof PlaceholderEquation) {
+                    // this really should not happen
+                    Log.e("", "yoyo");
+                    //int at = emilyView.selected.parent.indexOf(emilyView.selected);
+                    //emilyView.selected.parent.add(at, new WritingLeafEquation("+", emilyView));
+                } else {
+                    int at = l.parent.indexOf(l);
+                    l.parent.add(at + 1, newEq);
+                }
+            }
+        }else{
+            if (selected instanceof PlaceholderEquation){
+                selected.parent.add(0, newEq);
+            }
+        }
+    }
 }

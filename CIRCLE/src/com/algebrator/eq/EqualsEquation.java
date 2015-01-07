@@ -53,20 +53,6 @@ public class EqualsEquation extends Equation {
 		return result;
 	}
 
-	private int buffer = 10;
-	public boolean inBox(float x, float y) {
-		float w = measureWidth();
-		float h = measureHeight();
-		if (x > (this.x + (w/2) + buffer)){
-			return false;}
-		if (x < (this.x - (w/2) - buffer)){
-			return false;}
-		if (y > (this.y + (h/2) + buffer)){
-			return false;}
-		if (y < (this.y - (h/2) - buffer)){
-			return false;}
-		return true;
-	}
 
 	public void tryOperator(ArrayList<Equation> eqs){}
 

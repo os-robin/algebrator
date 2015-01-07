@@ -33,7 +33,7 @@ abstract public class Equation extends ArrayList<Equation> {
 	private int id;
 	private static int idBacker=0;
 
-    public abstract void  integrityCheck();
+    public void  integrityCheck(){}
 
 	public void setDisplay(String display) {
 		this.display = display;
@@ -250,6 +250,21 @@ abstract public class Equation extends ArrayList<Equation> {
 		return result;
 	}
 
+    private int buffer = 10;
+    public boolean inBox(float x, float y) {
+        float w = measureWidth();
+        float h = measureHeight();
+        if (x > (this.x + (w/2) + buffer)){
+            return false;}
+        if (x < (this.x - (w/2) - buffer)){
+            return false;}
+        if (y > (this.y + (h/2) + buffer)){
+            return false;}
+        if (y < (this.y - (h/2) - buffer)){
+            return false;}
+        return true;
+    }
+
 	public void tryOperator(float x, float y) {
 		 Object[] ons = onAny(x, y).toArray();
         if (ons.length ==1 && ons[0] instanceof MinusEquation){
@@ -270,7 +285,7 @@ abstract public class Equation extends ArrayList<Equation> {
 			 }
 	}
 	
-	public abstract void tryOperator(ArrayList<Equation> equation);
+	public void tryOperator(ArrayList<Equation> equation){};
 
 	protected Paint getPaint() {
 		Paint temp;
@@ -395,7 +410,7 @@ abstract public class Equation extends ArrayList<Equation> {
 	public Equation remove(int pos) {
 		Equation result =super.remove(pos);
 		if (result != null){
-			if (this.size() == 1) {
+			if (this.size() == 1 && !(this instanceof WritingEquation) ) {
 				this.replace(get(0));
 			} else if (size() == 0) {
 				remove();
@@ -434,11 +449,16 @@ abstract public class Equation extends ArrayList<Equation> {
 	}
 
 	public void replace(Equation eq) {
-		int index = parent.indexOf(this);
-		this.parent.set(index, eq);
-		if (this.isSelected()){
-			eq.setSelected(true);
-		}
+        if (parent!= null) {
+            int index = parent.indexOf(this);
+            this.parent.set(index, eq);
+
+        }else{
+            owner.stupid = eq;
+        }
+        if (this.isSelected()) {
+            eq.setSelected(true);
+        }
 	}
 	
 	@Override
@@ -517,7 +537,7 @@ abstract public class Equation extends ArrayList<Equation> {
             if (!parent.deepContains(this)){
                 Log.e("ic", "parent does not contain this");
             }
-        }else if (!(this instanceof EqualsEquation)){
+        }else if (!(this instanceof EqualsEquation || this instanceof  WritingEquation)){
             Log.e("ic","has no parent");
         }
         for (Equation e: this){
