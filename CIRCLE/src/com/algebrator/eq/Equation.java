@@ -355,6 +355,7 @@ abstract public class Equation extends ArrayList<Equation> {
 		canvas.drawLine(x+(w/2)-3, y+(h/2)-3, x+(w/2)-9, y+(h/2)-3, ptemp);
 	}
 
+
 	public boolean addContain(Equation equation) {
 		Equation current = equation;
 		while (true) {
@@ -410,7 +411,7 @@ abstract public class Equation extends ArrayList<Equation> {
 	public Equation remove(int pos) {
 		Equation result =super.remove(pos);
 		if (result != null){
-			if (this.size() == 1 && !(this instanceof WritingEquation) ) {
+			if (this.size() == 1 && this.parent != null) {
 				this.replace(get(0));
 			} else if (size() == 0) {
 				remove();
@@ -555,6 +556,36 @@ abstract public class Equation extends ArrayList<Equation> {
         owner = sv;
         for (Equation e:this){
             e.updateOwner(sv);
+        }
+    }
+
+    public Equation left() {
+        Equation at = this;
+        while (at.parent != null && at.parent.indexOf(at) == 0){
+            at = at.parent;
+            if (at.parent ==null){
+                break;
+            }
+        }
+        if (at.parent == null){
+            return null;
+        }else{
+            return at.parent.get(at.parent.indexOf(at)-1);
+        }
+    }
+
+    public Equation right() {
+        Equation at = this;
+        while (at.parent != null && at.parent.indexOf(at) == at.parent.size()-1){
+            at = at.parent;
+            if (at.parent ==null){
+                break;
+            }
+        }
+        if (at.parent == null){
+            return null;
+        }else{
+            return at.parent.get(at.parent.indexOf(at)+1);
         }
     }
 

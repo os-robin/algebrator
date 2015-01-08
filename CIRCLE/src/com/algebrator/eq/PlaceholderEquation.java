@@ -12,7 +12,7 @@ public class PlaceholderEquation extends LeafEquation {
 	
 	public PlaceholderEquation(SuperView owner) {
 		super(owner);
-		display = "_";
+		display = "|";
 		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 

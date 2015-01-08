@@ -84,7 +84,7 @@ public class ColinView extends SuperView {
 	}
 
     @Override
-    protected void resolveSelected() {
+    protected void resolveSelected(MotionEvent event) {
         // now we need to figure out what we are selecting
         // find the least commond parent
         boolean shareParent=true;

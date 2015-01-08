@@ -299,7 +299,7 @@ public abstract class SuperView extends View implements
                     // see if they left the box
                     if (canDrag &&  !stupid.inBox(event.getX(), event.getY())) {
                         //if (!(selectingSet.size() ==1 && selectingSet.toArray()[0] instanceof  MinusEquation)){
-                            resolveSelected();
+                            resolveSelected(event);
                         //}else{
                         //    selected = (Equation)selectingSet.toArray()[0];
                         //}
@@ -455,7 +455,7 @@ public abstract class SuperView extends View implements
 			// what did we select?
 			HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
 			selectingSet.addAll(ons);
-			resolveSelected();
+			resolveSelected(event);
 		}else if (myMode == TouchMode.DRAG){
             stupid.fixIntegrety();
 
@@ -468,6 +468,6 @@ public abstract class SuperView extends View implements
         }
 	}
 
-    protected abstract void resolveSelected();
+    protected abstract void resolveSelected(MotionEvent event);
 
 }

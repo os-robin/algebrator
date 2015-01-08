@@ -41,8 +41,19 @@ public class NumberAction extends Action {
                     oldEq.setSelected(true);
                 }
             } else {
-                Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
-                emilyView.insert(newEq);
+                Equation r = emilyView.selected.right();
+                if (r instanceof NumConstEquation) {
+                    if (r instanceof NumConstEquation) {
+                        if (!r.getDisplay(-1).equals("0")) {
+                            r.setDisplay(num + r.getDisplay(0));
+                        } else {
+                            r.setDisplay(num);
+                        }
+                    }
+                } else {
+                    Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
+                    emilyView.insert(newEq);
+                }
             }
 
         }

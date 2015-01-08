@@ -3,6 +3,7 @@ package com.example.circle.Actions;
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
 import com.example.circle.EmilyView;
 
 public class DivAction extends Action {
@@ -27,13 +28,22 @@ public class DivAction extends Action {
 
             }
         } else {
-            Equation oldEq = emilyView.selected;
-            DivEquation newEq = new DivEquation(emilyView);
-            oldEq.replace(newEq);
-            newEq.add(oldEq);
-            Equation placeHolder = new PlaceholderEquation(emilyView);
-            newEq.add(placeHolder);
-            placeHolder.setSelected(true);
+            if (countEquals(emilyView.selected) == 0) {
+
+                Equation oldEq = emilyView.selected;
+                DivEquation newEq = new DivEquation(emilyView);
+                if (oldEq.parent == null) {
+                    Equation writeEq = new WritingEquation(emilyView);
+                    writeEq.add(newEq);
+                    oldEq.replace(writeEq);
+                } else {
+                    oldEq.replace(newEq);
+                }
+                newEq.add(oldEq);
+                Equation placeHolder = new PlaceholderEquation(emilyView);
+                newEq.add(placeHolder);
+                placeHolder.setSelected(true);
+            }
         }
     }
 

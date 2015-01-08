@@ -1,7 +1,6 @@
 package com.example.circle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -13,18 +12,19 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.algebrator.eq.AddEquation;
-import com.algebrator.eq.EqualsEquation;
+import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
-import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.VarEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
-import com.example.circle.Actions.Action;
 import com.example.circle.Actions.DecimalAction;
 import com.example.circle.Actions.DeleteAction;
 import com.example.circle.Actions.DivAction;
+import com.example.circle.Actions.EqualsAction;
 import com.example.circle.Actions.MinusAction;
 import com.example.circle.Actions.NumberAction;
 import com.example.circle.Actions.ParenthesesAction;
@@ -97,8 +97,8 @@ public class EmilyView extends SuperView {
         }
 
         Button parentheses = new Button(5f / 11f, 6f / 11f,
-                4f / 6f, 5f / 6f, "( )", text, bkg, highlight);
-        parentheses.myAction = new ParenthesesAction(this);
+                4f / 6f, 5f / 6f, "(", text, bkg, highlight);
+        parentheses.myAction = new ParenthesesAction(this,true);
 
         buttons.add(parentheses);
         Button times = new Button(6f / 11f, 7f / 11f,
@@ -117,8 +117,8 @@ public class EmilyView extends SuperView {
         buttons.add(varX);
 
         Button varY = new Button(9f / 11f, 10f / 11f,
-                4f / 6f, 5f / 6f, "y", text, bkg, highlight);
-        varY.myAction = new VarAction(this, varY.text);
+                4f / 6f, 5f / 6f, "=", text, bkg, highlight);
+        varY.myAction = new EqualsAction(this);
         buttons.add(varY);
 
         //buttons.add(new Button(10f / 11f, 11f / 11f,
@@ -159,9 +159,12 @@ public class EmilyView extends SuperView {
                 text, bkg, highlight);
         minus.myAction = new MinusAction(this);
         buttons.add(minus);
-        buttons.add(new Button((8f + 0.5f) / 11f, (9f + 0.5f)
-                / 11f, 5f / 6f, 1, "MORE", text, bkg,
-                highlight));
+        Button right = new Button((8f + 0.5f) / 11f, (9f + 0.5f)
+                / 11f, 5f / 6f, 1, ")", text, bkg,
+                highlight);
+        right.myAction = new ParenthesesAction(this,false);
+
+        buttons.add(right);
         buttons.add(delete);
 
         //Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
@@ -233,15 +236,72 @@ public class EmilyView extends SuperView {
 
 
     @Override
-    protected void resolveSelected() {
+    protected void resolveSelected(MotionEvent event) {
         // now we need to figure out what we are selecting
         // find the least commond parent
         boolean shareParent = true;
         Equation lcp = null;
-        if (selectingSet.size() == 1) {
-            lcp = (Equation) selectingSet.toArray()[0];
-            shareParent = false;
-        } else {
+        if (selectingSet.size() <2){
+            // if it's an action up
+            if (event.getAction() ==MotionEvent.ACTION_UP){
+                // and it was near the left of stupid
+                ArrayList<EquationDis> closest = stupid.closest(
+                        event.getX(), event.getY());
+
+               lcp = closest.get(0).equation;
+                // TODO 100 to var scale by dpi
+                if (Math.abs(event.getY() - lcp.y) <100){
+                    boolean left = event.getX() < lcp.x;
+                    // insert a Placeholder to the left of everything
+                    Equation toSelect =new PlaceholderEquation(this);
+                    // add toSelect left of lcp
+                    if (lcp.parent instanceof WritingEquation) {
+                        int at = lcp.parent.indexOf(lcp);
+                        lcp.parent.add(at + (left?0:1),toSelect);
+                        toSelect.setSelected(true);
+                    }else{
+                        Equation oldEq = lcp;
+                        Equation holder = new WritingEquation(this);
+                        oldEq.replace(holder);
+                        if (left) {
+                            holder.add(toSelect);
+                            holder.add(oldEq);
+                        }else{
+                            holder.add(oldEq);
+                            holder.add(toSelect);
+                        }
+                        toSelect.setSelected(true);
+                    }
+                }
+            }
+            selectingSet = new HashSet<Equation>();
+            return;
+
+
+        }
+//        else if (selectingSet.size() == 1) {
+//            lcp = (Equation) selectingSet.toArray()[0];
+//            if (lcp instanceof LeafEquation){
+//                Equation toSelect =new PlaceholderEquation(this);
+//                // add toSelect right of lcp
+//                if (lcp.parent instanceof WritingEquation) {
+//                    int at = lcp.parent.indexOf(lcp);
+//                    lcp.parent.add(at+1,toSelect);
+//                    toSelect.setSelected(true);
+//                } else {
+//                    Equation oldEq = lcp;
+//                    Equation holder = new WritingEquation(this);
+//                    oldEq.replace(holder);
+//                    holder.add(oldEq);
+//                    holder.add(toSelect);
+//                    toSelect.setSelected(true);
+//                }
+//                selectingSet = new HashSet<Equation>();
+//                return;
+//            }
+//            shareParent = false;
+//        }
+        else {
             for (Equation eq : selectingSet) {
                 if (lcp == null) {
                     lcp = eq.parent;
@@ -318,18 +378,8 @@ public class EmilyView extends SuperView {
     }
     // returns the equation left of the selected
     public Equation left(){
-        Equation at = selected;
-        while (at.parent != null && at.parent.indexOf(at) == 0){
-            at = at.parent;
-            if (at.parent ==null){
-                break;
-            }
-        }
-        if (at.parent == null){
-            return null;
-        }else{
-            return at.parent.get(at.parent.indexOf(at)-1);
-        }
+        return selected.left();
+
     }
 
     public void insert(Equation newEq) {
@@ -350,6 +400,17 @@ public class EmilyView extends SuperView {
             if (selected instanceof PlaceholderEquation){
                 selected.parent.add(0, newEq);
             }
+        }
+    }
+
+    public void insertAt(Equation addTo ,int at, Equation newEq) {
+
+        // we just move selected and than call insert
+        if (selected instanceof PlaceholderEquation){
+            Equation placeHolder = selected;
+            selected.remove();
+            addTo.add(at,placeHolder);
+            insert(newEq);
         }
     }
 }

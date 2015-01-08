@@ -4,6 +4,7 @@ import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
 import com.example.circle.EmilyView;
 
 public class DeleteAction extends Action {
@@ -44,8 +45,17 @@ public class DeleteAction extends Action {
         } else {
             // if they have a stack of stuff selected kill it all and replace it wiht a new Placeholder
             Equation newEq = new PlaceholderEquation(emilyView);
+            if (emilyView.selected.parent == null) {
+                Equation writeEq = new WritingEquation(emilyView);
+                writeEq.add(newEq);
+                newEq = writeEq;
+            }
             emilyView.selected.replace(newEq);
-            newEq.setSelected(true);
+            if (newEq instanceof PlaceholderEquation) {
+                newEq.setSelected(true);
+            } else if (newEq.get(0) instanceof PlaceholderEquation) {
+                newEq.get(0).setSelected(true);
+            }
         }
         //else if (emilyView.selected instanceof EqualsEquation){
         //	emilyView.selected.remove();

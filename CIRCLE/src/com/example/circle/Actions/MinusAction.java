@@ -21,7 +21,6 @@ public class MinusAction extends Action {
                 if (!(l.parent instanceof DivEquation)) {
                     if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
                         l.justRemove();
-                        ;
                     }
                     Equation newEq = new WritingLeafEquation("-", emilyView);
                     emilyView.insert(newEq);
@@ -37,7 +36,6 @@ public class MinusAction extends Action {
             } else {
                 if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
                     l.justRemove();
-                    ;
                 }
                 Equation newEq = new WritingLeafEquation("-", emilyView);
                 emilyView.insert(newEq);
