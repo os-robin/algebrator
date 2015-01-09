@@ -15,7 +15,11 @@ public class TimesAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-            if (l != null && !isOp(l)) {
+            boolean op = false;
+            if (l instanceof WritingLeafEquation){
+                op = ((WritingLeafEquation) l).isOpLeft();
+            }
+            if (l != null && !op) {
                 Equation newEq = new WritingLeafEquation("*", emilyView);
                 emilyView.insert(newEq);
             }

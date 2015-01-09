@@ -1,6 +1,5 @@
 package com.algebrator.eq;
 
-import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
 /**
@@ -19,6 +18,38 @@ public class WritingLeafEquation extends LeafEquation {
         result.parentheses = this.parentheses;
 
         return result;
+    }
+
+    /**
+     * looking form the left
+     *
+     * @return
+     */
+    public boolean isOpLeft() {
+        if (parent instanceof DivEquation && parent.indexOf(this) == 0) {
+            return true;
+        }
+        String dis = getDisplay(-1);
+        if (dis.equals("+") || dis.equals("-") || dis.equals("*") || dis.equals("=")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * looking form the left
+     *
+     * @return
+     */
+    public boolean isOpRight() {
+        if (parent instanceof DivEquation && parent.indexOf(this) == 1) {
+            return true;
+        }
+        String dis = getDisplay(-1);
+        if (dis.equals("+") || dis.equals("-") || dis.equals("*") || dis.equals("=")) {
+            return true;
+        }
+        return false;
     }
 
 }

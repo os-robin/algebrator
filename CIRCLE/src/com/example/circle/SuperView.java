@@ -246,6 +246,19 @@ public abstract class SuperView extends View implements
         stupid.updateOwner(this);
     }
 
+    public void removeSelected() {
+        if (selected instanceof PlaceholderEquation){
+            if (!(selected.parent.size()==1 && selected.parent!= null)) {
+                selected.remove();
+            }
+        }
+        if (selected != null){
+            Equation oldEq = selected;
+            selected.setSelected(false);
+            oldEq.tryFlatten();
+        }
+    }
+
     enum TouchMode {BUTTON, DRAG, SELECT, MOVE, ZOOM, DEAD}
 
     public boolean canDrag=false;
@@ -260,11 +273,7 @@ public abstract class SuperView extends View implements
                 // figure out the mode;
                 if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
-                    if (selected instanceof PlaceholderEquation){
-                        if (!(selected.parent.size()==1 && selected.parent!= null)) {
-                            selected.remove();
-                        }
-                    }
+                    removeSelected();
                 } else if (inButtons(event)) {
                     myMode = TouchMode.BUTTON;
                 } else {

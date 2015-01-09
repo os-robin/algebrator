@@ -4,6 +4,7 @@ import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
+import com.algebrator.eq.WritingLeafEquation;
 import com.algebrator.eq.WritingPraEquation;
 import com.example.circle.EmilyView;
 
@@ -35,7 +36,11 @@ public class ParenthesesAction extends Action {
                     }
                 } else {
                     boolean can = true;
-                    can &= !isOp(l);
+                    boolean op = false;
+                    if (l instanceof WritingLeafEquation){
+                        op = ((WritingLeafEquation) l).isOpLeft();
+                    }
+                    can &= !op;
                     if (!hasMatch()) {
                         can = false;
                         tryMoveRight();

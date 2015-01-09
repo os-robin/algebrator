@@ -225,7 +225,6 @@ public class EmilyView extends SuperView {
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-
         if (event.getAction() == MotionEvent.ACTION_UP) {
             for (int i = 0; i < vars.size(); i++) {
                 vars.get(i).click(event);
@@ -234,12 +233,10 @@ public class EmilyView extends SuperView {
         return super.onTouch(view, event);
     }
 
-
     @Override
     protected void resolveSelected(MotionEvent event) {
         // now we need to figure out what we are selecting
         // find the least commond parent
-        boolean shareParent = true;
         Equation lcp = null;
         if (selectingSet.size() <2){
             // if it's an action up
@@ -279,107 +276,85 @@ public class EmilyView extends SuperView {
 
 
         }
-//        else if (selectingSet.size() == 1) {
-//            lcp = (Equation) selectingSet.toArray()[0];
-//            if (lcp instanceof LeafEquation){
-//                Equation toSelect =new PlaceholderEquation(this);
-//                // add toSelect right of lcp
-//                if (lcp.parent instanceof WritingEquation) {
-//                    int at = lcp.parent.indexOf(lcp);
-//                    lcp.parent.add(at+1,toSelect);
-//                    toSelect.setSelected(true);
-//                } else {
-//                    Equation oldEq = lcp;
-//                    Equation holder = new WritingEquation(this);
-//                    oldEq.replace(holder);
-//                    holder.add(oldEq);
-//                    holder.add(toSelect);
-//                    toSelect.setSelected(true);
-//                }
-//                selectingSet = new HashSet<Equation>();
-//                return;
-//            }
-//            shareParent = false;
-//        }
         else {
             for (Equation eq : selectingSet) {
                 if (lcp == null) {
                     lcp = eq.parent;
                 } else if (!eq.parent.equals(lcp)) {
-                    shareParent = false;
                     lcp = lcp.lowestCommonContainer(eq);
                 }
             }
-        }
-
-        if (shareParent && lcp != null) {
-            // make sure they are a continous block
-
-            ArrayList<Integer> indexs = new ArrayList<Integer>();
-            int at = 0;
-            for (Equation eq : selectingSet) {
-                indexs.add(lcp.indexOf(eq));
-                at++;
-            }
-            Collections.sort(indexs);
-            int min = indexs.get(0);
-            int max = indexs.get(indexs.size() - 1);
-            for (int i = min+1; i < max; i++) {
-                if (!indexs.contains(i)) {
-                    selectingSet.add(lcp.get(i));
-                    indexs.add(i);
-                    Collections.sort(indexs);
+            if (lcp != null) {
+                // make sure they are a continous block
+                ArrayList<Integer> indexs = new ArrayList<Integer>();
+                int at = 0;
+                for (Equation eq : selectingSet) {
+                    int index =lcp.deepIndexOf(eq);
+                    if (!indexs.contains(index)) {
+                        indexs.add(index);
+                    }
+                    at++;
                 }
-            }
-
-            // if they do not make up all of lcp
-            if (indexs.size() != lcp.size()) {
-                // we make a new equation of the type of lcp
-                Equation toSelect = null;
-                if (lcp instanceof MultiEquation) {
-                    toSelect = new MultiEquation(this);
-                } else if (lcp instanceof AddEquation) {
-                    toSelect = new AddEquation(this);
-                } else if (lcp instanceof WritingEquation) {
-                    toSelect = new WritingEquation(this);
+                Collections.sort(indexs);
+                int min = indexs.get(0);
+                if (lcp.get(min) instanceof WritingLeafEquation){
+                    // the div lines in isOp could be a problem here
+                    // i think it's no a problem... I hope
+                    ((WritingLeafEquation) lcp.get(min)).isOpRight();
+                    if (min != 0){
+                        indexs.add(0, min - 1);
+                    }
                 }
-                //sort selected set
-                ArrayList<Equation> selectedList = new ArrayList<Equation>();
-                at = indexs.get(0);
-                while (at <= indexs.get(indexs.size() - 1)) {
-                    for (Equation e : selectingSet) {
-                        if (lcp.indexOf(e) == at) {
-                            selectedList.add(e);
-                            at++;
-                        }
+                int max = indexs.get(indexs.size() - 1);
+                if (lcp.get(max) instanceof WritingLeafEquation){
+                    // the div lines in isOp could be a problem here
+                    // i think it's no a problem... I hope
+                    ((WritingLeafEquation) lcp.get(max)).isOpLeft();
+                    if (max != lcp.size()-1) {
+                        indexs.add(max + 1);
                     }
                 }
 
-                // remove the selectingSet from lcp and add it to our
-                // new equation
-                for (Equation eq : selectedList) {
-                    lcp.justRemove(eq);
-                    toSelect.add(eq);
+                // if they do not make up all of lcp
+                if (indexs.size() != lcp.size()) {
+                    // we make a new equation of the type of lcp
+                    Equation toSelect = null;
+                    if (lcp instanceof MultiEquation) {
+                        toSelect = new MultiEquation(this);
+                    } else if (lcp instanceof AddEquation) {
+                        toSelect = new AddEquation(this);
+                    } else if (lcp instanceof WritingEquation) {
+                        toSelect = new WritingEquation(this);
+                    }
+                    //sort selected set
+                    ArrayList<Equation> selectedList = new ArrayList<Equation>();
+                    for (int i : indexs) {
+                        selectedList.add(lcp.get(i));
+                    }
+                    // remove the selectingSet from lcp and add it to our
+                    // new equation
+                    for (Equation eq : selectedList) {
+                        lcp.justRemove(eq);
+                        toSelect.add(eq);
+                    }
+                    // insert the new equation in to lcp
+                    lcp.add(indexs.get(0), toSelect);
+                    // and select the new equation
+                    toSelect.setSelected(true);
+                } else {
+                    lcp.setSelected(true);
                 }
-                // insert the new equation in to lcp
-                lcp.add(indexs.get(0), toSelect);
-                // and select the new equation
-                toSelect.setSelected(true);
             } else {
-                lcp.setSelected(true);
+                if (lcp != null) {
+                    lcp.setSelected(true);
+                }
             }
-        } else {
-            if (lcp!= null){
-                lcp.setSelected(true);
-            }
+            selectingSet = new HashSet<Equation>();
         }
-        selectingSet = new HashSet<Equation>();
-
     }
     // returns the equation left of the selected
     public Equation left(){
         return selected.left();
-
     }
 
     public void insert(Equation newEq) {

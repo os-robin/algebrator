@@ -21,18 +21,7 @@ public abstract class Action {
 
     abstract public void act();
 
-    protected boolean isOp(Equation l) {
-        if (l instanceof WritingLeafEquation) {
-            if (l.parent instanceof DivEquation) {
-                return true;
-            }
-            String dis = l.getDisplay(-1);
-            if (dis.equals("+") || dis.equals("-") || dis.equals("*") || dis.equals("=")) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     protected boolean hasMatch() {
         int depth = 1;

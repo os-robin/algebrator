@@ -18,9 +18,9 @@ public class NumberAction extends Action {
 
     @Override
     public void act() {
-
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
+            Equation r = emilyView.selected.right();
             if (l != null) {
                 if (!(l.parent instanceof DivEquation)) {
                     if (!(l instanceof NumConstEquation)) {
@@ -32,24 +32,29 @@ public class NumberAction extends Action {
                         l.setDisplay(num);
                     }
                 } else {
-                    Equation oldEq = emilyView.selected;
-                    Equation holder = new WritingEquation(emilyView);
-                    Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
-                    oldEq.replace(holder);
-                    holder.add(newEq);
-                    holder.add(oldEq);
-                    oldEq.setSelected(true);
-                }
-            } else {
-                Equation r = emilyView.selected.right();
-                if (r instanceof NumConstEquation) {
                     if (r instanceof NumConstEquation) {
                         if (!r.getDisplay(-1).equals("0")) {
                             r.setDisplay(num + r.getDisplay(0));
                         } else {
                             r.setDisplay(num);
                         }
+                    } else {
+                        Equation oldEq = emilyView.selected;
+                        Equation holder = new WritingEquation(emilyView);
+                        Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
+                        oldEq.replace(holder);
+                        holder.add(newEq);
+                        holder.add(oldEq);
+                        oldEq.setSelected(true);
                     }
+                }
+            } else {
+                if (r instanceof NumConstEquation) {
+                        if (!r.getDisplay(-1).equals("0")) {
+                            r.setDisplay(num + r.getDisplay(0));
+                        } else {
+                            r.setDisplay(num);
+                        }
                 } else {
                     Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
                     emilyView.insert(newEq);
