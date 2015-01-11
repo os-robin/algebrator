@@ -20,17 +20,17 @@ public class DivAction extends Action {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
             boolean can = l != null;
-            if (can && (l instanceof WritingLeafEquation)){
+            if (can && (l instanceof WritingLeafEquation)) {
                 can = !((WritingLeafEquation) l).isOpLeft();
             }
 
-            if (can && l instanceof WritingPraEquation){
-                if (((WritingPraEquation) l).left){
+            if (can && l instanceof WritingPraEquation) {
+                if (((WritingPraEquation) l).left) {
                     can = false;
-                }else{
+                } else {
                     // we need to select the hole ( .. )
                     can = false;
-                    ((WritingPraEquation)l).selectBlock();
+                    ((WritingPraEquation) l).selectBlock();
                 }
             }
             if (can) {
@@ -42,16 +42,16 @@ public class DivAction extends Action {
                 newEq.add(emilyView.selected);
             }
         }
-        if (!(emilyView.selected instanceof PlaceholderEquation)){
-            boolean can =countEquals(emilyView.selected) == 0;
-            if (emilyView.selected instanceof WritingEquation){
-                if (emilyView.selected.get(0) instanceof WritingLeafEquation){
+        if (!(emilyView.selected instanceof PlaceholderEquation)) {
+            boolean can = countEquals(emilyView.selected) == 0;
+            if (emilyView.selected instanceof WritingEquation) {
+                if (emilyView.selected.get(0) instanceof WritingLeafEquation) {
                     can = can && !((WritingLeafEquation) emilyView.selected.get(0)).isOpRight();
                 }
             }
-            if (emilyView.selected instanceof WritingEquation){
-                if (emilyView.selected.get(emilyView.selected.size()-1) instanceof WritingLeafEquation){
-                    can = can && !((WritingLeafEquation) emilyView.selected.get(emilyView.selected.size()-1)).isOpLeft();
+            if (emilyView.selected instanceof WritingEquation) {
+                if (emilyView.selected.get(emilyView.selected.size() - 1) instanceof WritingLeafEquation) {
+                    can = can && !((WritingLeafEquation) emilyView.selected.get(emilyView.selected.size() - 1)).isOpLeft();
                 }
             }
 

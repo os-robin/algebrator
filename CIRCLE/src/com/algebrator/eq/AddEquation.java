@@ -84,7 +84,7 @@ public class AddEquation extends FlexOperation {
 		Equation left = null;
 		Equation right = null;
 		
-		operateRemove(a, b);
+		operateRemove(eqs);
 		
 		CountData cd1 = new CountData(a);
 		CountData cd2 = new CountData(b);

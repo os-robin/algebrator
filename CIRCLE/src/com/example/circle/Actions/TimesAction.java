@@ -16,14 +16,14 @@ public class TimesAction extends Action {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
             boolean op = false;
-            if (l instanceof WritingLeafEquation){
+            if (l instanceof WritingLeafEquation) {
                 op = ((WritingLeafEquation) l).isOpLeft();
             }
             if (l != null && !op) {
                 Equation newEq = new WritingLeafEquation("*", emilyView);
                 emilyView.insert(newEq);
             }
-        }else{
+        } else {
 
             Equation numEq = new WritingLeafEquation("*", emilyView);
             addToBlock(numEq);

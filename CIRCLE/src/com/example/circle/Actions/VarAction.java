@@ -5,7 +5,6 @@ import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.VarEquation;
 import com.algebrator.eq.WritingEquation;
-import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
 
 public class VarAction extends Action {
@@ -22,23 +21,21 @@ public class VarAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-            //if (l != null) {
-            if (!(l.parent instanceof DivEquation)) {
-                Equation newEq = new VarEquation(var, emilyView);
-                emilyView.insert(newEq);
-            } else {
-                Equation oldEq = emilyView.selected;
-                Equation holder = new WritingEquation(emilyView);
-                Equation newEq = new VarEquation(var, emilyView);
-                oldEq.replace(holder);
-                holder.add(newEq);
-                holder.add(oldEq);
-                oldEq.setSelected(true);
-            }
-            //}
+                if (l == null || !(l.parent instanceof DivEquation)) {
+                    Equation newEq = new VarEquation(var, emilyView);
+                    emilyView.insert(newEq);
+                } else {
+                    Equation oldEq = emilyView.selected;
+                    Equation holder = new WritingEquation(emilyView);
+                    Equation newEq = new VarEquation(var, emilyView);
+                    oldEq.replace(holder);
+                    holder.add(newEq);
+                    holder.add(oldEq);
+                    oldEq.setSelected(true);
+                }
         } else {
-                Equation numEq =  new VarEquation(var, emilyView);
-                addToBlock(numEq);
+            Equation numEq = new VarEquation(var, emilyView);
+            addToBlock(numEq);
         }
 //        if (! (emilyView.selected instanceof WritingEquation) ){
 //            if (emilyView.selected instanceof PlaceholderEquation) {

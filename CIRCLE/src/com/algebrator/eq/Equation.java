@@ -395,6 +395,9 @@ abstract public class Equation extends ArrayList<Equation> {
     public EqualsEquation getEquals() {
         Equation at = this.parent;
         while (!(at instanceof EqualsEquation)) {
+            if (at instanceof WritingEquation){
+                return null;
+            }
             at = at.parent;
         }
         return ((EqualsEquation) at);
@@ -493,8 +496,8 @@ abstract public class Equation extends ArrayList<Equation> {
         return false;
     }
 
-    protected void operateRemove(Equation a, Equation b) {
-        for (Equation e : new Equation[]{a, b}) {
+    protected void operateRemove(ArrayList<Equation> ops) {
+        for (Equation e : ops) {
             if (contains(e)) {
                 e.justRemove();
             } else {
@@ -552,7 +555,37 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public int side() {
-        return getEquals().side(this);
+        Equation equals = getEquals();
+        if (equals != null){
+            return ((EqualsEquation)equals).side(this);
+        }else{
+            //find the root
+            Equation at = this;
+            while (at.parent != null){
+                at = at.parent;
+            }
+            if (at instanceof WritingEquation){
+                int ourIndex = at.deepIndexOf(this);
+                int equalsIndex=-1;
+                for (Equation e: at){
+                    if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")){
+                        equalsIndex = at.indexOf(e);
+                    }
+                }
+                if (equalsIndex==-1){
+                    Log.e("","it should really have an equals");
+                    return 0;
+                }
+                if (ourIndex==equalsIndex){
+                    Log.e("","we should really not be checking the side of the equals");
+                    return 0;
+                }
+                return (ourIndex<equalsIndex?0:1);
+            }else{
+                Log.e("","this is bad");
+                return 0;
+            }
+        }
     }
 
     public void integrityCheckOuter() {

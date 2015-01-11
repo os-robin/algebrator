@@ -170,7 +170,7 @@ public class EmilyView extends SuperView {
         //Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
         //		bkg, highlight);
         //solve.myAction = new Solve(this);
-        buttons.add(solve);
+        //buttons.add(solve);
 
 		/*
          * AddEquation add1 = new AddEquation(); add1.add(new
@@ -209,6 +209,7 @@ public class EmilyView extends SuperView {
 //			}
 //
 //		};
+        buttonsPercent=2f/3f;
 
     }
 
@@ -248,27 +249,31 @@ public class EmilyView extends SuperView {
 
                lcp = closest.get(0).equation;
                 // TODO 100 to var scale by dpi
-                if (Math.abs(event.getY() - lcp.y) <100){
-                    boolean left = event.getX() < lcp.x;
-                    // insert a Placeholder to the left of everything
-                    Equation toSelect =new PlaceholderEquation(this);
-                    // add toSelect left of lcp
-                    if (lcp.parent instanceof WritingEquation) {
-                        int at = lcp.parent.indexOf(lcp);
-                        lcp.parent.add(at + (left?0:1),toSelect);
-                        toSelect.setSelected(true);
-                    }else{
-                        Equation oldEq = lcp;
-                        Equation holder = new WritingEquation(this);
-                        oldEq.replace(holder);
-                        if (left) {
-                            holder.add(toSelect);
-                            holder.add(oldEq);
-                        }else{
-                            holder.add(oldEq);
-                            holder.add(toSelect);
+                if (Math.abs(event.getY() - lcp.y) <100) {
+                    if (lcp instanceof PlaceholderEquation) {
+                        lcp.setSelected(true);
+                    } else {
+                        boolean left = event.getX() < lcp.x;
+                        // insert a Placeholder to the left of everything
+                        Equation toSelect = new PlaceholderEquation(this);
+                        // add toSelect left of lcp
+                        if (lcp.parent instanceof WritingEquation) {
+                            int at = lcp.parent.indexOf(lcp);
+                            lcp.parent.add(at + (left ? 0 : 1), toSelect);
+                            toSelect.setSelected(true);
+                        } else {
+                            Equation oldEq = lcp;
+                            Equation holder = new WritingEquation(this);
+                            oldEq.replace(holder);
+                            if (left) {
+                                holder.add(toSelect);
+                                holder.add(oldEq);
+                            } else {
+                                holder.add(oldEq);
+                                holder.add(toSelect);
+                            }
+                            toSelect.setSelected(true);
                         }
-                        toSelect.setSelected(true);
                     }
                 }
             }
