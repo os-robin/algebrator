@@ -201,6 +201,40 @@ public abstract class SuperView extends SurfaceView implements Runnable,
         }
     }
 
+    /**
+     * converts a on screen position to an internal x value
+     * @param x
+     * @return
+     */
+    protected float internalX(float x){
+        return x*zoom;
+    }
+
+    /**
+     * converts a on screen position to an internal y value
+     * @param y
+     * @return
+     */
+    protected float internalY(float y){
+        return y*zoom;
+    }
+    /**
+     * converts a internal x to an onscreen x value
+     * @param x
+     * @return
+     */
+    protected float onScreenX(float x){
+        return x*zoom;
+    }
+    /**
+     * converts a internal y to an onscreen y value
+     * @param y
+     * @return
+     */
+    protected float onScreenY(float y){
+        return y*zoom;
+    }
+
     private void updateOffsetY(float vy) {
         offsetY += vy;
     }
@@ -221,95 +255,105 @@ public abstract class SuperView extends SurfaceView implements Runnable,
     private float lastY;
     private float eqDragPadding = 25;
 
-    //
+    //drag
     private boolean slidding = false;
     private float vx = 0;
     private float vy = 0;
 
+    //zoom
+    public boolean isZooming = false;
+    public float zoomDistance;
+    public float lastZoomDistrance;
+    public float zoom;
+
 	@Override
 	public synchronized boolean onTouch(View view, MotionEvent event) {
 		// if its one finger:
-		if (event.getPointerCount() == 1) {
+        switch (event.getAction()){
 
-			// we need to know if they started in the box
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				startedInBox = stupid.inBox(event.getX(), event.getY());
-				inBox = startedInBox;
-				startedOne = true;
-				startTime = System.currentTimeMillis();
+            case MotionEvent.ACTION_DOWN:{
+                Log.i("","ACTION_DOWN");
+
+                isZooming = false;
+                startedInBox = stupid.inBox(event.getX(), event.getY());
+                inBox = startedInBox;
+                startedOne = true;
+                startTime = System.currentTimeMillis();
                 lastX = event.getX();
                 lastY = event.getY();
                 // stop stupid sliding
                 slidding = false;
                 vx =0;
                 vy =0;
-			}
-			if (startedOne) {
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
-					// check if they selected anything
-					if (inBox) {
-						HashSet<Equation> ons = stupid.onAny(event.getX(),
-								event.getY());
-						selectingSet.addAll(ons);
-					}
+                break;
+            }
+            case MotionEvent.ACTION_MOVE:{
+                if (startedOne && event.getPointerCount() ==1) {
+                    Log.i("","ACTION_MOVE + startedOne + still 1");
+                    // check if they selected anything
+                    if (inBox) {
+                        HashSet<Equation> ons = stupid.onAny(event.getX(),
+                                event.getY());
+                        selectingSet.addAll(ons);
+                    }
 
-					// see if they left the box
-					if (inBox && !stupid.inBox(event.getX(), event.getY())) {
-						inBox = false;
-						resolveSelected();
-						if (selected != null) {
-							//if (selected.canPop()) {
-								selected.isDemo(true);
-								dragging = new DragEquation(selected);
-								dragging.eq.x = event.getX();
-								dragging.eq.y = event.getY();
-							//}
-						}
-					}
+                    // see if they left the box
+                    if (inBox && !stupid.inBox(event.getX(), event.getY())) {
+                        inBox = false;
+                        resolveSelected();
+                        if (selected != null) {
+                            //if (selected.canPop()) {
+                            selected.isDemo(true);
+                            dragging = new DragEquation(selected);
+                            dragging.eq.x = event.getX();
+                            dragging.eq.y = event.getY();
+                            //}
+                        }
+                    }
 
-					// if we are dragging something move it
-					if (inBox == false && dragging != null) {
-						ArrayList<EquationDis> closest = stupid.closest(
-								event.getX(), event.getY());
+                    // if we are dragging something move it
+                    if (inBox == false && dragging != null) {
+                        ArrayList<EquationDis> closest = stupid.closest(
+                                event.getX(), event.getY());
 
-						// debug
-						String whatdowehavehere = "";
-						for (int i = 0; i < closest.size(); i++) {
-							whatdowehavehere += closest.get(i).equation
-									.hashCode()
-									+ "|"
-									+ closest.get(i).equation.getDisplay(0)
-									+ " ";
-						}
-						Log.i("closest", whatdowehavehere);
+                        // debug
+                        String whatdowehavehere = "";
+                        for (int i = 0; i < closest.size(); i++) {
+                            whatdowehavehere += closest.get(i).equation
+                                    .hashCode()
+                                    + "|"
+                                    + closest.get(i).equation.getDisplay(0)
+                                    + " ";
+                        }
+                        Log.i("closest", whatdowehavehere);
 
-						boolean found = false;
-						for (int i = 0; i < closest.size() && !found; i++) {
-							if (demo.deepContains(closest.get(i).equation)) {
-								found = true;
-								Log.i("drag", "no Move");
-							} else {
+                        boolean found = false;
+                        for (int i = 0; i < closest.size() && !found; i++) {
+                            if (demo.deepContains(closest.get(i).equation)) {
+                                found = true;
+                                Log.i("drag", "no Move");
+                            } else {
 
-								found = closest.get(i).tryInsert(dragging);
+                                found = closest.get(i).tryInsert(dragging);
 
-								if (dragging.demo.parent == null) {
-									@SuppressWarnings("unused")
-									int dbg = 0;
-									Log.i("weee", "I am null!");
-								}
-							}
-						}
-						if ((dragging.add)
-								&& ((dragging.eq.x < stupid.lastPoint.get(0).x && event
-										.getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
-										.get(0).x && event.getX() >= stupid.lastPoint
-										.get(0).x))) {
-							dragging.eq.negative = !dragging.eq.negative;
-						}
+                                if (dragging.demo.parent == null) {
+                                    @SuppressWarnings("unused")
+                                    int dbg = 0;
+                                    Log.i("weee", "I am null!");
+                                }
+                            }
+                        }
+                        if ((dragging.add)
+                                && ((dragging.eq.x < stupid.lastPoint.get(0).x && event
+                                .getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
+                                .get(0).x && event.getX() >= stupid.lastPoint
+                                .get(0).x))) {
+                            dragging.eq.negative = !dragging.eq.negative;
+                        }
 
-						dragging.eq.x = event.getX();
-						dragging.eq.y = event.getY();
-					}
+                        dragging.eq.x = event.getX();
+                        dragging.eq.y = event.getY();
+                    }
 
                     // if they are moving the equation
                     if (!startedInBox){
@@ -323,44 +367,67 @@ public abstract class SuperView extends SurfaceView implements Runnable,
                         vx = (3f*vx + dx)/4f;
                         vx = (3f*vx + dy)/4f;
                     }
-				}
+                }
+                break;
+            }
+            case MotionEvent.ACTION_UP:{
+                    // did we click anything?
+                    Log.i("","ACTION_UP");
+                    endOnePointer(event);
+                    long now = System.currentTimeMillis();
+                    long totalTime = now - startTime;
+                    if (totalTime < tapTime){
+                        long tapSpacing = now - lastTapTime;
+                        Point tapPoint = new Point();
+                        tapPoint.x = (int) event.getX();
+                        tapPoint.y = (int) event.getY();
+                        if (tapSpacing < doubleTapSpacing && dis(tapPoint,lastTapPoint)< doubleTapDistance){
+                            Log.i("","doubleTap! dis: " + dis(tapPoint,lastTapPoint) + " time: " +totalTime + " spacing: "+tapSpacing);
+                            stupid.tryOperator(event.getX(),
+                                    event.getY());
 
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					// did we click anything?
-					endOnePointer(event);
-					long now = System.currentTimeMillis();
-					long totalTime = now - startTime;
-					if (totalTime < tapTime){
-						long tapSpacing = now - lastTapTime;
-						Point tapPoint = new Point();
-						tapPoint.x = (int) event.getX();
-						tapPoint.y = (int) event.getY();
-						if (tapSpacing < doubleTapSpacing && dis(tapPoint,lastTapPoint)< doubleTapDistance){
-							Log.i("","doubleTap! dis: " + dis(tapPoint,lastTapPoint) + " time: " +totalTime + " spacing: "+tapSpacing);
-							stupid.tryOperator(event.getX(),
-									event.getY());
-							
-							lastTapTime = 0;
-						}else{
-						lastTapTime = now;
-						lastTapPoint = tapPoint;
-						}
-					}
+                            lastTapTime = 0;
+                        }else{
+                            lastTapTime = now;
+                            lastTapPoint = tapPoint;
+                        }
+                    }
 
                     // if we were dragging everything around
                     if (!startedInBox) {
                         slidding = true;
                     }
-					
-				}
-			}
-		} else if (event.getPointerCount() == 2) {
-			if (startedOne) {
-				endOnePointer(event);
-			} else {
-				startedOne = false;
-			}
-		}
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_DOWN:{
+                if (event.getPointerCount() ==2){
+                    Log.i("","ACTION_POINTER_DOWN + pointerCount ==2");
+                    if (startedOne) {
+                        endOnePointer(event);
+                    } else {
+                        startedOne = false;
+                    }
+
+                    if (!isZooming){
+                        float dx = event.getX(0) - event.getX(1);
+                        float dy = event.getY(0) - event.getY(1);
+                        zoomDistance = (float)Math.sqrt(dx*dx + dy*dy);
+                        this.zoom = zoomDistance /lastZoomDistrance;
+                        lastZoomDistrance = zoomDistance;
+                    }
+                }
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_UP:{
+                Log.i("","ACTION_POINTER_UP");
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL:{
+                Log.i("","ACTION_CANCEL");
+                break;
+            }
+
+        }
 		Log.i("",stupid.toString());
 		return true;
 	}
