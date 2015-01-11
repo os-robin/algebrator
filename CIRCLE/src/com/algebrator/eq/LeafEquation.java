@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -25,19 +26,13 @@ public abstract class LeafEquation extends Equation {
 
 	public LeafEquation(SuperView owner) {
 		super(owner);
-		myHeight = DEFAULT_SIZE;
-		myWidth = DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 	
 	@Override
 	public String getDisplay(int pos){
-		if (parent instanceof AddEquation && parent.indexOf(this) != 0){
-			return display;
-		}
-		if (pos != -1){
-			return display;
-		}
-		return (negative?"-":"")+display;
+	    return display;
 	}
 	
 	@Override
@@ -70,9 +65,9 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public float measureWidth() {
 		// not tested
-		float totalWidth= myWidth+textPaint.measureText(display)-textPaint.measureText(display.subSequence(0, 1)+"");
+		float totalWidth= myWidth+textPaint.measureText(display); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
-		if (parentheses){
+		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;
 		}
 		return totalWidth;
@@ -86,7 +81,7 @@ public abstract class LeafEquation extends Equation {
 		
 		float totalHeight= myHeight;
 		
-		if (parentheses){
+		if (parenthesis()){
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		return totalHeight;
@@ -97,7 +92,7 @@ public abstract class LeafEquation extends Equation {
 		drawBkgBox(canvas, x, y);
 		lastPoint =new ArrayList<Point>();
 		Paint temp = getPaint();
-		if (parentheses){
+		if (parenthesis()){
 			drawParentheses(canvas,x,y,temp);
 		} 
 		Rect out =  new Rect();
@@ -112,5 +107,5 @@ public abstract class LeafEquation extends Equation {
 		lastPoint.add(point);
 	}
 	
-	public void tryOperator(Equation a, Equation b){}
+	public void tryOperator(ArrayList< Equation> yos){}
 }

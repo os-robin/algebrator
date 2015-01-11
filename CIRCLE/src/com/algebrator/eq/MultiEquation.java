@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.example.circle.Algebrator;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
@@ -15,7 +16,7 @@ import android.graphics.Canvas;
 import android.location.GpsStatus;
 import android.util.Log;
 
-public class MultiEquation extends Operation implements MultiDivSuperEquation {
+public class MultiEquation extends FlexOperation implements MultiDivSuperEquation {
 
     @Override
     public void integrityCheck(){
@@ -28,7 +29,6 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
 	public Equation copy() {
 		Equation result = new MultiEquation(this.owner);
 		result.display = this.display;
-		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent
@@ -69,35 +69,80 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
 		super(owner);
 		display = "*";
 
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 	
-	public void tryOperator(Equation a, Equation b){
-        while (a instanceof MultiEquation) {
-            a = a.get(a.size() - 1);
+	public void tryOperator(ArrayList<Equation> eqs) {
+        //TODO handle inbeddedness
+
+        int at = Math.min(indexOf(eqs.get(0)), indexOf(eqs.get(1)));
+
+        float aSign = 1;
+
+        Equation a = eqs.get(0);
+        // we need to digg throught all t
+        while (a instanceof MultiEquation || a instanceof MinusEquation){
+            if (a instanceof MinusEquation){
+                aSign*=-1;
+            }
+            a = a.get(0);
         }
-        while (b instanceof MultiEquation) {
-            b = b.get(b.size() - 1);
+        while (a instanceof  MinusEquation){
+            aSign *= -1;
+            a = a.parent;
+        }
+        if (aSign ==-1){
+            if (a instanceof MinusEquation){
+                a= a.get(0);
+            }else {
+                Equation old = a;
+                a = new MinusEquation(owner);
+                a.add(old);
+            }
         }
 
-        int at = Math.min(indexOf(a), indexOf(b));
+        float bSign = 1;
+
+        Equation b = eqs.get(1);
+        // we need to digg throught all t
+        while (b instanceof MultiEquation || b instanceof MinusEquation){
+            if (b instanceof MinusEquation){
+                bSign*=-1;
+            }
+            b = b.get(0);
+        }
+        while (b instanceof  MinusEquation){
+            bSign *= -1;
+            b = b.parent;
+        }
+
+        if (bSign ==-1){
+            if (b instanceof MinusEquation){
+                b= b.get(0);
+            }else {
+                Equation old = b;
+                b = new MinusEquation(owner);
+                b.add(old);
+            }
+        }
 
         Equation top = null;
         Equation bottom = null;
-        Equation result = null;
+        Equation result;
 
         operateRemove(a, b);
         // for the bottom and the top
         for (OnTop onTop: new OnTop[]{OnTop.TOP,OnTop.BOT}){
             // find all the equations on each side
             HashSet<Equation> left = new HashSet<Equation>();
+
             findEquation(onTop,a,left);
             HashSet<Equation> right =new HashSet<Equation>();
+
             findEquation(onTop,b,right);
             // multiply && combine like terms
-            HashSet<MultiCountData> fullSet = Multiply(left,right);
-
+            HashSet<MultiCountData> fullSet = Multiply(left,right, (onTop==OnTop.TOP?true:false));
 
             Equation innerResult = null;
             if (fullSet.size()==1){
@@ -117,7 +162,10 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
             }
         }
 
-        if (bottom!= null){
+        if ((top instanceof  NumConstEquation && ((NumConstEquation) top).getValue()==0)&&
+                !( bottom != null && bottom instanceof NumConstEquation && ((NumConstEquation) bottom).getValue()==0)){
+            result = top;
+        }else if (bottom!= null && !(bottom instanceof NumConstEquation && ((NumConstEquation) bottom).getValue()==1)){
             result = new DivEquation(owner);
             result.add(top);
             result.add(bottom);
@@ -131,8 +179,16 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
         }
 	}
 
-    private HashSet<MultiCountData> Multiply(HashSet<Equation> left, HashSet<Equation> right) {
+    private HashSet<MultiCountData> Multiply(HashSet<Equation> left, HashSet<Equation> right, boolean top) {
         HashSet<MultiCountData> result = new HashSet<MultiCountData>();
+        if (!top){
+            if (left.size() ==0){
+                left.add(new NumConstEquation(1,owner));
+            }
+            if (right.size() ==0){
+                right.add(new NumConstEquation(1,owner));
+            }
+        }
         for (Equation a : right){
             for (Equation b: left){
                 MultiCountData toAdd =Multiply(a.copy(),b.copy());
@@ -162,8 +218,8 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
     }
 
     private void multiplyHelper(Equation e, MultiCountData result) {
-        if (e instanceof NumConstEquation){
-            result.value *= ((NumConstEquation) e).getValue();
+        if (sortaNumber(e)){
+            result.value *= getValue(e);
         }else if (e instanceof MultiEquation){
             for (Equation ee: e){
                 if (ee instanceof  MultiEquation) {
@@ -198,7 +254,7 @@ public class MultiEquation extends Operation implements MultiDivSuperEquation {
                 }
             }
             return;
-        }else if (e instanceof  LeafEquation){
+        }else if (e instanceof  LeafEquation || e instanceof MinusEquation){
             if (onTop != OnTop.BOT) {
                 set.add(e);
             }
@@ -217,8 +273,13 @@ class MultiCountData {
     }
 
     private void update(Equation e) {
+        if (e instanceof MinusEquation){
+            value *= -1;
+            e = e.get(0);
+        }
+
         if (e instanceof NumConstEquation){
-            value=((NumConstEquation) e).getValue();
+            value*=((NumConstEquation) e).getValue();
         }else if (e instanceof MultiEquation){
             for (Equation ee:e){
                 update(ee);
@@ -250,14 +311,20 @@ class MultiCountData {
 
     public Equation getEquation(SuperView owner) {
         if ( key.size() ==0){
-            return new NumConstEquation(value +"",owner);
+            if (value <0){
+                Equation minus = new MinusEquation(owner);
+                minus.add(new NumConstEquation(-value, owner));
+                return minus;
+            }else{
+                return new NumConstEquation(value, owner);
+            }
         }else{
             if (key.size() ==1 && value ==1){
                 return (Equation) key.toArray()[0];
             }
             Equation result = new MultiEquation(owner);
             if (value!=1){
-                result.add(new NumConstEquation(value +"",owner));
+                result.add(new NumConstEquation(value ,owner));
             }
             for (Equation e: key){
                 result.add(e);
@@ -267,7 +334,9 @@ class MultiCountData {
     }
 
     public void removeCommon(MultiCountData common) {
-        this.value /=common.value;
+        if (common.value != 0) {
+            this.value /= common.value;
+        }
         for (Equation e:common.key){
             for (Equation ee:key) {
                 if (ee.same(e)) {

@@ -1,59 +1,73 @@
 package com.example.circle.Actions;
 
-import com.algebrator.eq.AddEquation;
+import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
+import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
 
 public class MinusAction extends Action {
 
-	public MinusAction(EmilyView emilyView) {
-		super(emilyView);
-	}
+    public MinusAction(EmilyView emilyView) {
+        super(emilyView);
+    }
 
-	@Override
-	public void act() {
-		// TODO Auto-generated method stub
-		// if you have an add equation selected add a new element
-		if (emilyView.selected instanceof AddEquation) {
-			Equation oldEq = emilyView.selected;
-			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
-			newEq.negative = true;
-			oldEq.add(newEq);
-			newEq.setSelected(true);
-		} else 
-			
-		// if what we have selected is a PlaceHolderEquation
-		if (emilyView.selected instanceof PlaceholderEquation) {
-			emilyView.selected.negative = ! emilyView.selected.negative;
-		} else
+    @Override
+    public void act() {
+        if (emilyView.selected instanceof PlaceholderEquation) {
+            Equation l = emilyView.left();
+            if (l != null) {
+                if (!(l.parent instanceof DivEquation)) {
+                    if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
+                        l.justRemove();
+                    }
+                    Equation newEq = new WritingLeafEquation("-", emilyView);
+                    emilyView.insert(newEq);
+                } else {
+                    Equation oldEq = emilyView.selected;
+                    Equation holder = new WritingEquation(emilyView);
+                    Equation newEq = new WritingLeafEquation("-", emilyView);
+                    oldEq.replace(holder);
+                    holder.add(newEq);
+                    holder.add(oldEq);
+                    oldEq.setSelected(true);
+                }
+            } else {
+                if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
+                    l.justRemove();
+                }
+                Equation newEq = new WritingLeafEquation("-", emilyView);
+                emilyView.insert(newEq);
+            }
 
-		// if what you have selected is part of a add equation
-		if (emilyView.selected.parent instanceof AddEquation) {
-			Equation oldEq = emilyView.selected.parent;
-			PlaceholderEquation newEq = new PlaceholderEquation(emilyView);
-			newEq.negative = true;
-			oldEq.add(newEq);
-			newEq.setSelected(true);
-		}
+        }
 
-		// otherwise create a new add equation
-		else {
-			Equation oldEq = emilyView.selected;
-			
-			AddEquation newEq = new AddEquation(emilyView);
-			if (oldEq.parentheses){
-				oldEq.parentheses = false;
-				newEq.parentheses = true;
-			}
-			oldEq.replace(newEq);
-			newEq.add(oldEq);
-
-			PlaceholderEquation rightAdd = new PlaceholderEquation(emilyView);
-			rightAdd.negative = true;
-			newEq.add(rightAdd);
-			rightAdd.setSelected(true);
-		}
-	}
+//		    if (emilyView.selected instanceof PlaceholderEquation) {
+//            Equation old = emilyView.selected;
+//            Equation toAdd = new MinusEquation(emilyView);
+//            old.replace(toAdd);
+//            toAdd.add(old);
+//            old.setSelected(true);
+//		} else if(emilyView.selected.parent instanceof AddEquation){
+//            Equation add = emilyView.selected.parent;
+//            Equation neg = new MinusEquation(emilyView);
+//            Equation place = new PlaceholderEquation(emilyView);
+//            neg.add(place);
+//            add.add(neg);
+//            place.setSelected(true);
+//        }else{
+//            Equation old = emilyView.selected;
+//            Equation add = new AddEquation(emilyView);
+//            old.replace(add);
+//            add.add(old);
+//            Equation neg = new MinusEquation(emilyView);
+//            Equation place = new PlaceholderEquation(emilyView);
+//            neg.add(place);
+//            add.add(neg);
+//            place.setSelected(true);
+//        }
+    }
 
 }
+

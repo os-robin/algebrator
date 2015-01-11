@@ -5,10 +5,10 @@ import java.util.HashSet;
 
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
-public class AddEquation extends Operation {
-	Equation empty;
+public class AddEquation extends FlexOperation {
 
     @Override
     public void integrityCheck(){
@@ -17,11 +17,35 @@ public class AddEquation extends Operation {
         }
     }
 
+    public boolean canFlatten(Equation a, Equation b){
+        Equation lcc = a.lowestCommonContainer(b);
+        return (lcc.addContain(a) && lcc.addContain(b));
+    }
+
+    public void flatten(Equation a, Equation b){
+        Equation lcc = a.lowestCommonContainer(b);
+        // we need to work our way up from a to lcc
+        // and on each step pull everthing from the level we are at up a level
+        for (Equation x: new Equation[]{a,b}) {
+            Equation at = x;
+            while (!at.equals(lcc)) {
+                if (at instanceof AddEquation){
+                    Equation oldEq = at.parent;
+                    int loc = oldEq.indexOf(at);
+                    at.justRemove();
+                    for (Equation e : at) {
+                        oldEq.add(loc++, e);
+                    }
+                }
+                at = at.parent;
+            }
+        }
+    }
+
 	@Override
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
 		result.display = this.getDisplay(-1);
-		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent
@@ -33,32 +57,27 @@ public class AddEquation extends Operation {
 	}
 
 	public String getDisplay(int pos) {
-		if (pos >= 0 && pos < size()) {
-			if (get(pos).negative) {
-				return "-";
-			}
-		}
+        if (pos ==-1){
+            return display;
+        }
+        if (get(pos) instanceof MinusEquation){
+            return "-";
+        }
 		return display;
 	}
 
 	public AddEquation(SuperView owner) {
 		super(owner);
 		display = "+";
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
-
-		empty = new NumConstEquation("0", owner);
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
-	public void tryOperator(Equation a, Equation b) {
-
+	public void tryOperator(ArrayList<Equation> eqs) {
+        //TODO handle inbeddedness
+        Equation a = eqs.get(0);
+        Equation b = eqs.get(1);
 		int at = Math.min(indexOf(a), indexOf(b));
 
-		while (a instanceof AddEquation) {
-			a = a.get(a.size() - 1);
-		}
-		while (b instanceof AddEquation) {
-			b = b.get(b.size() - 1);
-		}
 		Equation result = null;
 		Equation top=null;
 		Equation bottom=null;
@@ -102,9 +121,14 @@ public class AddEquation extends Operation {
 		Equation e1 = cd1.remToEquation(owner);
 		Equation e2 = cd2.remToEquation(owner);
 		
-		if ((e1 instanceof NumConstEquation )&&(e2 instanceof NumConstEquation)){
-			double addTo = ((NumConstEquation)e1).getValue() + ((NumConstEquation)e2).getValue();
-			left = new NumConstEquation (addTo +"",owner);
+		if ( sortaNumber(e1) && sortaNumber(e2)){
+			double addTo = getValue(e1) + getValue(e2);
+            if (addTo < 0){
+                left = new MinusEquation(owner);
+                left.add( new NumConstEquation (-addTo,owner));
+            }else {
+                left = new NumConstEquation(addTo, owner);
+            }
 		}else{
 			left = new AddEquation(owner);
 			left.add(e1);
@@ -143,7 +167,9 @@ public class AddEquation extends Operation {
         }
 	}
 
-	private CountData updateCounts(Equation e, HashSet<CountData> counts) {
+
+
+    private CountData updateCounts(Equation e, HashSet<CountData> counts) {
 		CountData cd = new CountData(e);
 
 		boolean hasMatch = false;
@@ -173,7 +199,13 @@ class CountData {
 
 	public Equation remToEquation(SuperView owner) {
 		if (rem.size() == 0) {
-			return new NumConstEquation(value + "", owner);
+            if (value <0){
+                Equation minus = new MinusEquation(owner);
+                minus.add(new NumConstEquation(-value, owner));
+                return minus;
+            }else{
+                return new NumConstEquation(value, owner);
+            }
 		} else if (value == 1 && rem.size() == 1) {
 			return (Equation) rem.toArray()[0];
 		} else if (value == 1) {
@@ -184,7 +216,7 @@ class CountData {
 			return result;
 		} else {
 			Equation result = new MultiEquation(owner);
-			result.add(new NumConstEquation(value + "", owner));
+			result.add(new NumConstEquation(value , owner));
 			for (Equation e : rem) {
 				result.add(e);
 			}
@@ -194,7 +226,7 @@ class CountData {
 
 	public Equation toEquation(SuperView owner) {
 		if (key.size() == 0) {
-			return new NumConstEquation(value + "", owner);
+			return new NumConstEquation(value, owner);
 		} else if (value == 1 && key.size() == 1) {
 			return (Equation) key.toArray()[0];
 		} else if (value == 1) {
@@ -205,7 +237,7 @@ class CountData {
 			return result;
 		} else {
 			Equation result = new MultiEquation(owner);
-			result.add(new NumConstEquation(value + "", owner));
+			result.add(new NumConstEquation(value , owner));
 			for (Equation e : key) {
 				result.add(e);
 			}
@@ -219,6 +251,11 @@ class CountData {
 	}
 
 	public void updateKey(Equation e) {
+        while (e instanceof MinusEquation){
+            value *= -1;
+            e = e.get(0);
+        }
+
 		if (e instanceof MultiEquation) {
 			for (Equation ee : e) {
 				this.updateKey(ee);
@@ -264,7 +301,7 @@ class CountData {
 	/**
 	 * things in this.key also in cd2.key
 	 * 
-	 * @param common
+	 * @param cd2
 	 * @return
 	 */
 	public HashSet<Equation> common(CountData cd2) {
@@ -299,4 +336,6 @@ class CountData {
 		}
 		return true;
 	}
+
+
 }

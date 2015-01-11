@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
 public class DivEquation extends Operation implements MultiDivSuperEquation {
@@ -24,7 +25,6 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	public Equation copy() {
 		Equation result = new DivEquation(this.owner);
 		result.display = this.getDisplay(-1);
-		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent
@@ -64,9 +64,11 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 
 	public DivEquation(SuperView owner) {
 		super(owner);
+        display = "/";
 
-		myWidth = DEFAULT_SIZE;
-		myHeight = DEFAULT_SIZE;
+
+		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 
 	@Override
@@ -78,7 +80,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 				maxWidth = get(i).measureWidth();
 			}
 		}
-		if (parentheses) {
+		if (parenthesis()) {
 			maxWidth += PARN_WIDTH_ADDITION;
 		}
 
@@ -92,7 +94,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		float totalHieght = measureHeight();
 		float currentY = -(totalHieght / 2) + y;
 		Paint temp = getPaint();
-		if (parentheses) {
+		if (parenthesis()) {
 			drawParentheses(canvas, x, y, temp);
 			currentY += PARN_HEIGHT_ADDITION / 2;
 		}
@@ -123,7 +125,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		for (int i = 0; i < size(); i++) {
 			totalHeight += get(i).measureHeight();
 		}
-		if (parentheses) {
+		if (parenthesis()) {
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		return totalHeight;
@@ -142,7 +144,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	public Equation remove(int pos) {
 		if (pos == 0) {
 			Equation result = get(0);
-			this.get(0).replace(new NumConstEquation("1", owner));
+			this.get(0).replace(new NumConstEquation(1, owner));
 			return result;
 		} else if (pos == 1) {
 			this.replace(get(0));
@@ -159,14 +161,15 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		return get(0).same(e.get(0)) && get(1).same(e.get(1));
 	}
 	
-	public void tryOperator(Equation a, Equation b){
+	public void tryOperator(ArrayList<Equation> eqs) {
+
+        Equation a = eqs.get(0);
+        Equation b = eqs.get(1);
         //it should cancel any commonalties
         //if you have .../1 it should handle that
         //if youhave 0/... needs to handle that too
         // (6 + 5) / x -> 6/x + 5/x
         //
-
-
 
         Equation result =null;
         if (get(0) instanceof AddEquation){
@@ -198,13 +201,23 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
             top.removeCommon(common);
             bot.removeCommon(common);
 
-            if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
+            if (!(sortaNumber(bot.getEquation(owner)) && Math.abs(getValue(bot.getEquation(owner)))  == 1)){
                 Equation inner = new DivEquation(owner);
                 inner.add(top.getEquation(owner));
                 inner.add(bot.getEquation(owner));
                 result = inner;
-            }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0)){
-                result = top.getEquation(owner);
+            }else{
+                if (getValue(bot.getEquation(owner))== -1){
+                    if (top.getEquation(owner) instanceof MinusEquation){
+                        result = top.getEquation(owner).get(0);
+                    }else{
+                        Equation inner = top.getEquation(owner);
+                        result = new MinusEquation(owner);
+                        result.add(inner);
+                    }
+                }else {
+                    result = top.getEquation(owner);
+                }
             }
         }
         replace(result);

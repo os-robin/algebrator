@@ -3,7 +3,7 @@ package com.algebrator.eq;
 import android.util.Log;
 
 public class EquationDis implements Comparable<EquationDis> {
-	float dis;
+	public float dis;
 	public LeafEquation equation;
 	float x;
 	float y;
@@ -15,16 +15,29 @@ public class EquationDis implements Comparable<EquationDis> {
 
 	public EquationDis(LeafEquation equation, float x, float y) {
 		super();
+
 		this.x = x;
 		this.y = y;
 		float dx = x - equation.x;
 		float dy = y - equation.y;
 		float dis = (float) Math.sqrt((dx * dx) + (dy * dy));
-		this.dis = dis;
+		this.dis = Math.max(
+                    Math.max(
+                            dis(equation.x+equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y),
+                            dis(equation.x-equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y)
+                ),Math.max(
+                            dis(equation.x+equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y),
+                            dis(equation.x-equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y)));
 		this.equation = equation;
 	}
 
-	@Override
+    private float dis(float x, float y, float x1, float y1) {
+        float dx = x - x1;
+        float dy = y - y1;
+      return (float) Math.sqrt((dx * dx) + (dy * dy));
+    }
+
+    @Override
 	public int compareTo(EquationDis other) {
 		float otherDis = other.dis;
 		if (otherDis > dis) {
