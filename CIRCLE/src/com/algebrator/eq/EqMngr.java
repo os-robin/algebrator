@@ -9,7 +9,7 @@ public class EqMngr {
 				MultiEquation toAdd = new MultiEquation(a.owner);
 				toAdd.add(a.get(i));
 				toAdd.add(b.get(j));
-				result.add(toAdd);
+				result.add(toAdd);;
 			}
 		}
 		return result;
