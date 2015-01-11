@@ -46,7 +46,6 @@ public class AddEquation extends FlexOperation {
 	public Equation copy() {
 		Equation result = new AddEquation(this.owner);
 		result.display = this.getDisplay(-1);
-		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent
@@ -252,7 +251,7 @@ class CountData {
 	}
 
 	public void updateKey(Equation e) {
-        if (e instanceof MinusEquation){
+        while (e instanceof MinusEquation){
             value *= -1;
             e = e.get(0);
         }

@@ -121,35 +121,8 @@ public class WritingPraEquation extends WritingLeafEquation {
         // we need to deselect whatever is selected
         owner.removeSelected();
 
-        // we need to find it's other end
-        Equation eq = getMatch();
-        int min = Math.min(this.parent.indexOf(this), this.parent.indexOf(eq));
-        int max = Math.max(this.parent.indexOf(this), this.parent.indexOf(eq));
-        ArrayList<Equation> list = new ArrayList<Equation>();
-        for (int i=min;i<max+1;i++){
-            list.add(this.parent.get(i));
-        }
-        Equation toSelect = null;
-        if (this.parent instanceof MultiEquation) {
-            toSelect = new MultiEquation(owner);
-        } else if (this.parent instanceof AddEquation) {
-            toSelect = new AddEquation(owner);
-        } else if (this.parent instanceof WritingEquation) {
-            toSelect = new WritingEquation(owner);
-        }
-        if (toSelect == null){
-            Log.e("","ToSelect should not be null");
-        }
+        Equation toSelect = popBlock();
 
-        Equation oldEq = this.parent;
-
-        for (Equation e : list) {
-            oldEq.justRemove(e);
-            toSelect.add(e);
-        }
-
-        // add it back
-        oldEq.add(min, toSelect);
         // and select the new equation
         toSelect.setSelected(true);
 
@@ -191,5 +164,41 @@ public class WritingPraEquation extends WritingLeafEquation {
             }
         }
         return null;
+    }
+
+    public Equation popBlock() {
+
+        // we need to find it's other end
+        Equation eq = getMatch();
+        int min = Math.min(this.parent.indexOf(this), this.parent.indexOf(eq));
+        int max = Math.max(this.parent.indexOf(this), this.parent.indexOf(eq));
+        ArrayList<Equation> list = new ArrayList<Equation>();
+        for (int i=min;i<max+1;i++){
+            list.add(this.parent.get(i));
+        }
+        Equation toSelect = null;
+        if (this.parent instanceof MultiEquation) {
+            toSelect = new MultiEquation(owner);
+        } else if (this.parent instanceof AddEquation) {
+            toSelect = new AddEquation(owner);
+        } else if (this.parent instanceof WritingEquation) {
+            toSelect = new WritingEquation(owner);
+        }
+        if (toSelect == null){
+            Log.e("","ToSelect should not be null");
+        }
+
+        Equation oldEq = this.parent;
+
+        for (Equation e : list) {
+            oldEq.justRemove(e);
+            toSelect.add(e);
+        }
+
+        // add it back
+        oldEq.add(min, toSelect);
+
+        return toSelect;
+
     }
 }

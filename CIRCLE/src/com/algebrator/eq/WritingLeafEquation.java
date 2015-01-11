@@ -15,7 +15,6 @@ public class WritingLeafEquation extends LeafEquation {
     public Equation copy() {
         Equation result = new WritingLeafEquation(this.display, this.owner);
 
-        result.parentheses = this.parentheses;
 
         return result;
     }

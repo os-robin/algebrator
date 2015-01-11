@@ -73,15 +73,12 @@ public class MainActivity extends Activity {
      	actionBar.hide();
      }
 
-        myView.onResume();
-
      Log.i("lifeCycle","MainActivity-onResume");
     }
     
     @Override
     protected void onPause() {
      super.onPause();
-        myView.onPause();
         Log.i("lifeCycle","MainActivity-onResume");
     }
 

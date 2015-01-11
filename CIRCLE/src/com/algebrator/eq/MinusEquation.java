@@ -47,7 +47,7 @@ public class MinusEquation extends Equation {
             float totalWidth = measureWidth();
             float currentX = 0;
             Paint temp = getPaint();
-            if (parentheses) {
+            if (parenthesis()) {
                 drawParentheses(canvas, x, y, temp);
                 currentX+= PARN_WIDTH_ADDITION/2;
             }

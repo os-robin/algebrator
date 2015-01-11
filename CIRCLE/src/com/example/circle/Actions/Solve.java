@@ -17,16 +17,12 @@ public class Solve extends Action {
 
     @Override
     public void act() {
-        if (emilyView.stupid instanceof WritingEquation) {
-            Equation newEq = ((WritingEquation)emilyView.stupid).convert();
-        }
 
+        Equation newEq = ((WritingEquation)emilyView.stupid).convert();
 
-        emilyView.onPause();
         Context c = emilyView.getContext();
         ColinView colinView = new ColinView(c);
-        colinView.stupid = emilyView.stupid;
+        colinView.stupid = newEq;
         ((MainActivity) c).lookAt(colinView);
-        colinView.onResume();
     }
 }

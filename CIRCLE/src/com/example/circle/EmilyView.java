@@ -237,8 +237,9 @@ public class EmilyView extends SuperView {
     protected void resolveSelected(MotionEvent event) {
         // now we need to figure out what we are selecting
         // find the least commond parent
-        Equation lcp = null;
+
         if (selectingSet.size() <2){
+            Equation lcp = null;
             // if it's an action up
             if (event.getAction() ==MotionEvent.ACTION_UP){
                 // and it was near the left of stupid
@@ -275,81 +276,8 @@ public class EmilyView extends SuperView {
             return;
 
 
-        }
-        else {
-            for (Equation eq : selectingSet) {
-                if (lcp == null) {
-                    lcp = eq.parent;
-                } else if (!eq.parent.equals(lcp)) {
-                    lcp = lcp.lowestCommonContainer(eq);
-                }
-            }
-            if (lcp != null) {
-                // make sure they are a continous block
-                ArrayList<Integer> indexs = new ArrayList<Integer>();
-                int at = 0;
-                for (Equation eq : selectingSet) {
-                    int index =lcp.deepIndexOf(eq);
-                    if (!indexs.contains(index)) {
-                        indexs.add(index);
-                    }
-                    at++;
-                }
-                Collections.sort(indexs);
-                int min = indexs.get(0);
-                if (lcp.get(min) instanceof WritingLeafEquation){
-                    // the div lines in isOp could be a problem here
-                    // i think it's no a problem... I hope
-                    ((WritingLeafEquation) lcp.get(min)).isOpRight();
-                    if (min != 0){
-                        indexs.add(0, min - 1);
-                    }
-                }
-                int max = indexs.get(indexs.size() - 1);
-                if (lcp.get(max) instanceof WritingLeafEquation){
-                    // the div lines in isOp could be a problem here
-                    // i think it's no a problem... I hope
-                    ((WritingLeafEquation) lcp.get(max)).isOpLeft();
-                    if (max != lcp.size()-1) {
-                        indexs.add(max + 1);
-                    }
-                }
-
-                // if they do not make up all of lcp
-                if (indexs.size() != lcp.size()) {
-                    // we make a new equation of the type of lcp
-                    Equation toSelect = null;
-                    if (lcp instanceof MultiEquation) {
-                        toSelect = new MultiEquation(this);
-                    } else if (lcp instanceof AddEquation) {
-                        toSelect = new AddEquation(this);
-                    } else if (lcp instanceof WritingEquation) {
-                        toSelect = new WritingEquation(this);
-                    }
-                    //sort selected set
-                    ArrayList<Equation> selectedList = new ArrayList<Equation>();
-                    for (int i : indexs) {
-                        selectedList.add(lcp.get(i));
-                    }
-                    // remove the selectingSet from lcp and add it to our
-                    // new equation
-                    for (Equation eq : selectedList) {
-                        lcp.justRemove(eq);
-                        toSelect.add(eq);
-                    }
-                    // insert the new equation in to lcp
-                    lcp.add(indexs.get(0), toSelect);
-                    // and select the new equation
-                    toSelect.setSelected(true);
-                } else {
-                    lcp.setSelected(true);
-                }
-            } else {
-                if (lcp != null) {
-                    lcp.setSelected(true);
-                }
-            }
-            selectingSet = new HashSet<Equation>();
+        }else {
+            selectSet();
         }
     }
     // returns the equation left of the selected

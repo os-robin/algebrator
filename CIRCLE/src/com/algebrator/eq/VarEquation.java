@@ -15,8 +15,6 @@ public class VarEquation extends LeafEquation {
 	public Equation copy() {
 		Equation result = new VarEquation(this.display, this.owner);
 
-		result.parentheses = this.parentheses;
-
 		return result;
 	}
 	

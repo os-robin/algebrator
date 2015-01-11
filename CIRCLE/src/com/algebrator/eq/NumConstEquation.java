@@ -37,8 +37,6 @@ public class NumConstEquation extends LeafEquation {
 	public Equation copy() {
 		Equation result = new NumConstEquation(this.getValue(), this.owner);
 
-		result.parentheses = this.parentheses;
-
 		return result;
 	}
 	

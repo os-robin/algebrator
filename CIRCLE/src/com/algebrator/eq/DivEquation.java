@@ -25,7 +25,6 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 	public Equation copy() {
 		Equation result = new DivEquation(this.owner);
 		result.display = this.getDisplay(-1);
-		result.parentheses = this.parentheses;
 		// pass selected?
 
 		// copy all the kiddos and set this as their parent
@@ -65,6 +64,8 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 
 	public DivEquation(SuperView owner) {
 		super(owner);
+        display = "/";
+
 
 		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
@@ -79,7 +80,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 				maxWidth = get(i).measureWidth();
 			}
 		}
-		if (parentheses) {
+		if (parenthesis()) {
 			maxWidth += PARN_WIDTH_ADDITION;
 		}
 
@@ -93,7 +94,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		float totalHieght = measureHeight();
 		float currentY = -(totalHieght / 2) + y;
 		Paint temp = getPaint();
-		if (parentheses) {
+		if (parenthesis()) {
 			drawParentheses(canvas, x, y, temp);
 			currentY += PARN_HEIGHT_ADDITION / 2;
 		}
@@ -124,7 +125,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		for (int i = 0; i < size(); i++) {
 			totalHeight += get(i).measureHeight();
 		}
-		if (parentheses) {
+		if (parenthesis()) {
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		return totalHeight;

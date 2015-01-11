@@ -2,6 +2,7 @@ package com.example.circle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -36,6 +37,7 @@ import com.algebrator.eq.MinusEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
+import com.algebrator.eq.WritingLeafEquation;
 
 public abstract class SuperView extends View implements
 		OnTouchListener {//Runnable,
@@ -141,28 +143,6 @@ public abstract class SuperView extends View implements
 
         Log.i("actual height, width", height + ", " + width);
 
-    }
-
-    public void onResume() {
-        //super.onResume();
-        //running = true;
-        //thread = new Thread(this);
-        //thread.start();
-        Log.i("lifeCycle", "SuperView-onResume");
-    }
-
-    public void onPause() {
-        //boolean retry = true;
-        //running = false;
-        //while (retry) {
-        //	try {
-        //		thread.join();
-        //		retry = false;
-        //	} catch (InterruptedException e) {
-        //		e.printStackTrace();
-        //	}
-        //}
-        Log.i("lifeCycle", "SuperView-onPause");
     }
 
 //	@Override
@@ -404,8 +384,10 @@ public abstract class SuperView extends View implements
                     tapPoint.y = (int) event.getY();
                     if (tapSpacing < doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode ==TouchMode.SELECT) {
                         Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
-                        stupid.tryOperator(event.getX(),
-                                event.getY());
+                        if (canDrag) {
+                            stupid.tryOperator(event.getX(),
+                                    event.getY());
+                        }
 
                         lastTapTime = 0;
                     } else {
@@ -476,6 +458,83 @@ public abstract class SuperView extends View implements
             }
         }
 	}
+
+    protected void selectSet(){
+        Equation lcp=null;
+        for (Equation eq : selectingSet) {
+            if (lcp == null) {
+                lcp = eq.parent;
+            } else if (!eq.parent.equals(lcp)) {
+                lcp = lcp.lowestCommonContainer(eq);
+            }
+        }
+        if (lcp != null) {
+            // make sure they are a continous block
+            ArrayList<Integer> indexs = new ArrayList<Integer>();
+            int at = 0;
+            for (Equation eq : selectingSet) {
+                int index =lcp.deepIndexOf(eq);
+                if (!indexs.contains(index)) {
+                    indexs.add(index);
+                }
+                at++;
+            }
+            Collections.sort(indexs);
+            int min = indexs.get(0);
+            if (lcp.get(min) instanceof WritingLeafEquation){
+                // the div lines in isOp could be a problem here
+                // i think it's no a problem... I hope
+                ((WritingLeafEquation) lcp.get(min)).isOpRight();
+                if (min != 0){
+                    indexs.add(0, min - 1);
+                }
+            }
+            int max = indexs.get(indexs.size() - 1);
+            if (lcp.get(max) instanceof WritingLeafEquation){
+                // the div lines in isOp could be a problem here
+                // i think it's no a problem... I hope
+                ((WritingLeafEquation) lcp.get(max)).isOpLeft();
+                if (max != lcp.size()-1) {
+                    indexs.add(max + 1);
+                }
+            }
+
+            // if they do not make up all of lcp
+            if (indexs.size() != lcp.size()) {
+                // we make a new equation of the type of lcp
+                Equation toSelect = null;
+                if (lcp instanceof MultiEquation) {
+                    toSelect = new MultiEquation(this);
+                } else if (lcp instanceof AddEquation) {
+                    toSelect = new AddEquation(this);
+                } else if (lcp instanceof WritingEquation) {
+                    toSelect = new WritingEquation(this);
+                }
+                //sort selected set
+                ArrayList<Equation> selectedList = new ArrayList<Equation>();
+                for (int i : indexs) {
+                    selectedList.add(lcp.get(i));
+                }
+                // remove the selectingSet from lcp and add it to our
+                // new equation
+                for (Equation eq : selectedList) {
+                    lcp.justRemove(eq);
+                    toSelect.add(eq);
+                }
+                // insert the new equation in to lcp
+                lcp.add(indexs.get(0), toSelect);
+                // and select the new equation
+                toSelect.setSelected(true);
+            } else {
+                lcp.setSelected(true);
+            }
+        } else {
+            if (lcp != null) {
+                lcp.setSelected(true);
+            }
+        }
+        selectingSet = new HashSet<Equation>();
+    }
 
     protected abstract void resolveSelected(MotionEvent event);
 

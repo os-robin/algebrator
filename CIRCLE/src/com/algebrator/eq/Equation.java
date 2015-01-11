@@ -19,7 +19,6 @@ abstract public class Equation extends ArrayList<Equation> {
     private static int idBacker = 0;
     public Equation parent;
     public Paint textPaint;
-    public boolean parentheses;
     public boolean demo = false;
     public float x = 0;
     public float y = 0;
@@ -31,6 +30,10 @@ abstract public class Equation extends ArrayList<Equation> {
     SuperView owner;
     private int id;
     private int buffer = 10;
+
+    public boolean parenthesis(){
+        return this instanceof AddEquation && (this .parent instanceof  MultiEquation || this.parent instanceof MinusEquation);
+    }
 
     public Equation(SuperView owner2) {
         owner = owner2;
@@ -82,7 +85,6 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public boolean tryFlatten() {
-        if (!this.parentheses) {
             if (((this instanceof WritingEquation && this.parent instanceof WritingEquation) ||
                     (this instanceof AddEquation && this.parent instanceof AddEquation) ||
                     (this instanceof MultiEquation && this.parent instanceof MultiEquation))) {
@@ -94,7 +96,6 @@ abstract public class Equation extends ArrayList<Equation> {
                 }
                 return true;
             }
-        }
         return false;
     }
 
@@ -152,7 +153,7 @@ abstract public class Equation extends ArrayList<Equation> {
             totalWidth += get(i).measureWidth();
         }
 
-        if (parentheses) {
+        if (parenthesis()) {
             totalWidth += PARN_WIDTH_ADDITION;
         }
 
@@ -176,7 +177,7 @@ abstract public class Equation extends ArrayList<Equation> {
         float totalWidth = measureWidth();
         float currentX = 0;
         Paint temp = getPaint();
-        if (parentheses) {
+        if (parenthesis()) {
             drawParentheses(canvas, x, y, temp);
             currentX += PARN_WIDTH_ADDITION / 2;
         }
@@ -223,7 +224,7 @@ abstract public class Equation extends ArrayList<Equation> {
                 totalHeight = get(i).measureHeight();
             }
         }
-        if (parentheses) {
+        if (parenthesis()) {
             totalHeight += PARN_HEIGHT_ADDITION;
         }
 
@@ -231,7 +232,6 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public HashSet<Equation> on(float x, float y) {
-        Log.i("yo,yo", x + "," + y);
         HashSet<Equation> result = new HashSet<Equation>();
         for (int i = 0; i < lastPoint.size(); i++) {
             if (x < lastPoint.get(i).x + myWidth / 2
@@ -289,22 +289,23 @@ abstract public class Equation extends ArrayList<Equation> {
     ;
 
     public void tryOperator(float x, float y) {
-        Object[] ons = onAny(x, y).toArray();
-        if (ons.length == 1 && ons[0] instanceof MinusEquation) {
-            ons[0] = ((Equation) ons[0]).get(0);
-        }
-        ArrayList<Equation> onsList = new ArrayList<Equation>();
-        boolean shareParent = true;
-        for (int i = 0; i < ons.length && shareParent; i++) {
-            if (i != 0) {
-                shareParent = ((Equation) ons[i]).parent == ((Equation) ons[i - 1]).parent;
+        Object[] ons = on(x, y).toArray();
+        if (ons.length != 0) {
+            ArrayList<Equation> onsList = new ArrayList<Equation>();
+            String debug="";
+            for (Object o:ons){
+                Equation e =(Equation)o;
+                int at = deepIndexOf(e);
+                Equation toAdd= get(at);
+                debug += toAdd.toString() + ",";
+                onsList.add(toAdd);
             }
-            onsList.add((Equation) ons[i]);
-        }
-        if (shareParent && ons.length != 0) {
-            ((Equation) ons[0]).parent.tryOperator(onsList);
-        } else {
-            Log.e("", "ons have different parents");
+            Log.i("tryOperator",debug);
+            tryOperator(onsList);
+        }else{
+            for (Equation e: this){
+                e.tryOperator(x,y);
+            }
         }
     }
 
@@ -680,10 +681,6 @@ abstract public class Equation extends ArrayList<Equation> {
                     newEq = new MultiEquation(owner);
                 }
 
-                if (oldEq.parentheses) {
-                    oldEq.parentheses = false;
-                    newEq.parentheses = true;
-                }
                 if (op != Op.DIV) {
 
                     oldEq.replace(newEq);

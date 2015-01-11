@@ -67,7 +67,7 @@ public abstract class LeafEquation extends Equation {
 		// not tested
 		float totalWidth= myWidth+textPaint.measureText(display); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
-		if (parentheses){
+		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;
 		}
 		return totalWidth;
@@ -81,7 +81,7 @@ public abstract class LeafEquation extends Equation {
 		
 		float totalHeight= myHeight;
 		
-		if (parentheses){
+		if (parenthesis()){
 			totalHeight += PARN_HEIGHT_ADDITION;
 		}
 		return totalHeight;
@@ -92,7 +92,7 @@ public abstract class LeafEquation extends Equation {
 		drawBkgBox(canvas, x, y);
 		lastPoint =new ArrayList<Point>();
 		Paint temp = getPaint();
-		if (parentheses){
+		if (parenthesis()){
 			drawParentheses(canvas,x,y,temp);
 		} 
 		Rect out =  new Rect();
