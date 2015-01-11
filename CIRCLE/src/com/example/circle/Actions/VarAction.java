@@ -5,6 +5,7 @@ import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.VarEquation;
 import com.algebrator.eq.WritingEquation;
+import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
 
 public class VarAction extends Action {
@@ -36,8 +37,8 @@ public class VarAction extends Action {
             }
             //}
         } else {
-            Equation newEq = new VarEquation(var, emilyView);
-            emilyView.insert(newEq);
+                Equation numEq =  new VarEquation(var, emilyView);
+                addToBlock(numEq);
         }
 //        if (! (emilyView.selected instanceof WritingEquation) ){
 //            if (emilyView.selected instanceof PlaceholderEquation) {

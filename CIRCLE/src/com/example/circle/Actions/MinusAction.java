@@ -2,6 +2,7 @@ package com.example.circle.Actions;
 
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
@@ -41,6 +42,9 @@ public class MinusAction extends Action {
                 emilyView.insert(newEq);
             }
 
+        }else{
+            Equation numEq = new WritingLeafEquation("-", emilyView);
+            addToBlock(numEq);
         }
 
 //		    if (emilyView.selected instanceof PlaceholderEquation) {

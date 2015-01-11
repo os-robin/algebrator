@@ -2,6 +2,7 @@ package com.example.circle.Actions;
 
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
@@ -74,6 +75,11 @@ public class ParenthesesAction extends Action {
                 }
             }
 
+        }else{
+            if (left) {
+                Equation numEq = new WritingPraEquation(left, emilyView);
+                addToBlock(numEq);
+            }
         }
     }
 

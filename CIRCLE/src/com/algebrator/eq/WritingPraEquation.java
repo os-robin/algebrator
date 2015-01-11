@@ -1,6 +1,7 @@
 package com.algebrator.eq;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
@@ -36,6 +37,12 @@ public class WritingPraEquation extends WritingLeafEquation {
         lastPoint.add(new Point((int) x, (int) y));
         drawParentheses(canvas, x, y, temp, left);
     }
+
+    @Override
+    public boolean illegal() {
+        return getMatch()== null;
+    }
+
 
     protected void drawParentheses(Canvas canvas, float x, float y, Paint temp, boolean left) {
         Paint ptemp = new Paint(temp);

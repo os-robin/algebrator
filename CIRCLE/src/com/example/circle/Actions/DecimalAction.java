@@ -3,6 +3,7 @@ package com.example.circle.Actions;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
 import com.example.circle.EmilyView;
 
 public class DecimalAction extends Action {
@@ -32,9 +33,15 @@ public class DecimalAction extends Action {
                 numEq.setDisplay(numEq.getDisplay(0) + ".");
                 emilyView.insert(numEq);
             }
+        }else{
+            NumConstEquation numEq = new NumConstEquation(0, emilyView);
+            numEq.setDisplay(numEq.getDisplay(0) + ".");
+            addToBlock(numEq);
+
         }
 
     }
+
 
 }
 

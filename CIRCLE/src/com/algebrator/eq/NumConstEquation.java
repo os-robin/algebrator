@@ -8,7 +8,7 @@ import android.util.Log;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
-public class NumConstEquation extends LeafEquation {
+public class NumConstEquation extends LeafEquation implements LegallityCheck {
 	
 	public NumConstEquation(double number, SuperView owner) {
 		super(owner);
@@ -27,6 +27,10 @@ public class NumConstEquation extends LeafEquation {
         }
 
 	}
+    //TODO
+    public boolean illegal() {
+        return true;
+    }
 	
 	public double getValue(){
 		double value = Double.parseDouble(display);

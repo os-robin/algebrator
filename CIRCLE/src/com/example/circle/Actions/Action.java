@@ -2,6 +2,9 @@ package com.example.circle.Actions;
 
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.NumConstEquation;
+import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
 import com.algebrator.eq.WritingPraEquation;
 import com.example.circle.EmilyView;
@@ -45,6 +48,32 @@ public abstract class Action {
             }
         }
 
+    }
+
+
+    protected void addToBlock(Equation numEq) {
+        PlaceholderEquation phe = new PlaceholderEquation(emilyView);
+        if (emilyView.selected.parent instanceof WritingEquation){
+            // add to the parent
+            int at = emilyView.selected.parent.indexOf(emilyView.selected);
+            emilyView.selected.parent.add(at+1,numEq);
+            emilyView.selected.parent.add(at+2,phe);
+            phe.setSelected(true);
+        }else if (emilyView.selected instanceof WritingEquation){
+            // add to what is selected
+            emilyView.selected.add(numEq);
+            emilyView.selected.add(phe);
+            phe.setSelected(true);
+        }else{
+            // replace selected with a new WritingEqution that contains selects
+            Equation write = new WritingEquation(emilyView);
+            Equation oldEq = emilyView.selected;
+            emilyView.selected.replace(write);
+            write.add(oldEq);
+            write.add(numEq);
+            write.add(phe);
+            phe.setSelected(true);
+        }
     }
 
     protected void tryMoveRight() {

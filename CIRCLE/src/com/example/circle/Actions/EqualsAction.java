@@ -1,6 +1,7 @@
 package com.example.circle.Actions;
 
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;

@@ -23,6 +23,10 @@ public class TimesAction extends Action {
                 Equation newEq = new WritingLeafEquation("*", emilyView);
                 emilyView.insert(newEq);
             }
+        }else{
+
+            Equation numEq = new WritingLeafEquation("*", emilyView);
+            addToBlock(numEq);
         }
 
 //		if (emilyView.selected != null) {
