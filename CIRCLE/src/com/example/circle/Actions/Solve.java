@@ -18,6 +18,7 @@ public class Solve extends Action {
     @Override
     public void act() {
 
+
         Equation newEq = ((WritingEquation)emilyView.stupid).convert();
 
         Context c = emilyView.getContext();
