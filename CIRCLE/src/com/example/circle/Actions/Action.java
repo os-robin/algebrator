@@ -2,7 +2,6 @@ package com.example.circle.Actions;
 
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
-import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
@@ -23,7 +22,6 @@ public abstract class Action {
     }
 
     abstract public void act();
-
 
 
     protected boolean hasMatch() {
@@ -53,18 +51,18 @@ public abstract class Action {
 
     protected void addToBlock(Equation numEq) {
         PlaceholderEquation phe = new PlaceholderEquation(emilyView);
-        if (emilyView.selected.parent instanceof WritingEquation){
+        if (emilyView.selected.parent instanceof WritingEquation) {
             // add to the parent
             int at = emilyView.selected.parent.indexOf(emilyView.selected);
-            emilyView.selected.parent.add(at+1,numEq);
-            emilyView.selected.parent.add(at+2,phe);
+            emilyView.selected.parent.add(at + 1, numEq);
+            emilyView.selected.parent.add(at + 2, phe);
             phe.setSelected(true);
-        }else if (emilyView.selected instanceof WritingEquation){
+        } else if (emilyView.selected instanceof WritingEquation) {
             // add to what is selected
             emilyView.selected.add(numEq);
             emilyView.selected.add(phe);
             phe.setSelected(true);
-        }else{
+        } else {
             // replace selected with a new WritingEqution that contains selects
             Equation write = new WritingEquation(emilyView);
             Equation oldEq = emilyView.selected;

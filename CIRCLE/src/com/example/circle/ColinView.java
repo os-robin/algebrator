@@ -42,6 +42,7 @@ public class ColinView extends SuperView {
 	
 	protected void init(Context context) {
         canDrag= true;
+        buttonsPercent=1f;
     }
 
     @Override

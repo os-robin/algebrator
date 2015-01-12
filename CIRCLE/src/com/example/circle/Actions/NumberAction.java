@@ -5,7 +5,6 @@ import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
-import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
 
 public class NumberAction extends Action {
@@ -51,18 +50,18 @@ public class NumberAction extends Action {
                 }
             } else {
                 if (r instanceof NumConstEquation) {
-                        if (!r.getDisplay(-1).equals("0")) {
-                            r.setDisplay(num + r.getDisplay(0));
-                        } else {
-                            r.setDisplay(num);
-                        }
+                    if (!r.getDisplay(-1).equals("0")) {
+                        r.setDisplay(num + r.getDisplay(0));
+                    } else {
+                        r.setDisplay(num);
+                    }
                 } else {
                     Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
                     emilyView.insert(newEq);
                 }
             }
 
-        }else{
+        } else {
             Equation numEq = new NumConstEquation(Integer.parseInt(num), emilyView);
             addToBlock(numEq);
         }

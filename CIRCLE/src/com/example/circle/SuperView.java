@@ -51,6 +51,12 @@ public abstract class SuperView extends View implements
     int height;
     int offsetX = 0;
     int offsetY = 0;
+    protected float buttonsPercent;
+
+
+    protected float buttonLine(){
+        return height*buttonsPercent;
+    }
 
     public TextPaint text = new TextPaint();
 
@@ -169,18 +175,56 @@ public abstract class SuperView extends View implements
     protected synchronized void onDraw(Canvas canvas) {
         // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
-        for (int i = 0; i < buttons.size(); i++) {
-            buttons.get(i).draw(canvas);
-        }
+
         if (dragging != null) {
             dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
         }
 
+        // keep selected on the screen
+        float targetV= 4.0f;
+
+        if (selected != null) {
+            //TODO scale by dpi
+            int buffer = 100;
+            if (selected.x + buffer > width) {
+                if (vx > -targetV) {
+                    vx = -targetV;
+                    slidding = true;
+                }
+            }
+
+
+            if (selected.y + buffer > buttonLine()) {
+                if (vy > -targetV) {
+                    vy = -targetV;
+                    slidding = true;
+                }
+            }
+
+            if (selected.x - buffer < 0) {
+                if (vx < targetV) {
+                    vx = targetV;
+                    slidding = true;
+                }
+            }
+
+            if (selected.y - buffer < 0) {
+                if (vy < targetV) {
+                    vy = targetV;
+                    slidding = true;
+                }
+            }
+        }
+
         if (slidding) {
+            Log.i("",vx +","+ vy);
             vx *= friction;
             vy *= friction;
             updateOffsetX(vx);
             updateOffsetY(vy);
+            if (vx == 0 && vy == 0){
+                slidding = false;
+            }
         }
 
         stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
@@ -190,11 +234,17 @@ public abstract class SuperView extends View implements
             lastLog = stupid.toString();
         }
 
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).draw(canvas);
+        }
+
         invalidate();
     }
 
     private void updateOffsetX(float vx) {
         float tempOffset = offsetX + vx;
+        //TODO upadte this math it should keep history in mind too
+
         if (Math.abs(tempOffset) < (width + stupid.measureWidth()) / 2 - eqDragPadding) {
             offsetX = (int) tempOffset;
         }
@@ -251,16 +301,15 @@ public abstract class SuperView extends View implements
             // we need to know if they started in the box
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // figure out the mode;
-                if (stupid.inBox(event.getX(), event.getY())) {
+                if (inButtons(event)) {
+                    myMode = TouchMode.BUTTON;
+                } else if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
                     removeSelected();
-                } else if (inButtons(event)) {
-                    myMode = TouchMode.BUTTON;
-                } else {
+                } else  {
                     myMode = TouchMode.MOVE;
-
-                    if (selected != null && !(selected instanceof PlaceholderEquation)) {
-                        selected.setSelected(false);
+                    if (selected != null) {
+                        removeSelected();
                     }
                 }
                 startTime = System.currentTimeMillis();
@@ -276,7 +325,9 @@ public abstract class SuperView extends View implements
                 if (myMode == TouchMode.SELECT) {
                     HashSet<Equation> ons = stupid.onAny(event.getX(),
                             event.getY());
-                    selectingSet.addAll(ons);
+
+                    addToSelectingSet(ons);
+
 
                     String toLog = "";
                     for (Equation e: selectingSet){
@@ -374,7 +425,7 @@ public abstract class SuperView extends View implements
 
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 // did we click anything?
-                endOnePointer(event);
+                boolean clicked = false;
                 long now = System.currentTimeMillis();
                 long totalTime = now - startTime;
                 if (totalTime < tapTime) {
@@ -387,6 +438,7 @@ public abstract class SuperView extends View implements
                         if (canDrag) {
                             stupid.tryOperator(event.getX(),
                                     event.getY());
+                            clicked = true;
                         }
 
                         lastTapTime = 0;
@@ -394,6 +446,9 @@ public abstract class SuperView extends View implements
                         lastTapTime = now;
                         lastTapPoint = tapPoint;
                     }
+                }
+                if (!clicked){
+                    endOnePointer(event);
                 }
 
                 // if we were dragging everything around
@@ -420,6 +475,36 @@ public abstract class SuperView extends View implements
     return true;
 }
 
+    private void addToSelectingSet(HashSet<Equation> ons) {
+        // we only want them to select equation on the same side as
+
+        // we should not be select the = sign
+        for (Equation e : ons){
+            if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")){
+                ons.remove(e);
+            }
+        }
+
+        // if we selected anything
+        if (!ons.isEmpty()) {
+
+            // figure out what side we are looking at
+            int side;
+            if (!selectingSet.isEmpty()) {
+                side = ((Equation) selectingSet.toArray()[0]).side();
+            }else {
+                side = ((Equation) ons.toArray()[0]).side();
+            }
+
+            // only add bits form the correct side
+            for (Equation e:ons){
+                if (e.side() == side) {
+                    selectingSet.add(e);
+                }
+            }
+        }
+    }
+
     protected boolean inButtons(MotionEvent event){
         for (Button b : buttons){
             if (b.couldClick(event)){
@@ -445,7 +530,7 @@ public abstract class SuperView extends View implements
 		else if (myMode == TouchMode.SELECT) {
 			// what did we select?
 			HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
-			selectingSet.addAll(ons);
+            addToSelectingSet(ons);
 			resolveSelected(event);
 		}else if (myMode == TouchMode.DRAG){
             stupid.fixIntegrety();

@@ -13,11 +13,35 @@ import java.util.ArrayList;
 /**
  * Created by Colin on 1/6/2015.
  */
-public class WritingEquation extends Equation {
+public class WritingEquation extends Equation{
 
     public WritingEquation(SuperView o) {
         super(o);
         display = "\"";
+    }
+
+
+    public boolean deepLegal(){
+        return deepLegal(this);
+    }
+
+    private boolean deepLegal(Equation eq) {
+        for( Equation e: eq){
+            if (e instanceof WritingEquation){
+                if (!((WritingEquation) e).deepLegal()){
+                    return false;
+                }
+            }else if (e instanceof WritingLeafEquation){
+                if (((WritingLeafEquation) e).illegal()){
+                    return false;
+                }
+            }else if (e instanceof DivEquation){
+                if (!deepLegal(e)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -83,10 +107,12 @@ public class WritingEquation extends Equation {
         Equation currentToAdd = null;
         Equation left = null;
         boolean openParen = false;
+        boolean wasParen = false;
         int minus = 0;
 
         for (int i = 0; i < size(); i++) {
             Equation at = get(i);
+            Log.i("root",(root == null ? "null" : root.toString()));
             if (currentToAdd == null) {
                 Log.i("left", (left == null ? "null" : left.toString()));
                 Log.i("at", at.toString());
@@ -108,6 +134,7 @@ public class WritingEquation extends Equation {
                         temp.remove(temp.size() - 1);
                         // we need to remove the first and last
                         left = convert(temp);
+                        wasParen = true;
 
                     } else {
                         left = convert(at);
@@ -162,7 +189,7 @@ public class WritingEquation extends Equation {
                         } else {
                             if (newEq instanceof MultiEquation) {
                                 Equation last = get(i - 1);
-                                if (last instanceof WritingPraEquation && !((WritingPraEquation) last).left) {
+                                if ((last instanceof WritingPraEquation && !((WritingPraEquation) last).left) || wasParen) {
                                     if (currentToAdd.parent instanceof MultiEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
@@ -209,11 +236,8 @@ public class WritingEquation extends Equation {
                                 openParen = false;
                             } else if (newEq instanceof EqualsEquation) {
                                 Equation before;
-                                if (currentToAdd != null) {
-                                    before = currentToAdd;
-                                    while (before.parent != null) {
-                                        before = before.parent;
-                                    }
+                                if (root != null) {
+                                    before = root;
                                 } else {
                                     before=left;
                                 }
@@ -237,6 +261,9 @@ public class WritingEquation extends Equation {
                         }
                         currentToAdd.add(at);
                     }
+                }
+                if (!(at instanceof WritingPraEquation)) {
+                    wasParen = false;
                 }
             }
         }

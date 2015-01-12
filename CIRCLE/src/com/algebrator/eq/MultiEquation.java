@@ -131,7 +131,7 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
         Equation bottom = null;
         Equation result;
 
-        operateRemove(a, b);
+        operateRemove(eqs);
         // for the bottom and the top
         for (OnTop onTop: new OnTop[]{OnTop.TOP,OnTop.BOT}){
             // find all the equations on each side

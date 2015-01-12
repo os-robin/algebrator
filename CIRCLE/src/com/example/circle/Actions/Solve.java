@@ -17,13 +17,15 @@ public class Solve extends Action {
 
     @Override
     public void act() {
+        if (emilyView.stupid instanceof WritingEquation) {
+            if (((WritingEquation) emilyView.stupid).deepLegal() && countEquals(emilyView.stupid) == 1) {
+                Equation newEq = ((WritingEquation) emilyView.stupid).convert();
 
-
-        Equation newEq = ((WritingEquation)emilyView.stupid).convert();
-
-        Context c = emilyView.getContext();
-        ColinView colinView = new ColinView(c);
-        colinView.stupid = newEq;
-        ((MainActivity) c).lookAt(colinView);
+                Context c = emilyView.getContext();
+                ColinView colinView = new ColinView(c);
+                colinView.stupid = newEq;
+                ((MainActivity) c).lookAt(colinView);
+            }
+        }
     }
 }

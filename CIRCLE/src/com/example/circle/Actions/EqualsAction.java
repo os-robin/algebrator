@@ -1,7 +1,6 @@
 package com.example.circle.Actions;
 
 import com.algebrator.eq.Equation;
-import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
@@ -22,7 +21,7 @@ public class EqualsAction extends Action {
             boolean can = l != null;
             // we can't add if the last char was an op
             if (l instanceof WritingLeafEquation) {
-                can = can && !((WritingLeafEquation)l).isOpLeft();
+                can = can && !((WritingLeafEquation) l).isOpLeft();
             }
             // if the root equation only hold one
             can = can && countEquals(emilyView.stupid) == 0;

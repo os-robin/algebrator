@@ -11,7 +11,7 @@ import android.util.Log;
 import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
-public class DivEquation extends Operation implements MultiDivSuperEquation, LegallityCheck {
+public class DivEquation extends Operation implements MultiDivSuperEquation {
 	private final int BUFFER = 15;
 
     @Override
@@ -235,11 +235,6 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Leg
         }
         result.value =bot.value;
         return result;
-    }
-
-    //TODO
-    public boolean illegal() {
-        return true;
     }
 
     private double gcd(double a, double b){
