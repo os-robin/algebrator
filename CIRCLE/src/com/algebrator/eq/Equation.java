@@ -295,13 +295,17 @@ abstract public class Equation extends ArrayList<Equation> {
             String debug="";
             for (Object o:ons){
                 Equation e =(Equation)o;
-                int at = deepIndexOf(e);
-                Equation toAdd= get(at);
-                debug += toAdd.toString() + ",";
-                onsList.add(toAdd);
+                if (o!= this) {
+                    int at = deepIndexOf(e);
+                    Equation toAdd = get(at);
+                    debug += toAdd.toString() + ",";
+                    onsList.add(toAdd);
+                }
             }
             Log.i("tryOperator",debug);
-            tryOperator(onsList);
+            if (onsList.size()!=0) {
+                tryOperator(onsList);
+            }
         }else{
             for (Equation e: this){
                 e.tryOperator(x,y);
@@ -642,10 +646,23 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public Integer deepIndexOf(Equation eq) {
         Equation at = eq;
+        if (at.parent ==null){
+            debug();
+        }
         while (at.parent != this) {
             at = at.parent;
+            if (at.parent ==null){
+                debug();
+            }
         }
-        return indexOf(at);
+        int result = indexOf(at);
+        if (result == -1){
+            Log.i("cgrrr","oh man is that bad");
+        }
+        return result;
+    }
+
+    private void debug() {
 
     }
 

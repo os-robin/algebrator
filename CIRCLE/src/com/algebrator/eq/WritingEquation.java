@@ -113,9 +113,9 @@ public class WritingEquation extends Equation{
         for (int i = 0; i < size(); i++) {
             Equation at = get(i);
             Log.i("root",(root == null ? "null" : root.toString()));
+            Log.i("at", at.toString());
             if (currentToAdd == null) {
                 Log.i("left", (left == null ? "null" : left.toString()));
-                Log.i("at", at.toString());
                 if (at.getDisplay(-1).equals("+")) {
                     currentToAdd = new AddEquation(owner);
                 } else if (at.getDisplay(-1).equals("*")) {
@@ -193,9 +193,13 @@ public class WritingEquation extends Equation{
                                     if (currentToAdd.parent instanceof MultiEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
-                                        newEq.add(currentToAdd);
-                                        if (currentToAdd.equals(root)) {
+                                        if (currentToAdd.parent ==null){
+                                            newEq.add(currentToAdd);
                                             root = newEq;
+                                        }else {
+                                            Equation oldEq = currentToAdd;
+                                            oldEq.replace(newEq);
+                                            newEq.add(oldEq);
                                         }
                                     }
                                     currentToAdd = newEq;
@@ -226,9 +230,13 @@ public class WritingEquation extends Equation{
                                     if (currentToAdd.parent instanceof AddEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
-                                        newEq.add(currentToAdd);
-                                        if (currentToAdd.equals(root)) {
+                                        if (currentToAdd.parent ==null){
+                                            newEq.add(currentToAdd);
                                             root = newEq;
+                                        }else {
+                                            Equation oldEq = currentToAdd;
+                                            oldEq.replace(newEq);
+                                            newEq.add(oldEq);
                                         }
                                     }
                                     currentToAdd = newEq;

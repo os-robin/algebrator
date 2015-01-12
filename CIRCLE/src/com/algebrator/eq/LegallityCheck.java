@@ -6,6 +6,4 @@ package com.algebrator.eq;
 public interface LegallityCheck {
 
     boolean illegal();
-
-    boolean allLegal();
 }

@@ -450,6 +450,7 @@ public abstract class SuperView extends View implements
                 if (!clicked){
                     endOnePointer(event);
                 }
+                selectingSet = new HashSet<Equation>();
 
                 // if we were dragging everything around
                 if (myMode == TouchMode.MOVE) {
@@ -556,13 +557,11 @@ public abstract class SuperView extends View implements
         if (lcp != null) {
             // make sure they are a continous block
             ArrayList<Integer> indexs = new ArrayList<Integer>();
-            int at = 0;
             for (Equation eq : selectingSet) {
                 int index =lcp.deepIndexOf(eq);
                 if (!indexs.contains(index)) {
                     indexs.add(index);
                 }
-                at++;
             }
             Collections.sort(indexs);
             int min = indexs.get(0);
