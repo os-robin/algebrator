@@ -202,6 +202,15 @@ abstract public class Equation extends ArrayList<Equation> {
         }
     }
 
+
+    protected float measureHeightLower() {
+        return measureHeight()/2f;
+    }
+
+    protected float measureHeightUpper() {
+        return measureHeight()/2f;
+    }
+
     public boolean deepContains(Equation equation) {
         Equation current = equation;
         while (true) {
@@ -217,17 +226,21 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureHeight() {
-        float totalHeight = myHeight;
+        float totalHeightL = myHeight/2;
+        float totalHeightU = myHeight/2;
 
         for (int i = 0; i < size(); i++) {
-            if (get(i).measureHeight() > totalHeight) {
-                totalHeight = get(i).measureHeight();
+            if (get(i).measureHeightLower() > totalHeightL) {
+                totalHeightL = get(i).measureHeightLower();
+            }
+            if (get(i).measureHeightUpper() > totalHeightU) {
+                totalHeightU = get(i).measureHeightUpper();
             }
         }
+        float totalHeight = totalHeightL + totalHeightU;
         if (parenthesis()) {
             totalHeight += PARN_HEIGHT_ADDITION;
         }
-
         return totalHeight;
     }
 
@@ -316,10 +329,16 @@ abstract public class Equation extends ArrayList<Equation> {
     public void tryOperator(ArrayList<Equation> equation) {
     }
 
+    float MIN_TEXT_SIZE = 12;
+
+    protected float getScale(Equation e){
+        return 1f;
+    }
+
     protected Paint getPaint() {
         Paint temp;
         if (parent != null) {
-            temp = parent.getPaint();
+            temp = new Paint(parent.getPaint());
         } else {
             temp = textPaint;
         }
@@ -335,6 +354,16 @@ abstract public class Equation extends ArrayList<Equation> {
             temp = new Paint(textPaint);
             temp.setColor(Color.RED);
         }
+        float targetTextSize = temp.getTextSize();
+        if (parent != null){
+            targetTextSize *= parent.getScale(this);
+            if (targetTextSize < MIN_TEXT_SIZE){
+                targetTextSize = MIN_TEXT_SIZE;
+            }
+        }
+
+        temp.setTextSize(targetTextSize);
+
         return temp;
     }
 

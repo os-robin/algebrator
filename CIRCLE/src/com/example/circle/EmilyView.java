@@ -17,7 +17,9 @@ import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MultiEquation;
+import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
+import com.algebrator.eq.PowerEquation;
 import com.algebrator.eq.VarEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
@@ -60,34 +62,13 @@ public class EmilyView extends SuperView {
     }
 
     protected void init(Context context) {
+        //stupid = new PowerEquation(this);
+        //stupid.add(new NumConstEquation(2.0,this));
+        //stupid.add(new NumConstEquation(2.0,this));
         stupid = new WritingEquation(this);
         Equation empty = new PlaceholderEquation(this);
         stupid.add(empty);
         empty.setSelected(true);
-        //Equation x = new PlaceholderEquation(this);
-        //Equation y = new PlaceholderEquation(this);
-        //Log.e("zoom?", (x == y) + "");
-
-		/*
-         * modified from Elliott Hughes' "Dalvik Explorer" app on
-		 * http://stackoverflow
-		 * .com/questions/1016896/how-to-get-screen-dimensions
-		 * 
-		 * WindowManager w = (WindowManager)
-		 * context.getSystemService(Context.WINDOW_SERVICE); Display d =
-		 * w.getDefaultDisplay(); DisplayMetrics metrics = new DisplayMetrics();
-		 * d.getMetrics(metrics); // since SDK_INT = 1; int width =
-		 * metrics.widthPixels; int height = metrics.heightPixels; // includes
-		 * window decorations (statusbar bar/menu bar) if (Build.VERSION.SDK_INT
-		 * >= 14 && Build.VERSION.SDK_INT < 17) try { width = (Integer)
-		 * Display.class.getMethod("getRawWidth").invoke(d); height = (Integer)
-		 * Display.class.getMethod("getRawHeight").invoke(d); } catch (Exception
-		 * ignored) { } // includes window decorations (statusbar bar/menu bar)
-		 * if (Build.VERSION.SDK_INT >= 17) try { Point realSize = new Point();
-		 * Display.class.getMethod("getRealSize", Point.class).invoke(d,
-		 * realSize); width = realSize.x; height = realSize.y; } catch
-		 * (Exception ignored) { }
-		 */
 
         for (int i = 0; i < 5; i++) {
             buttons.add(new Button(i / 11f, (i + 1) / 11f,

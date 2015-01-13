@@ -217,7 +217,7 @@ public abstract class SuperView extends View implements
         }
 
         if (slidding) {
-            Log.i("",vx +","+ vy);
+            //Log.i("",vx +","+ vy);
             vx *= friction;
             vy *= friction;
             updateOffsetX(vx);

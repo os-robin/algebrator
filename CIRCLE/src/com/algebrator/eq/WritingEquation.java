@@ -167,7 +167,7 @@ public class WritingEquation extends Equation{
                     left=null;
                 }
             } else {
-                if (at instanceof WritingLeafEquation) {
+                if (at instanceof WritingLeafEquation ) {
                     Equation newEq = null;
                     if (at.getDisplay(-1).equals("+")) {
                         newEq = new AddEquation(owner);
@@ -188,8 +188,9 @@ public class WritingEquation extends Equation{
                             //we don't worry about it
                         } else {
                             if (newEq instanceof MultiEquation) {
-                                Equation last = get(i - 1);
-                                if ((last instanceof WritingPraEquation && !((WritingPraEquation) last).left) || wasParen) {
+                                //Equation last = get(i - 1);
+                                //(last instanceof WritingPraEquation && !((WritingPraEquation) last).left) ||
+                                if ( wasParen) {
                                     if (currentToAdd.parent instanceof MultiEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
@@ -255,12 +256,28 @@ public class WritingEquation extends Equation{
                                 left = null;
                             }
                         }
-                    }
+                    }else{
+                            if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
+                                Equation temp = ((WritingPraEquation) at).popBlock();
+                                temp.remove(0);
+                                temp.remove(temp.size() - 1);
+                                // we need to remove the first and last
+                                at = convert(temp);
+                                wasParen = true;
 
+                                while (minus > 0) {
+                                    Equation neg = new MinusEquation(owner);
+                                    neg.add(at);
+                                    at = neg;
+                                    minus--;
+                                }
+                                currentToAdd.add(at);
+                            }
+                    }
                 } else {
-                    if (currentToAdd != null) {
-                        // convert it if something something and add it to the thing
-                        at = convert(at);
+
+                            at = convert(at);
+
                         while (minus > 0) {
                             Equation neg = new MinusEquation(owner);
                             neg.add(at);
@@ -268,7 +285,6 @@ public class WritingEquation extends Equation{
                             minus--;
                         }
                         currentToAdd.add(at);
-                    }
                 }
                 if (!(at instanceof WritingPraEquation)) {
                     wasParen = false;

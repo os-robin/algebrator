@@ -3,6 +3,8 @@ package com.algebrator.eq;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.util.Log;
 
 import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
@@ -36,66 +38,104 @@ public class PowerEquation extends Operation {
         return result;
     }
 
-    @Override
-    public float measureWidth() {
-        // TODO
-//        float maxWidth = myWidth;
-//
-//        for (int i = 0; i < size(); i++) {
-//            if (get(i).measureWidth() > maxWidth) {
-//                maxWidth = get(i).measureWidth();
-//            }
-//        }
-//        if (parenthesis()) {
-//            maxWidth += PARN_WIDTH_ADDITION;
-//        }
-//
-        return 0;
+    protected float getScale(Equation e){
+        if (indexOf(e)==1) {
+            return 0.75f;
+        }else {
+            return 1;
+        }
     }
 
     @Override
-    public void privateDraw(Canvas canvas, float x, float y) {
-        //TODO
-//        drawBkgBox(canvas, x, y);
-//        lastPoint = new ArrayList<Point>();
-//        float totalHieght = measureHeight();
-//        float currentY = -(totalHieght / 2) + y;
-//        Paint temp = getPaint();
-//        if (parenthesis()) {
-//            drawParentheses(canvas, x, y, temp);
-//            currentY += PARN_HEIGHT_ADDITION / 2;
-//        }
-//
-//        for (int i = 0; i < size(); i++) {
-//            float currentHieght = get(i).measureHeight();
-//            get(i).draw(canvas, x, currentY + (currentHieght / 2));
-//            currentY += currentHieght;
-//            if (i != size() - 1) {
-//                Point point = new Point();
-//                point.x = (int) x;
-//                point.y = (int) (currentY + (myHeight) / 2);
-//                temp.setStrokeWidth(3);
-//                int halfwidth = (int) ((measureWidth() - (2 * BUFFER)) / 2);
-//                canvas.drawLine(point.x - halfwidth, point.y, point.x
-//                        + halfwidth, point.y, temp);
-//
-//                lastPoint.add(point);
-//                currentY += myHeight;
-//            }
-//        }
+    public float measureWidth() {
+        // TODO
+        float totalWidth = 0;
+
+        for (int i = 0; i < size(); i++) {
+            totalWidth += get(i).measureWidth();
+        }
+        if (parenthesis()) {
+            totalWidth += PARN_WIDTH_ADDITION;
+        }
+        return totalWidth;
+    }
+
+    @Override
+    public void integrityCheck(){
+        if (size() != 2){
+            Log.e("ic", "this should be size 2");
+        }
+    }
+
+                    // y is not centered is that a problem - this at a problem
+                    // yes i think it is
+                    @Override
+                    public void privateDraw(Canvas canvas, float x, float y) {
+                        lastPoint = new ArrayList<Point>();
+                        float totalWidth = measureWidth();
+                        float atX =x - (totalWidth / 2);
+                        float atY =y;
+                        Paint temp = getPaint();
+                        if (parenthesis()) {
+                            drawParentheses(canvas, x, y, temp);
+                            atX += PARN_WIDTH_ADDITION / 2;
+                        }
+                        Rect out = new Rect();
+                        textPaint.getTextBounds(display, 0, display.length(), out);
+                        float h = out.height();
+
+
+                        for (int i = 0; i < size(); i++) {
+                            float currentWidth = get(i).measureWidth();
+
+                            atX += (currentWidth / 2);
+
+                            if (i==1){
+                                // we want the bottom of 1 to be at 2/3 height of 0
+                                // what's the math then
+                                float baseLoc =  get(0).measureHeightLower() - (get(0).measureHeight()*2f/3f);
+                                atY += baseLoc - get(i).measureHeightLower();
+                            }
+
+                            get(i).draw(canvas,atX, atY);
+                            atX += (currentWidth / 2);
+                            if (i == 1) {
+                                Equation tempEq = get(i);
+                                while (tempEq instanceof MinusEquation){
+                    tempEq = tempEq.get(0);
+                }
+
+                if (tempEq instanceof NumConstEquation) {
+                    Point point = new Point();
+                    lastPoint.add(point);
+                }
+            }
+        }
+    }
+
+    protected float measureHeightLower() {
+        float result = get(0).measureHeightLower();
+        if (parenthesis()) {
+            result += PARN_HEIGHT_ADDITION/2f;
+        }
+        return result;
+    }
+
+    protected float measureHeightUpper() {
+        float r0 = get(0).measureHeightUpper();
+
+
+        float r1 =  -get(0).measureHeightLower() +(get(0).measureHeight()*2f/3f) + get(1).measureHeight();
+
+        float result = Math.max(r0,r1);
+        if (parenthesis()) {
+            result += PARN_HEIGHT_ADDITION/2f;
+        }
+        return result;
     }
 
     @Override
     public float measureHeight() {
-        //TODO
-//        float totalHeight = myHeight;
-//
-//        for (int i = 0; i < size(); i++) {
-//            totalHeight += get(i).measureHeight();
-//        }
-//        if (parenthesis()) {
-//            totalHeight += PARN_HEIGHT_ADDITION;
-//        }
-          return 0;
+          return measureHeightLower() + measureHeightUpper();
     }
 }
