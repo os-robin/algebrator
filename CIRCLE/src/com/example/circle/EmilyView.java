@@ -31,6 +31,7 @@ import com.example.circle.Actions.MinusAction;
 import com.example.circle.Actions.NumberAction;
 import com.example.circle.Actions.ParenthesesAction;
 import com.example.circle.Actions.PlusAction;
+import com.example.circle.Actions.PowerAction;
 import com.example.circle.Actions.Solve;
 import com.example.circle.Actions.TimesAction;
 import com.example.circle.Actions.VarAction;
@@ -62,19 +63,27 @@ public class EmilyView extends SuperView {
     }
 
     protected void init(Context context) {
-        //stupid = new PowerEquation(this);
-        //stupid.add(new NumConstEquation(2.0,this));
-        //stupid.add(new NumConstEquation(2.0,this));
+        //Equation yo = new PowerEquation(this);
+        //yo.add(new NumConstEquation(2.0,this));
+        //yo.add(new NumConstEquation(2.0,this));
         stupid = new WritingEquation(this);
         Equation empty = new PlaceholderEquation(this);
+        //stupid.add(yo);
         stupid.add(empty);
         empty.setSelected(true);
 
         for (int i = 0; i < 5; i++) {
+
+
             buttons.add(new Button(i / 11f, (i + 1) / 11f,
                     4 / 6f, 5 / 6f, i + 1 + "", text, bkg,
                     highlight));
-            buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
+            if (i!=1) {
+                buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
+            }else{
+                buttons.get(i).text = "^";
+                buttons.get(i).myAction = new PowerAction(this);
+            }
         }
 
         Button parentheses = new Button(5f / 11f, 6f / 11f,

@@ -47,6 +47,8 @@ public class EqualsAction extends Action {
                 emilyView.insert(newEq);
             }
         }
+
+        //TODO this probably want's an else
     }
 
 

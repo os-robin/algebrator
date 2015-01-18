@@ -33,7 +33,7 @@ public class VarAction extends Action {
                     holder.add(oldEq);
                     oldEq.setSelected(true);
                 }
-        } else {
+        } else if (emilyView.selected != null) {
             Equation numEq = new VarEquation(var, emilyView);
             addToBlock(numEq);
         }

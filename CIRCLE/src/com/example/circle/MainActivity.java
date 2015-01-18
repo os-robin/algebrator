@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
 
         if (view instanceof ColinView && ((ColinView) view).history.size() ==0){
             if (((ColinView) view).history.size()==0) {
-                ((ColinView) view).history.add(new EquationButton(view.stupid.copy()));
+                ((ColinView) view).history.add(new EquationButton(view.stupid.copy(),(ColinView)view));
             }
         }
 		setContentView(view);

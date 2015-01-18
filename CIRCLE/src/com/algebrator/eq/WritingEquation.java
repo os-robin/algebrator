@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by Colin on 1/6/2015.
  */
-public class WritingEquation extends Equation{
+public class WritingEquation extends Equation {
 
     public WritingEquation(SuperView o) {
         super(o);
@@ -21,22 +21,22 @@ public class WritingEquation extends Equation{
     }
 
 
-    public boolean deepLegal(){
+    public boolean deepLegal() {
         return deepLegal(this);
     }
 
     private boolean deepLegal(Equation eq) {
-        for( Equation e: eq){
-            if (e instanceof WritingEquation){
-                if (!((WritingEquation) e).deepLegal()){
+        for (Equation e : eq) {
+            if (e instanceof WritingEquation) {
+                if (!((WritingEquation) e).deepLegal()) {
                     return false;
                 }
-            }else if (e instanceof WritingLeafEquation){
-                if (((WritingLeafEquation) e).illegal()){
+            } else if (e instanceof WritingLeafEquation) {
+                if (((WritingLeafEquation) e).illegal()) {
                     return false;
                 }
-            }else if (e instanceof DivEquation){
-                if (!deepLegal(e)){
+            } else if (e instanceof DivEquation) {
+                if (!deepLegal(e)) {
                     return false;
                 }
             }
@@ -106,13 +106,13 @@ public class WritingEquation extends Equation{
         Equation root = null;
         Equation currentToAdd = null;
         Equation left = null;
-        boolean openParen = false;
+        //boolean openParen = false;
         boolean wasParen = false;
         int minus = 0;
 
         for (int i = 0; i < size(); i++) {
             Equation at = get(i);
-            Log.i("root",(root == null ? "null" : root.toString()));
+            Log.i("root", (root == null ? "null" : root.toString()));
             Log.i("at", at.toString());
             if (currentToAdd == null) {
                 Log.i("left", (left == null ? "null" : left.toString()));
@@ -155,19 +155,19 @@ public class WritingEquation extends Equation{
                 if (currentToAdd != null) {
                     if (root == null) {
                         root = currentToAdd;
-                    }else{
+                    } else {
                         root.add(currentToAdd);
                     }
                     if (left != null) {
                         currentToAdd.add(left);
                     }
-                    if (currentToAdd instanceof EqualsEquation){
-                        currentToAdd =null;
+                    if (currentToAdd instanceof EqualsEquation) {
+                        currentToAdd = null;
                     }
-                    left=null;
+                    left = null;
                 }
             } else {
-                if (at instanceof WritingLeafEquation ) {
+                if (at instanceof WritingLeafEquation) {
                     Equation newEq = null;
                     if (at.getDisplay(-1).equals("+")) {
                         newEq = new AddEquation(owner);
@@ -176,7 +176,7 @@ public class WritingEquation extends Equation{
                     } else if (at.getDisplay(-1).equals("=")) {
                         newEq = new EqualsEquation(owner);
                     } else if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
-                        openParen = true;
+                        //openParen = true;
                     } else if (at.getDisplay(-1).equals("-")) {
                         if (!get(i - 1).getDisplay(-1).equals("*")) {
                             newEq = new AddEquation(owner);
@@ -190,14 +190,14 @@ public class WritingEquation extends Equation{
                             if (newEq instanceof MultiEquation) {
                                 //Equation last = get(i - 1);
                                 //(last instanceof WritingPraEquation && !((WritingPraEquation) last).left) ||
-                                if ( wasParen) {
+                                if (wasParen) {
                                     if (currentToAdd.parent instanceof MultiEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
-                                        if (currentToAdd.parent ==null){
+                                        if (currentToAdd.parent == null) {
                                             newEq.add(currentToAdd);
                                             root = newEq;
-                                        }else {
+                                        } else {
                                             Equation oldEq = currentToAdd;
                                             oldEq.replace(newEq);
                                             newEq.add(oldEq);
@@ -215,40 +215,40 @@ public class WritingEquation extends Equation{
                                     newEq.add(moving);
                                     currentToAdd = newEq;
                                 }
-                                openParen = false;
+                                //openParen = false;
                             } else if (newEq instanceof AddEquation) {
-                                if (openParen) {
-                                    Equation moving = currentToAdd.get(currentToAdd.size() - 1);
-                                    currentToAdd.justRemove(moving);
+                                //if (openParen) {
+                                //    Equation moving = currentToAdd.get(currentToAdd.size() - 1);
+                                //    currentToAdd.justRemove(moving);
+                                //    if (currentToAdd.parent instanceof AddEquation) {
+                                //        newEq = currentToAdd.parent;
+                                //   } else {
+                                //        currentToAdd.add(newEq);
+                                //    }
+                                //    newEq.add(moving);
+                                //    currentToAdd = newEq;
+                                //} else {
                                     if (currentToAdd.parent instanceof AddEquation) {
                                         newEq = currentToAdd.parent;
                                     } else {
-                                        currentToAdd.add(newEq);
-                                    }
-                                    newEq.add(moving);
-                                    currentToAdd = newEq;
-                                } else {
-                                    if (currentToAdd.parent instanceof AddEquation) {
-                                        newEq = currentToAdd.parent;
-                                    } else {
-                                        if (currentToAdd.parent ==null){
+                                        if (currentToAdd.parent == null) {
                                             newEq.add(currentToAdd);
                                             root = newEq;
-                                        }else {
+                                        } else {
                                             Equation oldEq = currentToAdd;
                                             oldEq.replace(newEq);
                                             newEq.add(oldEq);
                                         }
                                     }
                                     currentToAdd = newEq;
-                                }
-                                openParen = false;
+                                //}
+                                //openParen = false;
                             } else if (newEq instanceof EqualsEquation) {
                                 Equation before;
                                 if (root != null) {
                                     before = root;
                                 } else {
-                                    before=left;
+                                    before = left;
                                 }
                                 newEq.add(before);
                                 root = newEq;
@@ -256,50 +256,52 @@ public class WritingEquation extends Equation{
                                 left = null;
                             }
                         }
-                    }else{
-                            if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
-                                Equation temp = ((WritingPraEquation) at).popBlock();
-                                temp.remove(0);
-                                temp.remove(temp.size() - 1);
-                                // we need to remove the first and last
-                                at = convert(temp);
-                                wasParen = true;
+                    } else {
+                        if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
+                            Equation temp = ((WritingPraEquation) at).popBlock();
+                            temp.remove(0);
+                            temp.remove(temp.size() - 1);
+                            // we need to remove the first and last
+                            at = convert(temp);
+                            wasParen = true;
 
-                                while (minus > 0) {
-                                    Equation neg = new MinusEquation(owner);
-                                    neg.add(at);
-                                    at = neg;
-                                    minus--;
-                                }
-                                currentToAdd.add(at);
+                            while (minus > 0) {
+                                Equation neg = new MinusEquation(owner);
+                                neg.add(at);
+                                at = neg;
+                                minus--;
                             }
+                            currentToAdd.add(at);
+                        }
                     }
                 } else {
 
-                            at = convert(at);
+                    at = convert(at);
 
-                        while (minus > 0) {
-                            Equation neg = new MinusEquation(owner);
-                            neg.add(at);
-                            at = neg;
-                            minus--;
-                        }
-                        currentToAdd.add(at);
+                    while (minus > 0) {
+                        Equation neg = new MinusEquation(owner);
+                        neg.add(at);
+                        at = neg;
+                        minus--;
+                    }
+                    currentToAdd.add(at);
                 }
                 if (!(at instanceof WritingPraEquation)) {
                     wasParen = false;
                 }
             }
         }
-        if (root.size() == 1) {
-            // if have something of the form =---1
-            root.add(left);
-        }
-        Log.i("conversion result", root.toString());
-        if (root != null) {
-            return root;
-        } else {
+        if (root == null) {
+            Log.i("conversion result-left", left.toString());
             return left;
+        } else {
+
+            if (root.size() == 1) {
+                // if have something of the form =---1
+                root.add(left);
+            }
+            Log.i("conversion result", root.toString());
+            return root;
         }
     }
 
@@ -307,10 +309,10 @@ public class WritingEquation extends Equation{
 
         if (at instanceof WritingEquation) {
             return ((WritingEquation) at).convert();
-        } else if (at instanceof DivEquation) {
+        } else if (at instanceof BinaryEquation) {
             // convert the top and the bottom
             // and then add it
-            at = convertDiv((DivEquation) at);
+            at = convertBinary((BinaryEquation) at);
             return at;
         } else {
             return at;
@@ -321,40 +323,40 @@ public class WritingEquation extends Equation{
         // we interate over and handle xx or 2( or 2x or )x or x2 or 2(2/4) or (2/4)2
         for (int i = 0; i < size() - 1; i++) {
             Equation left = get(i);
-            if (left instanceof DivEquation) {
-                left = addImpliedMultiplicationDiv((DivEquation) left);
+            if (left instanceof BinaryEquation) {
+                left = addImpliedMultiplicationDiv((BinaryEquation) left);
             }
             Equation right = get(i + 1);
-            if (right instanceof DivEquation) {
-                right = addImpliedMultiplicationDiv((DivEquation) right);
+            if (right instanceof BinaryEquation) {
+                right = addImpliedMultiplicationDiv((BinaryEquation) right);
             }
-            if ((left instanceof DivEquation || left instanceof NumConstEquation || left instanceof VarEquation || (left instanceof WritingPraEquation && !((WritingPraEquation) left).left)) &&
-                    (right instanceof DivEquation || right instanceof NumConstEquation || right instanceof VarEquation || (right instanceof WritingPraEquation && ((WritingPraEquation) right).left))) {
+            if ((left instanceof BinaryEquation || left instanceof NumConstEquation || left instanceof VarEquation || (left instanceof WritingPraEquation && !((WritingPraEquation) left).left)) &&
+                    (right instanceof BinaryEquation || right instanceof NumConstEquation || right instanceof VarEquation || (right instanceof WritingPraEquation && ((WritingPraEquation) right).left))) {
                 // we need to insert a *
                 add(i + 1, new WritingLeafEquation("*", owner));
             }
         }
     }
 
-    private Equation addImpliedMultiplicationDiv(DivEquation at) {
-        for (Equation e : at) {
+    private Equation addImpliedMultiplicationDiv(BinaryEquation at) {
+        for (Equation e : (Equation) at) {
             if (e instanceof WritingEquation) {
                 ((WritingEquation) e).addImpliedMultiplication();
-            } else if (e instanceof DivEquation) {
+            } else if (e instanceof BinaryEquation) {
                 e.replace(addImpliedMultiplicationDiv((DivEquation) e));
             }
         }
-        return at;
+        return (Equation) at;
     }
 
-    private Equation convertDiv(DivEquation at) {
-        for (Equation e : at) {
+    private Equation convertBinary(BinaryEquation at) {
+        for (Equation e : (Equation) at) {
             if (e instanceof WritingEquation) {
                 e.replace(((WritingEquation) e).convert());
-            } else if (e instanceof DivEquation) {
-                e.replace(convertDiv((DivEquation) e));
+            } else if (e instanceof BinaryEquation) {
+                e.replace(convertBinary((BinaryEquation) e));
             }
         }
-        return at;
+        return (Equation) at;
     }
 }

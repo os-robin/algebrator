@@ -10,6 +10,7 @@ public class Algebrator extends Application {
     public int TEXT_SIZE;
     public SuperView superView = null;
     public int DEFAULT_SIZE;
+    public long doubleTapSpacing = 1000;
 
     @Override
     public void onCreate() {

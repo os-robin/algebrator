@@ -42,7 +42,7 @@ public class DeleteAction extends Action {
                     l.remove();
                 }
             }
-        } else {
+        } else if (emilyView.selected != null) {
             // if they have a stack of stuff selected kill it all and replace it wiht a new Placeholder
             Equation newEq = new PlaceholderEquation(emilyView);
             if (emilyView.selected.parent == null) {

@@ -7,11 +7,13 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.circle.ColinView;
 import com.example.circle.SuperView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Random;
 
 abstract public class Equation extends ArrayList<Equation> {
     protected static final float PARN_HEIGHT_ADDITION = 6;
@@ -32,7 +34,13 @@ abstract public class Equation extends ArrayList<Equation> {
     private int buffer = 10;
 
     public boolean parenthesis(){
-        return this instanceof AddEquation && (this .parent instanceof  MultiEquation || this.parent instanceof MinusEquation);
+        // are we an add inside a * or a -
+        boolean result =  this instanceof AddEquation && (this .parent instanceof  MultiEquation || this.parent instanceof MinusEquation);
+        // are we an a the first element of a ^
+        if (owner instanceof ColinView) {
+            result = result || (this.parent instanceof PowerEquation && this.parent.indexOf(this) == 0 && this.size() != 0);
+        }
+        return  result;
     }
 
     public Equation(SuperView owner2) {
@@ -188,7 +196,7 @@ abstract public class Equation extends ArrayList<Equation> {
             float currentWidth = get(i).measureWidth();
             float currentHeight = get(i).measureHeight();
             get(i).draw(canvas,
-                    x - (totalWidth / 2) + currentX + (currentWidth / 2), y);
+                    x - (totalWidth / 2) + currentX + (currentWidth / 2), y );
             currentX += currentWidth;
             if (i != size() - 1) {
                 Point point = new Point();
@@ -204,11 +212,31 @@ abstract public class Equation extends ArrayList<Equation> {
 
 
     protected float measureHeightLower() {
-        return measureHeight()/2f;
+        float totalHeight = myHeight/2;
+
+        for (int i = 0; i < size(); i++) {
+            if (get(i).measureHeightLower() > totalHeight) {
+                totalHeight = get(i).measureHeightLower();
+            }
+        }
+        if (parenthesis()) {
+            totalHeight += PARN_HEIGHT_ADDITION/2f;
+        }
+        return totalHeight;
     }
 
     protected float measureHeightUpper() {
-        return measureHeight()/2f;
+        float totalHeight = myHeight/2f;
+
+        for (int i = 0; i < size(); i++) {
+            if (get(i).measureHeightUpper() > totalHeight) {
+                totalHeight = get(i).measureHeightUpper();
+            }
+        }
+        if (parenthesis()) {
+            totalHeight += PARN_HEIGHT_ADDITION/2f;
+        }
+        return totalHeight;
     }
 
     public boolean deepContains(Equation equation) {
@@ -226,22 +254,7 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureHeight() {
-        float totalHeightL = myHeight/2;
-        float totalHeightU = myHeight/2;
-
-        for (int i = 0; i < size(); i++) {
-            if (get(i).measureHeightLower() > totalHeightL) {
-                totalHeightL = get(i).measureHeightLower();
-            }
-            if (get(i).measureHeightUpper() > totalHeightU) {
-                totalHeightU = get(i).measureHeightUpper();
-            }
-        }
-        float totalHeight = totalHeightL + totalHeightU;
-        if (parenthesis()) {
-            totalHeight += PARN_HEIGHT_ADDITION;
-        }
-        return totalHeight;
+        return measureHeightLower() + measureHeightUpper();
     }
 
     public HashSet<Equation> on(float x, float y) {
@@ -340,18 +353,15 @@ abstract public class Equation extends ArrayList<Equation> {
         if (parent != null) {
             temp = new Paint(parent.getPaint());
         } else {
-            temp = textPaint;
+            temp = new Paint(textPaint);
         }
         if (selected) {
-            temp = new Paint(textPaint);
             temp.setColor(Color.GREEN);
         }
         if (demo) {
-            temp = new Paint(textPaint);
             temp.setColor(Color.BLUE);
         }
         if (owner.selectingSet.contains(this)) {
-            temp = new Paint(textPaint);
             temp.setColor(Color.RED);
         }
         float targetTextSize = temp.getTextSize();
@@ -368,14 +378,14 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     protected void drawBkgBox(Canvas canvas, float x, float y) {
-//		Rect r = new Rect((int) (x - measureWidth() / 2),
-//				(int) (y - measureHeight() / 2),
-//				(int) (x + measureWidth() / 2), (int) (y + measureHeight() / 2));
-//		Paint p = new Paint();
-//		p.setAlpha(255 / 2);
-//		Random rand = new Random();
-//		p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
-//		canvas.drawRect(r, p);
+		Rect r = new Rect((int) (x - measureWidth() / 2),
+				(int) (y - measureHeightUpper()),
+				(int) (x + measureWidth() / 2), (int) (y + measureHeightLower() ));
+		Paint p = new Paint();
+		p.setAlpha(255 / 2);
+		Random rand = new Random();
+		p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
+		//canvas.drawRect(r, p);
 
     }
 

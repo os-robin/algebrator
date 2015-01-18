@@ -76,12 +76,20 @@ public class ColinView extends SuperView {
 
     @Override
 	public boolean onTouch(View view, MotionEvent event) {
-		boolean result =super.onTouch(view, event);
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            for (int i = 0; i < history.size(); i++) {
+                history.get(i).click(event);
+            }
+        }
+
+        boolean result =super.onTouch(view, event);
 
         if (!stupid.same(history.get(0).myEq) && event.getAction() == MotionEvent.ACTION_UP){
-            history.add(0, new EquationButton(stupid.copy()));
+            history.add(0, new EquationButton(stupid.copy(),this));
             Log.i("add to History", stupid.toString());
         }
+
+
 
         return result;
 	}

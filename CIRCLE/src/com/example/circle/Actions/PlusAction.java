@@ -25,7 +25,7 @@ public class PlusAction extends Action {
                 Equation newEq = new WritingLeafEquation("+", emilyView);
                 emilyView.insert(newEq);
             }
-        } else {
+        } else if (emilyView.selected != null) {
 
             Equation numEq = new WritingLeafEquation("+", emilyView);
             addToBlock(numEq);

@@ -8,10 +8,11 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.example.circle.Actions.BinaryAction;
 import com.example.circle.Algebrator;
 import com.example.circle.SuperView;
 
-public class DivEquation extends Operation implements MultiDivSuperEquation {
+public class DivEquation extends Operation implements MultiDivSuperEquation, BinaryEquation {
 	private final int BUFFER = 15;
 
     @Override
@@ -100,9 +101,8 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		}
 
 		for (int i = 0; i < size(); i++) {
-			float currentHieght = get(i).measureHeight();
-			get(i).draw(canvas, x, currentY + (currentHieght / 2));
-			currentY += currentHieght;
+			get(i).draw(canvas, x, currentY + get(i).measureHeightUpper() );
+			currentY += get(i).measureHeight();
 			if (i != size() - 1) {
 				Point point = new Point();
 				point.x = (int) x;
@@ -130,6 +130,16 @@ public class DivEquation extends Operation implements MultiDivSuperEquation {
 		}
 		return totalHeight;
 	}
+
+    @Override
+    public float measureHeightUpper(){
+        return measureHeight()/2;
+    }
+
+    @Override
+    public float measureHeightLower(){
+        return measureHeight()/2;
+    }
 
 	@Override
 	public boolean remove(Object e) {

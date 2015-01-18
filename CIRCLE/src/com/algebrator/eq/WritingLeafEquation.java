@@ -52,7 +52,7 @@ public class WritingLeafEquation extends LeafEquation implements LegallityCheck 
 
             if (ops.contains(getDisplay(-1))) {
                 // if it is directly contained by a div
-                if (parent!= null && parent instanceof DivEquation){
+                if (parent!= null && parent instanceof BinaryEquation){
                     return true;
                 }
 
@@ -93,7 +93,7 @@ public class WritingLeafEquation extends LeafEquation implements LegallityCheck 
      * @return
      */
     public boolean isOpLeft() {
-        if (parent instanceof DivEquation && parent.indexOf(this) == 0) {
+        if (parent instanceof BinaryEquation && parent.indexOf(this) == 0) {
             return true;
         }
         String dis = getDisplay(-1);
@@ -109,7 +109,7 @@ public class WritingLeafEquation extends LeafEquation implements LegallityCheck 
      * @return
      */
     public boolean isOpRight() {
-        if (parent instanceof DivEquation && parent.indexOf(this) == 1) {
+        if (parent instanceof BinaryEquation && parent.indexOf(this) == 1) {
             return true;
         }
         String dis = getDisplay(-1);

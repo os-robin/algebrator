@@ -37,7 +37,7 @@ public abstract class LeafEquation extends Equation {
 	
 	@Override
 	public HashSet<Equation> on(float x, float y){
-		Log.i("yo,yo",x+","+y);
+		//Log.i("yo,yo",x+","+y);
 
 		HashSet<Equation> result = new HashSet<Equation>();
 		
@@ -65,7 +65,7 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public float measureWidth() {
 		// not tested
-		float totalWidth= myWidth+textPaint.measureText(display); //-textPaint.measureText(display.subSequence(0, 1)+"")
+		float totalWidth= Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
 		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;

@@ -1,5 +1,6 @@
 package com.example.circle.Actions;
 
+import com.algebrator.eq.BinaryEquation;
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -76,7 +77,7 @@ public abstract class Action {
 
     protected void tryMoveRight() {
         Equation current = getMoveRightCurrent();
-        if (current instanceof DivEquation) {
+        if (current instanceof BinaryEquation) {
             Equation oldEq = emilyView.selected;
             oldEq.remove();
             int at = current.parent.indexOf(current);
@@ -89,7 +90,7 @@ public abstract class Action {
         Equation current = emilyView.selected;
         boolean done = false;
         while (current.parent != null && !done) {
-            if (current instanceof DivEquation) {
+            if (current instanceof BinaryEquation) {
                 done = true;
             } else {
                 current = current.parent;
@@ -99,7 +100,7 @@ public abstract class Action {
     }
 
     protected boolean canMoveRight() {
-        return getMoveRightCurrent() instanceof DivEquation;
+        return getMoveRightCurrent() instanceof BinaryEquation;
     }
 
     protected int countEquals(Equation stupid) {

@@ -1,5 +1,6 @@
 package com.example.circle.Actions;
 
+import com.algebrator.eq.BinaryEquation;
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -24,7 +25,7 @@ public class ParenthesesAction extends Action {
             Equation newEq = new WritingPraEquation(left, emilyView);
             if (l != null) {
                 if (left) {
-                    if (!(l.parent instanceof DivEquation)) {
+                    if (!(l.parent instanceof BinaryEquation)) {
                         emilyView.insert(newEq);
                     } else {
                         Equation oldEq = emilyView.selected;

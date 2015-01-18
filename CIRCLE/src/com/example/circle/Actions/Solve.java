@@ -18,6 +18,8 @@ public class Solve extends Action {
     @Override
     public void act() {
         if (emilyView.stupid instanceof WritingEquation) {
+            emilyView.removeSelected();
+
             if (((WritingEquation) emilyView.stupid).deepLegal() && countEquals(emilyView.stupid) == 1) {
                 Equation newEq = ((WritingEquation) emilyView.stupid).convert();
 

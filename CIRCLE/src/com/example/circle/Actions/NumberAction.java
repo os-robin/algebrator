@@ -1,6 +1,6 @@
 package com.example.circle.Actions;
 
-import com.algebrator.eq.DivEquation;
+import com.algebrator.eq.BinaryEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -22,7 +22,7 @@ public class NumberAction extends Action {
             Equation l = emilyView.left();
             Equation r = emilyView.selected.right();
             if (l != null) {
-                if (!(l.parent instanceof DivEquation)) {
+                if (!(l.parent instanceof BinaryEquation)) {
                     if (!(l instanceof NumConstEquation)) {
                         Equation newEq = new NumConstEquation(Integer.parseInt(num), emilyView);
                         emilyView.insert(newEq);
@@ -61,7 +61,7 @@ public class NumberAction extends Action {
                 }
             }
 
-        } else {
+        } else if (emilyView.selected != null) {
             Equation numEq = new NumConstEquation(Integer.parseInt(num), emilyView);
             addToBlock(numEq);
         }

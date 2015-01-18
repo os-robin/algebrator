@@ -77,89 +77,98 @@ public class AddEquation extends FlexOperation {
         Equation a = eqs.get(0);
         Equation b = eqs.get(1);
 		int at = Math.min(indexOf(a), indexOf(b));
+        if (indexOf(a)> indexOf(b)){
+            Equation temp =a;
+            a=b;
+            b=temp;
+        }
 
-		Equation result = null;
-		Equation top=null;
-		Equation bottom=null;
-		Equation left = null;
-		Equation right = null;
-		
-		operateRemove(eqs);
-		
-		CountData cd1 = new CountData(a);
-		CountData cd2 = new CountData(b);
+        operateRemove(eqs);
 
-		// find a common demoniator and adjust both sides acordingly
-		HashSet<Equation> commonOver = cd1.over.common(cd2.over);
-		cd1.over.remainder(commonOver);
-		cd2.over.remainder(commonOver);
+        Equation result =Operations.Add(new MultiCountData(a),new MultiCountData(b));
 
-		cd1.key.addAll(cd2.over.rem);
-		cd1.value *= cd2.over.value;
-		cd2.key.addAll(cd1.over.rem);
-		cd2.value *= cd1.over.value;
-
-		commonOver.addAll(cd1.over.rem);
-		commonOver.addAll(cd2.over.rem);
-
-		CountData bot = new CountData();
-		bot.key = commonOver;
-		bot.value = cd1.over.value * cd2.over.value;
-
-		// if there is anything on bottom set that up
-		if (bot.value != 1 || bot.key.size() != 0) {
-			bottom = bot.toEquation(owner);
-		}
-
-		HashSet<Equation> common = cd1.common(cd2);
-		// we need to figure out the bottom
-
-		cd1.remainder(common);
-		cd2.remainder(common);
-		
-		top = new AddEquation(owner);
-		Equation e1 = cd1.remToEquation(owner);
-		Equation e2 = cd2.remToEquation(owner);
-		
-		if ( sortaNumber(e1) && sortaNumber(e2)){
-			double addTo = getValue(e1) + getValue(e2);
-            if (addTo < 0){
-                left = new MinusEquation(owner);
-                left.add( new NumConstEquation (-addTo,owner));
-            }else {
-                left = new NumConstEquation(addTo, owner);
-            }
-		}else{
-			left = new AddEquation(owner);
-			left.add(e1);
-			left.add(e2);
-		}
-		
-		
-		if (common.size() != 0){
-			// add common
-			if (common.size()==1){
-				right = (Equation) common.toArray()[0];
-			}else{
-				right = new MultiEquation(owner);
-				for (Equation e: common){
-					right.add(e);
-				}
-			}
-			top = new MultiEquation(owner);
-			top.add(left);
-			top.add(right);
-		}else{
-			top = left;
-		}
-
-		if (bottom != null){
-			result = new DivEquation(owner);
-			result.add(top);
-			result.add(bottom);
-		}else{
-			result = top;
-		}
+//		Equation result = null;
+//		Equation top=null;
+//		Equation bottom=null;
+//		Equation left = null;
+//		Equation right = null;
+//
+//		operateRemove(eqs);
+//
+//		CountData cd1 = new CountData(a);
+//		CountData cd2 = new CountData(b);
+//
+//		// find a common demoniator and adjust both sides acordingly
+//		HashSet<Equation> commonOver = cd1.over.common(cd2.over);
+//		cd1.over.remainder(commonOver);
+//		cd2.over.remainder(commonOver);
+//
+//		cd1.key.addAll(cd2.over.rem);
+//		cd1.value *= cd2.over.value;
+//		cd2.key.addAll(cd1.over.rem);
+//		cd2.value *= cd1.over.value;
+//
+//		commonOver.addAll(cd1.over.rem);
+//		commonOver.addAll(cd2.over.rem);
+//
+//		CountData bot = new CountData();
+//		bot.key = commonOver;
+//		bot.value = cd1.over.value * cd2.over.value;
+//
+//		// if there is anything on bottom set that up
+//		if (bot.value != 1 || bot.key.size() != 0) {
+//			bottom = bot.toEquation(owner);
+//		}
+//
+//		HashSet<Equation> common = cd1.common(cd2);
+//		// we need to figure out the bottom
+//
+//		cd1.remainder(common);
+//		cd2.remainder(common);
+//
+//		top = new AddEquation(owner);
+//		Equation e1 = cd1.remToEquation(owner);
+//		Equation e2 = cd2.remToEquation(owner);
+//
+//		if ( sortaNumber(e1) && sortaNumber(e2)){
+//			double addTo = getValue(e1) + getValue(e2);
+//            if (addTo < 0){
+//                left = new MinusEquation(owner);
+//                left.add( new NumConstEquation (-addTo,owner));
+//            }else {
+//                left = new NumConstEquation(addTo, owner);
+//            }
+//		}else{
+//			left = new AddEquation(owner);
+//			left.add(e1);
+//			left.add(e2);
+//		}
+//
+//
+//		if (common.size() != 0 && !(left instanceof NumConstEquation && ((NumConstEquation) left).getValue()==0)){
+//			// add common
+//			if (common.size()==1){
+//				right = (Equation) common.toArray()[0];
+//			}else{
+//				right = new MultiEquation(owner);
+//				for (Equation e: common){
+//					right.add(e);
+//				}
+//			}
+//			top = new MultiEquation(owner);
+//			top.add(left);
+//			top.add(right);
+//		}else{
+//			top = left;
+//		}
+//
+//		if (bottom != null){
+//			result = new DivEquation(owner);
+//			result.add(top);
+//			result.add(bottom);
+//		}else{
+//			result = top;
+//		}
 		
 		add(at, result);
         if (this.size() ==1){
@@ -206,7 +215,9 @@ class CountData {
             }else{
                 return new NumConstEquation(value, owner);
             }
-		} else if (value == 1 && rem.size() == 1) {
+		} else if (value == 0){
+            return new NumConstEquation(0, owner);
+        }else if (value == 1 && rem.size() == 1) {
 			return (Equation) rem.toArray()[0];
 		} else if (value == 1) {
 			Equation result = new MultiEquation(owner);
@@ -225,7 +236,9 @@ class CountData {
 	}
 
 	public Equation toEquation(SuperView owner) {
-		if (key.size() == 0) {
+        if (value ==0){
+            return new NumConstEquation(0,owner);
+        }else if (key.size() == 0) {
 			return new NumConstEquation(value, owner);
 		} else if (value == 1 && key.size() == 1) {
 			return (Equation) key.toArray()[0];
@@ -255,7 +268,6 @@ class CountData {
             value *= -1;
             e = e.get(0);
         }
-
 		if (e instanceof MultiEquation) {
 			for (Equation ee : e) {
 				this.updateKey(ee);
@@ -282,12 +294,14 @@ class CountData {
 	 * @return
 	 */
 	public void remainder(HashSet<Equation> common) {
+        HashSet<Equation> commonClone = new HashSet<Equation>();
 		HashSet<Equation> result = new HashSet<Equation>();
 		for (Equation e : key) {
 			boolean pass = true;
-			for (Equation e2 : common) {
+			for (Equation e2 : commonClone) {
 				if (e.same(e2)) {
 					pass = false;
+                    commonClone.remove(e2);
 					break;
 				}
 			}

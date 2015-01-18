@@ -258,7 +258,6 @@ public abstract class SuperView extends View implements
     private long startTime;
     private long tapTime = 1000;
     private long lastTapTime;
-    private long doubleTapSpacing = 1000;
     private Point lastTapPoint;
     private float doubleTapDistance = 20;
 
@@ -433,7 +432,7 @@ public abstract class SuperView extends View implements
                     Point tapPoint = new Point();
                     tapPoint.x = (int) event.getX();
                     tapPoint.y = (int) event.getY();
-                    if (tapSpacing < doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode ==TouchMode.SELECT) {
+                    if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode ==TouchMode.SELECT) {
                         Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
                         if (canDrag) {
                             stupid.tryOperator(event.getX(),
