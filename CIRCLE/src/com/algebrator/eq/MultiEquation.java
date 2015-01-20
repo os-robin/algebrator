@@ -134,9 +134,7 @@ class MultiCountData {
     }
 
     public MultiCountData(MultiCountData mcd) {
-        for (Equation e: mcd.key){
-            key.add(e.copy());
-        }
+        key = mcd.copyKey();
         this.value = mcd.value;
         if (mcd.under != null) {
             this.under =new MultiCountData(mcd.under);
@@ -231,114 +229,30 @@ class MultiCountData {
                 top = new MultiEquation(owner);
 
                 if (value != 1) {
-                    top.add(new NumConstEquation(value, owner));
+                    if (value <0){
+                        Equation inner = new NumConstEquation(-value, owner);
+                        Equation minus = new MinusEquation(owner);
+                        minus.add(inner);
+                        top.add(minus);
+                    }else {
+                        top.add(new NumConstEquation(value, owner));
+                    }
                 }
-                ArrayList<Equation> list = new ArrayList<Equation>(key);
-                for (int i=0;i< list.size();i++) {
-                    boolean neg = false;
-                    Equation e =  list.get(i);
-                    HashMap<Equation,Integer> equations = new HashMap<Equation,Integer>();
-                    int v =1;
-                    for (int j=i+1;j<list.size();j++){
-                        Equation ee = list.get(j);
-                        while (ee instanceof MinusEquation){
-                            neg = !neg;
-                            ee = ee.get(0);
-                        }
-
-                        if (e.same(ee)){
-                            list.remove(ee);
-                            j--;
-                            v++;
-                        }
-
-                        //TODO (x^5)^x sneeks under our radar
-
-                        if (ee instanceof PowerEquation && e.same(ee.get(0))){
-                            list.remove(ee);
-                            j--;
-                            Equation power = ee.get(1);
-                            boolean powerNeg = false;
-                            while (power instanceof  MinusEquation){
-                                power = power.get(0);
-                                powerNeg = !powerNeg;
-                            }
-
-                            if (power instanceof AddEquation){
-                                for (Equation eee: power){
-                                    if (eee instanceof NumConstEquation){
-                                        v += ((NumConstEquation) eee).getValue()*(powerNeg?-1:1);
-                                    }else{
-                                        boolean found = false;
-                                        for (Equation key : equations.keySet()){
-                                            if (key.same(eee)){
-                                                equations.put(key,equations.get(eee)+1);
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!found){
-                                            equations.put(eee,1);
-                                        }
-                                    }
-                                }
-
-                            }
-                            if (power instanceof NumConstEquation){
-                                v += ((NumConstEquation) power).getValue()*(powerNeg?-1:1);
-                            }else{
-                                boolean found = false;
-                                for (Equation key : equations.keySet()){
-                                    if (key.same(power)){
-                                        equations.put(key,equations.get(power)+1);
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found){
-                                    equations.put(power,1);
-                                }
-                            }
+                ArrayList<EquationCounts> ecs = new ArrayList<EquationCounts>();
+                for (Equation e :key) {
+                    boolean match = false;
+                    for (EquationCounts ec:ecs) {
+                        if (ec.add(e)){
+                            match = true;
                         }
                     }
-
-                    if (equations.size() ==0 && v==1) {
-                        top.add(e);
-                    }else if (equations.size()==0){
-                        Equation newEq = new PowerEquation(owner);
-                        newEq.add(e);
-                        newEq.add(new NumConstEquation(v,owner));
-                        top.add(newEq);
-                    }else if (equations.size()==1 && v==1){
-                        Equation newEq = new PowerEquation(owner);
-                        newEq.add(e);
-                        Equation key =(Equation)equations.keySet().toArray()[0];
-                        if (equations.get(key)==1){
-                            newEq.add(key);
-                        }else{
-                            Equation multi = new MultiEquation(owner);
-                            multi.add(new NumConstEquation(equations.get(key),owner));
-                            multi.add(key);
-                            newEq.add(multi);
-                        }
-                        top.add(newEq);
-                    }else{
-                        Equation newEq = new PowerEquation(owner);
-                        newEq.add(e);
-                        Equation addEq = new AddEquation(owner);
-                        for (Object o:equations.keySet().toArray()){
-                            Equation key = (Equation)o;
-                            if (equations.get(key)==1){
-                                addEq.add(key);
-                            }else{
-                                Equation multi = new MultiEquation(owner);
-                                multi.add(new NumConstEquation(equations.get(key),owner));
-                                multi.add(key);
-                                addEq.add(multi);
-                            }
-                        }
-                        top.add(newEq);
+                    if (!match){
+                        ecs.add(new EquationCounts(e));
                     }
+                }
+                // add all the equation
+                for (EquationCounts ec:ecs){
+                    top.add(ec.getEquation());
                 }
                 if (top.size() ==1){
                     top = top.get(0);
@@ -355,19 +269,5 @@ class MultiCountData {
             result =top;
         }
         return result;
-    }
-
-    public void removeCommon(MultiCountData common) {
-        if (common.value != 0) {
-            this.value /= common.value;
-        }
-        for (Equation e : common.key) {
-            for (Equation ee : key) {
-                if (ee.same(e)) {
-                    key.remove(ee);
-                }
-
-            }
-        }
     }
 }

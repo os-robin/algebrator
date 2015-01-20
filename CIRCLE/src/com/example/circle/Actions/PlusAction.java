@@ -3,6 +3,7 @@ package com.example.circle.Actions;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingLeafEquation;
+import com.algebrator.eq.WritingPraEquation;
 import com.example.circle.EmilyView;
 
 public class PlusAction extends Action {
@@ -16,12 +17,15 @@ public class PlusAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-            boolean op = false;
+            boolean can = true;
             if (l instanceof WritingLeafEquation) {
-                op = ((WritingLeafEquation) l).isOpLeft();
+                can = !((WritingLeafEquation) l).isOpLeft();
+            }
+            if (l instanceof WritingPraEquation && ((WritingPraEquation) l).left){
+                can = false;
             }
 
-            if (l != null && !op) {
+            if (l != null && can) {
                 Equation newEq = new WritingLeafEquation("+", emilyView);
                 emilyView.insert(newEq);
             }

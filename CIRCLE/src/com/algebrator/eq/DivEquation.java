@@ -173,63 +173,16 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 	
 	public void tryOperator(ArrayList<Equation> eqs) {
 
-        Equation a = eqs.get(0);
-        Equation b = eqs.get(1);
+        Equation a = get(0);
+        Equation b = get(1);
         //it should cancel any commonalties
         //if you have .../1 it should handle that
         //if youhave 0/... needs to handle that too
         // (6 + 5) / x -> 6/x + 5/x
         //
 
-        Equation result =null;
-        if (get(0) instanceof AddEquation){
-            result = new AddEquation(owner);
-            for (Equation e:get(0)){
-                // figure out what is common
-                MultiCountData top = new MultiCountData(e);
-                MultiCountData bot = new MultiCountData(get(1));
-                MultiCountData common = common(top,bot);
-                top.removeCommon(common);
-                bot.removeCommon(common);
-                if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
-                    Equation inner = new DivEquation(owner);
-                    inner.add(top.getEquation(owner));
-                    inner.add(bot.getEquation(owner));
-                    result.add(inner);
-                }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0 )){
-                    result.add(top.getEquation(owner));
-                }
-            }
-            if (result.size() == 1){
-                result = result.get(0);
-            }
-        }else {
-            // figure out what is common
-            MultiCountData top = new MultiCountData(get(0));
-            MultiCountData bot = new MultiCountData(get(1));
-            MultiCountData common = common(top,bot);
-            top.removeCommon(common);
-            bot.removeCommon(common);
+        Equation result =Operations.divide(a,b);
 
-            if (!(sortaNumber(bot.getEquation(owner)) && Math.abs(getValue(bot.getEquation(owner)))  == 1)){
-                Equation inner = new DivEquation(owner);
-                inner.add(top.getEquation(owner));
-                inner.add(bot.getEquation(owner));
-                result = inner;
-            }else{
-                if (getValue(bot.getEquation(owner))== -1){
-                    if (top.getEquation(owner) instanceof MinusEquation){
-                        result = top.getEquation(owner).get(0);
-                    }else{
-                        Equation inner = top.getEquation(owner);
-                        result = new MinusEquation(owner);
-                        result.add(inner);
-                    }
-                }else {
-                    result = top.getEquation(owner);
-                }
-            }
-        }
         replace(result);
 
 	}

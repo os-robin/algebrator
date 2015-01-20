@@ -43,7 +43,11 @@ public class DragEquation {
             toInsert = demo;
         }
         toInsert.isDemo(true);
+        float oldX = eq.x;
+        float oldY = eq.y;
         eq = demo.copy();
+        eq.x = oldX;
+        eq.y = oldY;
         return toInsert;
     }
 }

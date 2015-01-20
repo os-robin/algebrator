@@ -343,7 +343,7 @@ public class WritingEquation extends Equation {
             if (e instanceof WritingEquation) {
                 ((WritingEquation) e).addImpliedMultiplication();
             } else if (e instanceof BinaryEquation) {
-                e.replace(addImpliedMultiplicationDiv((DivEquation) e));
+                e.replace(addImpliedMultiplicationDiv((BinaryEquation) e));
             }
         }
         return (Equation) at;

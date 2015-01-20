@@ -56,11 +56,24 @@ public abstract class LeafEquation extends Equation {
 	
 
 	@Override
-	public ArrayList<EquationDis> closest(float x, float y){
+	public ArrayList<EquationDis> closest(DragEquation dragging){
 		ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
-		result.add(new EquationDis(this,x,y));
+		result.add(new EquationDis(this,dragging, EquationDis.Side.left));
+        result.add(new EquationDis(this,dragging,EquationDis.Side.right));
+        result.add(new EquationDis(this,dragging,EquationDis.Side.top));
+        result.add(new EquationDis(this,dragging,EquationDis.Side.bottom));
 		return result;
 	}
+
+    @Override
+    public ArrayList<EquationDis> closest(float x, float y){
+        ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
+        result.add(new EquationDis(this,x,y, EquationDis.Side.left));
+        result.add(new EquationDis(this,x,y,EquationDis.Side.right));
+        result.add(new EquationDis(this,x,y,EquationDis.Side.top));
+        result.add(new EquationDis(this,x,y,EquationDis.Side.bottom));
+        return result;
+    }
 	
 	@Override
 	public float measureWidth() {

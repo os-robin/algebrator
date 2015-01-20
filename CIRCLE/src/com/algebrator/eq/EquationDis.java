@@ -2,39 +2,66 @@ package com.algebrator.eq;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class EquationDis implements Comparable<EquationDis> {
 	public float dis;
-	public LeafEquation equation;
+	public Equation equation;
 	float x;
 	float y;
+    public Side side;
+    public enum Side {left,right,top,bottom}
+
 
 	/**
 	 * @param equation
 	 * @param equation
 	 */
 
-	public EquationDis(LeafEquation equation, float x, float y) {
-		super();
 
-		this.x = x;
-		this.y = y;
-		float dx = x - equation.x;
-		float dy = y - equation.y;
-		float dis = (float) Math.sqrt((dx * dx) + (dy * dy));
-		this.dis = Math.max(
-                    Math.max(
-                            dis(equation.x+equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y),
-                            dis(equation.x-equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y)
-                ),Math.max(
-                            dis(equation.x+equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y),
-                            dis(equation.x-equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y)));
-		this.equation = equation;
+
+	public EquationDis(Equation equation, DragEquation dragging,Side side) {
+		super();
+        this.side = side;
+        this.equation = equation;
+		this.x = dragging.eq.x;
+		this.y = dragging.eq.y;
+        float topLeft = dis(x-dragging.eq.measureWidth()/2,y-dragging.eq.measureHeightUpper());
+        float topRight = dis(x+dragging.eq.measureWidth()/2,y-dragging.eq.measureHeightUpper());
+        float botLeft = dis(x-dragging.eq.measureWidth()/2,y+dragging.eq.measureHeightLower());
+        float botRight = dis(x+dragging.eq.measureWidth()/2,y+dragging.eq.measureHeightLower());
+        this.dis = Math.max(Math.max(topLeft,topRight),Math.max(botLeft,botRight));
+//		this.dis = Math.max(
+//                    Math.max(
+//                            dis(equation.x+equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y),
+//                            dis(equation.x-equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y)
+//                ),Math.max(
+//                            dis(equation.x+equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y),
+//                            dis(equation.x-equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y)));
+
 	}
 
-    private float dis(float x, float y, float x1, float y1) {
-        float dx = x - x1;
-        float dy = y - y1;
-      return (float) Math.sqrt((dx * dx) + (dy * dy));
+    public EquationDis(Equation equation, float x, float y,Side side) {
+        super();
+        this.side = side;
+        this.x = x;
+        this.y = y;
+        this.equation = equation;
+        this.dis = dis(x,y);
+//		this.dis = Math.max(
+//                    Math.max(
+//                            dis(equation.x+equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y),
+//                            dis(equation.x-equation.measureWidth()/2f,equation.y+equation.measureHeight()/2f,x,y)
+//                ),Math.max(
+//                            dis(equation.x+equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y),
+//                            dis(equation.x-equation.measureWidth()/2f,equation.y-equation.measureHeight()/2f,x,y)));
+
+    }
+
+    private float dis(float x, float y) {
+        float dx = x - (equation.x + (side == Side.left?equation.measureWidth()/2f:0)- (side == Side.right?equation.measureWidth()/2f:0)) ;
+        float dy = y - (equation.y + (side == Side.bottom?equation.measureHeightLower():0)- (side == Side.right?equation.measureHeightUpper():0));
+        return  (float) Math.sqrt((dx * dx) + (dy * dy));
     }
 
     @Override
@@ -48,29 +75,15 @@ public class EquationDis implements Comparable<EquationDis> {
 		return 0;
 	}
 
-	public boolean tryInsert(DragEquation dragging) {
-		float dx = x - equation.x;
-		// we only care about dy if the mouse is under us
-		float dy = Math.max(y - equation.y,0);
-		if (Math.abs(dy) < Math.abs(dx)) {
-			if (tryY(dragging)) {
-				return true;
-			}
-			if (tryX(dragging)) {
-				return true;
-			}
-		} else {
-			if (tryX(dragging)) {
-				return true;
-			}
-			if (tryY(dragging)) {
-				return true;
-			}
+	public ArrayList<EquationDis> tryInsert(DragEquation dragging) {
+        if (side == Side.left || side == Side.right) {
+            return tryX(dragging);
+        }else{
+            return tryY(dragging);
 		}
-		return false;
 	}
 
-	private boolean tryX(DragEquation dragging) {
+	private ArrayList<EquationDis> tryX(DragEquation dragging) {
 		if (dragging.add) {
 			if (equation.x > x) {
 				return equation.tryOp(dragging,false,Equation.Op.ADD);
@@ -86,9 +99,9 @@ public class EquationDis implements Comparable<EquationDis> {
 		}
 	}
 
-	private boolean tryY(DragEquation dragging) {
+	private ArrayList<EquationDis> tryY(DragEquation dragging) {
 		if (dragging.add) {
-			return false;
+			return new ArrayList<EquationDis>();
 		}else{
 			if (equation.x > x) {
 				return equation.tryOp(dragging,false,Equation.Op.DIV);

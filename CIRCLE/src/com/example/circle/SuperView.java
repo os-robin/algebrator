@@ -364,8 +364,11 @@ public abstract class SuperView extends View implements
 
                 // if we are dragging something move it
                 if (myMode == TouchMode.DRAG) {
-                    ArrayList<EquationDis> closest = stupid.closest(
-                            event.getX(), event.getY());
+                    dragging.eq.x = event.getX();
+                    dragging.eq.y = event.getY();
+
+
+                    ArrayList<EquationDis> closest = stupid.closest(dragging);
 
                     // debug
                     String whatdowehavehere = "";
@@ -381,12 +384,20 @@ public abstract class SuperView extends View implements
                     Log.i("closest", dragging.demo.hashCode()+ "|" + dragging.demo.toString()+" "+whatdowehavehere);
 
                     boolean found = false;
-                    for (int i = 0; i < closest.size() && !found; i++) {
-                        if (dragging.demo.deepContains(closest.get(i).equation)) {
+                    while (closest.size() != 0 && !found) {
+                        EquationDis current = closest.get(0);
+                        closest.remove(0);
+                        if (dragging.demo.deepContains(current.equation)) {
                             found = true;
                             Log.i("drag", "no Move");
                         } else {
-                            found = closest.get(i).tryInsert(dragging);
+                            ArrayList<EquationDis> retuended = current.tryInsert(dragging);
+                            if (retuended == null){
+                                found = true;
+                            }else{
+                                closest.addAll(retuended);
+                                Collections.sort(closest);
+                            }
 
                             if (dragging.demo.parent == null) {
                                 @SuppressWarnings("unused")
@@ -404,8 +415,7 @@ public abstract class SuperView extends View implements
                         //dragging.eq.negative = !dragging.eq.negative;
                     }
 
-                    dragging.eq.x = event.getX();
-                    dragging.eq.y = event.getY();
+
                 }
 
                 // if they are moving the equation

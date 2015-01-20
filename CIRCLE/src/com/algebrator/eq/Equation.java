@@ -122,34 +122,36 @@ abstract public class Equation extends ArrayList<Equation> {
 
     //public abstract boolean isFlex();
 
-    protected double getValue(Equation e) {
-        int minus = 1;
-        while (e instanceof MinusEquation) {
-            e = e.get(0);
-            minus *= -1;
+    public ArrayList<EquationDis> closest(DragEquation dragging) {
+        ArrayList<EquationDis> result = new ArrayList<EquationDis>();
+        for (int i = 0; i < size(); i++) {
+            //result.add(new EquationDis(get(i),x,y));
+            result.addAll(get(i).closest(dragging));
+
         }
-        return ((NumConstEquation) e).getValue() * minus;
+        if (this instanceof DivEquation){
+            result.add(new EquationDis(this,dragging, EquationDis.Side.left));
+            result.add(new EquationDis(this,dragging,EquationDis.Side.right));
+        }
+
+        Collections.sort(result);
+        return result;
     }
 
-    protected boolean sortaNumber(Equation e) {
-        while (e instanceof MinusEquation) {
-            e = e.get(0);
-        }
-        return e instanceof NumConstEquation;
-    }
-
-    /**
-     * @param x
-     * @param y
-     * @return
-     */
     public ArrayList<EquationDis> closest(float x, float y) {
         ArrayList<EquationDis> result = new ArrayList<EquationDis>();
         for (int i = 0; i < size(); i++) {
             //result.add(new EquationDis(get(i),x,y));
-            result.addAll(get(i).closest(x, y));
+            result.addAll(get(i).closest(x,y));
 
         }
+        if (this instanceof DivEquation){
+            result.add(new EquationDis(this,x,y, EquationDis.Side.left));
+            result.add(new EquationDis(this,x,y,EquationDis.Side.right));
+        }
+
+
+
         Collections.sort(result);
         return result;
     }
@@ -705,7 +707,8 @@ abstract public class Equation extends ArrayList<Equation> {
 
     }
 
-    boolean tryOp(DragEquation dragging, boolean right, Op op) {
+    // returns null on sucess
+    ArrayList<EquationDis> tryOp(DragEquation dragging, boolean right, Op op) {
         Log.i("try", this.hashCode() + " " + this.display);
 
         if (parent.indexOf(this) == -1) {
@@ -732,7 +735,7 @@ abstract public class Equation extends ArrayList<Equation> {
             if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
                 dragging.demo.remove();
                 this.replace(dragging.getAndUpdateDemo(this, sameSide));
-                return true;
+                return null;
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 1 && op == Op.MULTI) {
                 dragging.demo.remove();
                 this.replace(dragging.getAndUpdateDemo(this, sameSide));
@@ -742,7 +745,7 @@ abstract public class Equation extends ArrayList<Equation> {
                     dragging.demo.replace(me);
                     me.add(dragging.demo);
                 }
-                return true;
+                return null;
             } else if ((parent instanceof AddEquation && op == Op.ADD) ||
                     (parent instanceof MultiEquation && op == Op.MULTI)) {
                 if (parent.equals(dragging.demo.parent)) {
@@ -794,12 +797,20 @@ abstract public class Equation extends ArrayList<Equation> {
                 at.replace(me);
                 me.add(at);
             }
-            return true;
+            return null;
         }
         if (parent instanceof EqualsEquation) {
-            return false;
+            return new ArrayList<EquationDis>();
         }
-        return parent.tryOp(dragging, right, op);
+        // we need the ArrayList of the parents stuff
+        ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
+        result.add(new EquationDis(parent,dragging.eq.x,dragging.eq.y, EquationDis.Side.left));
+        result.add(new EquationDis(parent,dragging.eq.x,dragging.eq.y,EquationDis.Side.right));
+        if (!(this instanceof DivEquation)) {
+            result.add(new EquationDis(parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.top));
+            result.add(new EquationDis(parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.bottom));
+        }
+        return result;
     }
 
     public void justRemove() {
