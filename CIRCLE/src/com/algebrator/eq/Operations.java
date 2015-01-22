@@ -89,6 +89,7 @@ public class Operations {
             MultiCountData leftRem = remainder(left.under, common);
             MultiCountData rightRem = remainder(right.under, common);
 
+
             right = Multiply(right, leftRem);
             right.under = Multiply(right.under, leftRem);
 
@@ -109,11 +110,15 @@ public class Operations {
         if (under == null) {
             MultiCountData common = findCommon(left, right);
             common.value = 1.0;
-            left = remainder(left, common);
-            right = remainder(right, common);
+            if (!common.key.isEmpty()) {
+                left = remainder(left, common);
+                right = remainder(right, common);
+            }
             Equation result = addHelper(left, right);
             // and multiply the result time common if there is any common
-            if (common.key.size() != 0 || common.value != 1) {
+            if (result instanceof  NumConstEquation && ((NumConstEquation) result).getValue()==0) {
+                return result;
+            }else if (common.key.size() != 0 || common.value != 1) {
                 Equation holder = new MultiEquation(owner);
                 holder.add(result);
                 holder.add(common.getEquation(owner));
@@ -176,7 +181,10 @@ public class Operations {
                 EquationCounts removed = removeCommon(lft,com);
                 if (!lft.equals(removed)){
                     match = true;
-                    result.key.add(removed.getEquation());
+                    Equation newEq = removed.getEquation();
+                    if (!(newEq instanceof  NumConstEquation && ((NumConstEquation) newEq).getValue()==1)) {
+                        result.key.add(newEq);
+                    }
                     commonCopy.remove(com);
                     break;
                 }
@@ -219,7 +227,7 @@ public class Operations {
         }
         // find what is common in the values
         // only if both values are ints
-        if ((left.value == Math.floor(left.value)) && (left.value == Math.floor(left.value))) {
+        if ((left.value == Math.floor(left.value)) && (right.value == Math.floor(right.value))) {
             result.value = Double.valueOf(gcd((int) (Math.abs(Math.floor(left.value))), (int) Math.abs(Math.floor(right.value))));
         }
         return result;
@@ -306,25 +314,6 @@ public class Operations {
                 newEq.add(b.copy());
                 result.add(newEq);
             }
-//            for (Equation e:get(0)){
-//                // figure out what is common
-//                MultiCountData top = new MultiCountData(e);
-//                MultiCountData bot = new MultiCountData(get(1));
-//                MultiCountData common = common(top,bot);
-//                top.removeCommon(common);
-//                bot.removeCommon(common);
-//                if (!(bot.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) bot.getEquation(owner)).getValue() == 1)){
-//                    Equation inner = new DivEquation(owner);
-//                    inner.add(top.getEquation(owner));
-//                    inner.add(bot.getEquation(owner));
-//                    result.add(inner);
-//                }else if (!(top.getEquation(owner) instanceof NumConstEquation && ((NumConstEquation) top.getEquation(owner)).getValue() == 0 )){
-//                    result.add(top.getEquation(owner));
-//                }
-//            }
-//            if (result.size() == 1){
-//                result = result.get(0);
-//            }
         } else {
             // figure out what is common
             MultiCountData top = new MultiCountData(a);
@@ -334,7 +323,6 @@ public class Operations {
                 if (!common.key.isEmpty()) {
                     top = remainder(top, common);
                     bot = remainder(bot, common);
-
                 } else {
                     top.value /= common.value;
                     bot.value /= common.value;
@@ -342,33 +330,45 @@ public class Operations {
                 Equation topEq = top.getEquation(owner);
                 Equation botEq = bot.getEquation(owner);
                 result = getResult(topEq, botEq);
-            } else {
+            } else if (bot.value !=1){
+
+                top.value /= bot.value;
+                bot.value /= bot.value;
+                Equation topEq = top.getEquation(owner);
+                Equation botEq = bot.getEquation(owner);
+                result = getResult(topEq, botEq);
+
+
+//                Equation topEq = a;
+//                Equation botEq = b;
+//                if (sortaNumber(botEq) && sortaNumber(topEq)) {
+//                    // they are both number that can not be reduced
+//                    double num = getValue(topEq) / getValue(botEq);
+//                    if (num < 0) {
+//                        Equation inner = new NumConstEquation(-num, owner);
+//                        result = new MinusEquation(owner);
+//                        result.add(inner);
+//                    } else {
+//                        result = new NumConstEquation(num, owner);
+//                    }
+//                } else {
+//                    // if top is a * split it up
+//                   // if (topEq instanceof MultiEquation) {
+//                    //    result = new MultiEquation(owner);
+//                    //    for (Equation e : topEq) {
+//                     //       Equation newEq = getResult(e, botEq.copy());
+//                    //        result.add(newEq);
+//                    //    }
+//                    //}
+//                    // else there is nothing for us to do
+//                    //else {
+//                    result = getResult(topEq, botEq);
+//                    //}
+//                }
+            }else{
                 Equation topEq = a;
                 Equation botEq = b;
-                if (sortaNumber(botEq) && sortaNumber(topEq)) {
-                    // they are both number that can not be reduced
-                    double num = getValue(topEq) / getValue(botEq);
-                    if (num < 0) {
-                        Equation inner = new NumConstEquation(-num, owner);
-                        result = new MinusEquation(owner);
-                        result.add(inner);
-                    } else {
-                        result = new NumConstEquation(num, owner);
-                    }
-                } else {
-                    // if top is a * split it up
-                   // if (topEq instanceof MultiEquation) {
-                    //    result = new MultiEquation(owner);
-                    //    for (Equation e : topEq) {
-                     //       Equation newEq = getResult(e, botEq.copy());
-                    //        result.add(newEq);
-                    //    }
-                    //}
-                    // else there is nothing for us to do
-                    //else {
-                        result = getResult(topEq, botEq);
-                    //}
-                }
+                result = getResult(topEq, botEq);
             }
         }
         return result;
@@ -419,5 +419,25 @@ public class Operations {
             e = e.get(0);
         }
         return e instanceof NumConstEquation;
+    }
+
+    public static Equation flip(Equation demo) {
+
+        SuperView owner = Algebrator.getAlgebrator().superView;
+        // if it's a div equation flip it over
+        if (demo instanceof  DivEquation){
+            if (demo.get(0) instanceof NumConstEquation && ((NumConstEquation) demo.get(0)).getValue()==1){
+                return demo.get(1);
+            }
+            Equation result = new DivEquation(owner);
+            result.add(demo.get(1));
+            result.add(demo.get(0));
+            return result;
+        }
+        // else just throw a 1 over it
+        Equation result = new DivEquation(owner);
+        result.add(new NumConstEquation(1,owner));
+        result.add(demo);
+        return result;
     }
 }

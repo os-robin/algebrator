@@ -1,5 +1,6 @@
 package com.example.circle.Actions;
 
+import com.algebrator.eq.BinaryEquation;
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -21,7 +22,7 @@ public class VarAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-                if (l == null || !(l.parent instanceof DivEquation)) {
+                if (l == null || !(l.parent instanceof BinaryEquation)) {
                     Equation newEq = new VarEquation(var, emilyView);
                     emilyView.insert(newEq);
                 } else {

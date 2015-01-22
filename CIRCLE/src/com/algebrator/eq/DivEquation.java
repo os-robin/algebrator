@@ -142,26 +142,26 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
     }
 
 	@Override
-	public boolean remove(Object e) {
-		if (e instanceof Equation && this.contains(e)) {
-			remove(indexOf(e));
-			return true;
-		}
-		return false;
-	}
+         public boolean remove(Object e) {
+        if (e instanceof Equation && this.contains(e)) {
+            remove(indexOf(e));
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public Equation remove(int pos) {
-		if (pos == 0) {
-			Equation result = get(0);
-			this.get(0).replace(new NumConstEquation(1, owner));
-			return result;
-		} else if (pos == 1) {
-			this.replace(get(0));
-			return get(1);
-		}
-		return null;
-	}
+    @Override
+    public Equation remove(int pos) {
+        if (pos == 0) {
+            Equation result = get(0);
+            this.get(0).replace(new NumConstEquation(1, owner));
+            return result;
+        } else if (pos == 1) {
+            this.replace(get(0));
+            return get(1);
+        }
+        return null;
+    }
 	
 	@Override
 	public boolean same(Equation eq){

@@ -84,30 +84,74 @@ public class EquationDis implements Comparable<EquationDis> {
 	}
 
 	private ArrayList<EquationDis> tryX(DragEquation dragging) {
-		if (dragging.add) {
+		if (dragging.ops.contains(Equation.Op.ADD)) {
 			if (equation.x > x) {
-				return equation.tryOp(dragging,false,Equation.Op.ADD);
+                ArrayList<EquationDis> result = equation.tryOp(dragging,false,Equation.Op.ADD);
+				if (result==null){
+                    return  null;
+                }
 			} else {
-				return equation.tryOp(dragging,true,Equation.Op.ADD);
-			}
-		}else{
-			if (equation.x > x) {
-				return equation.tryOp(dragging,false,Equation.Op.MULTI);
-			} else {
-				return equation.tryOp(dragging,true,Equation.Op.MULTI);
+                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.ADD);
+                if (result==null){
+                    return  null;
+                }
 			}
 		}
+        if (dragging.ops.contains(Equation.Op.MULTI)){
+			if (equation.x > x) {
+                ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.MULTI);
+                if (result==null){
+                    return  null;
+                }
+			} else {
+                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.MULTI);
+                if (result==null){
+                    return  null;
+                }
+			}
+		}
+        if (dragging.ops.contains(Equation.Op.POWER)){
+            ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.POWER);
+            if (result==null){
+                return  null;
+            }
+        }
+        return new ArrayList<EquationDis>();
 	}
 
 	private ArrayList<EquationDis> tryY(DragEquation dragging) {
-		if (dragging.add) {
-			return new ArrayList<EquationDis>();
-		}else{
+		if (dragging.ops.contains(Equation.Op.DIV)) {
 			if (equation.x > x) {
-				return equation.tryOp(dragging,false,Equation.Op.DIV);
+                ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.DIV);
+                if (result==null){
+                    return  null;
+                }
 			} else {
-				return equation.tryOp(dragging,true,Equation.Op.DIV);
+                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.DIV);
+                if (result==null){
+                    return  null;
+                }
 			}
 		}
+        if (dragging.ops.contains(Equation.Op.POWER)){
+            ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.POWER);
+            if (result==null){
+                return  null;
+            }
+        }
+        if (equation.parent instanceof EqualsEquation) {
+            return new ArrayList<EquationDis>();
+        }
+        // we need the ArrayList of the parents stuff
+        ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
+        if (equation.parent!= null) {
+            result.add(new EquationDis(equation.parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.left));
+            result.add(new EquationDis(equation.parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.right));
+            if (!(equation instanceof DivEquation)) {
+                result.add(new EquationDis(equation.parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.top));
+                result.add(new EquationDis(equation.parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.bottom));
+            }
+        }
+        return result;
 	}
 }

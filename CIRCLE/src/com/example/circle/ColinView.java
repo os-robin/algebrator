@@ -60,17 +60,19 @@ public class ColinView extends SuperView {
         int currentAlpha = (int) (0xff *0.8f);
         for (EquationButton eb:history) {
             if (!eb.equals(history.get(0))) {
-                atHeight -= eb.myEq.measureHeight()/2;
+                atHeight -= eb.myEq.measureHeightLower();
                 currentAlpha = Math.max(currentAlpha,MIN_ALPHA);
                 eb.targetAlpha = currentAlpha;
                 eb.x = 0;
                 eb.targetY = atHeight;
-                eb.draw(canvas,stupid.lastPoint.get(0).x,stupid.lastPoint.get(0).y);
-                atHeight -= eb.myEq.measureHeight()/2 + buffer;
+                eb.update(stupid.lastPoint.get(0).x, stupid.lastPoint.get(0).y);
+                if ((stupid.lastPoint.get(0).y +atHeight + eb.myEq.measureHeightLower())>0) {
+                    eb.draw(canvas, stupid.lastPoint.get(0).x, stupid.lastPoint.get(0).y);
+                }
+                atHeight -= eb.myEq.measureHeightUpper() + buffer;
                 currentAlpha*=fade;
             }
         }
-
     }
 
 

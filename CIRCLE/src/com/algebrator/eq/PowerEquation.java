@@ -76,9 +76,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
         }
         Log.i("try op power", (eqs.size() == 0 ? "no eqs passed in" : db));
 
-
         Equation result = null;
-
 
         if (get(0) instanceof PowerEquation) {
             // we multi
@@ -171,15 +169,6 @@ public class PowerEquation extends Operation implements BinaryEquation {
                 }
                 this.replace(result);
             }
-
-
-            // for the bottom and the top
-            // find all the equations on each side
-
-
-            // multiply && combine like terms
-
-
         }
     }
 
@@ -231,7 +220,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
         }
     }
 
-    protected float measureHeightLower() {
+    public float measureHeightLower() {
         float result = get(0).measureHeightLower();
         if (parenthesis()) {
             result += PARN_HEIGHT_ADDITION / 2f;
@@ -239,7 +228,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
         return result;
     }
 
-    protected float measureHeightUpper() {
+    public float measureHeightUpper() {
         float r0 = get(0).measureHeightUpper();
 
 

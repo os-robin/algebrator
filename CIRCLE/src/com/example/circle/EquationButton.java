@@ -28,10 +28,6 @@ public class EquationButton extends Button {
     }
 
     public void draw(Canvas canvas,int stupidX,int stupidY) {
-        currentAlpha = (currentAlpha*rate + targetAlpha)/(rate+1);
-        x = (x*rate + targetX)/(rate+1);
-        y = (y*rate + targetY)/(rate+1);
-        myEq.textPaint.setAlpha(currentAlpha);
         ((EqualsEquation)myEq).drawCentered(canvas,x+stupidX,y+stupidY);
     }
 
@@ -74,5 +70,12 @@ public class EquationButton extends Button {
         x=0;
         y=0;
 
+    }
+
+    public void update(int stupidX,int stupidY) {
+        currentAlpha = (currentAlpha*rate + targetAlpha)/(rate+1);
+        x = (x*rate + targetX)/(rate+1);
+        y = (y*rate + targetY)/(rate+1);
+        myEq.textPaint.setAlpha(currentAlpha);
     }
 }

@@ -281,10 +281,12 @@ public abstract class SuperView extends View implements
                 selected.remove();
             }
         }
-        if (selected != null){
-            Equation oldEq = selected;
-            selected.setSelected(false);
-            oldEq.tryFlatten();
+        if (selected != null ){
+            if (!(selected.parent.size()==1 && selected.parent!= null)) {
+                Equation oldEq = selected;
+                selected.setSelected(false);
+                oldEq.tryFlatten();
+            }
         }
     }
 
@@ -389,33 +391,26 @@ public abstract class SuperView extends View implements
                         closest.remove(0);
                         if (dragging.demo.deepContains(current.equation)) {
                             found = true;
-                            Log.i("drag", "no Move");
+                            Log.i("drag", "no Move "+dragging.demo.toString() + " current Eq "+current.equation.toString());
                         } else {
-                            ArrayList<EquationDis> retuended = current.tryInsert(dragging);
-                            if (retuended == null){
-                                found = true;
-                            }else{
-                                closest.addAll(retuended);
-                                Collections.sort(closest);
-                            }
+                            if (!current.equation.deepContains(dragging.demo)) {
+                                Log.i("drag", dragging.ops + "");
+                                ArrayList<EquationDis> retuended = current.tryInsert(dragging);
+                                if (retuended == null) {
+                                    found = true;
+                                } else {
+                                    closest.addAll(retuended);
+                                    Collections.sort(closest);
+                                }
 
-                            if (dragging.demo.parent == null) {
-                                @SuppressWarnings("unused")
-                                int dbg = 0;
-                                Log.i("weee", "I am null!");
+                                if (dragging.demo.parent == null) {
+                                    @SuppressWarnings("unused")
+                                    int dbg = 0;
+                                    Log.i("weee", "I am null!");
+                                }
                             }
                         }
                     }
-                    if ((dragging.add)
-                            && ((dragging.eq.x < stupid.lastPoint.get(0).x && event
-                            .getX() >= stupid.lastPoint.get(0).x) || (dragging.eq.x < stupid.lastPoint
-                            .get(0).x && event.getX() >= stupid.lastPoint
-                            .get(0).x))) {
-                        //TODO handle negetives
-                        //dragging.eq.negative = !dragging.eq.negative;
-                    }
-
-
                 }
 
                 // if they are moving the equation
@@ -556,14 +551,24 @@ public abstract class SuperView extends View implements
 
     protected void selectSet(){
         Equation lcp=null;
+        // if anything in selectingSet is contained by something else remove it
+        HashSet<Equation> setCopy = new HashSet<Equation>(selectingSet);
+        for (Equation eq1: setCopy){
+            for (Equation eq2: setCopy){
+                if (!(eq1.equals(eq2)) && eq1.deepContains(eq2)) {
+                    Log.i("removed", eq2.toString());
+                    selectingSet.remove(eq2);
+                }
+            }
+        }
         for (Equation eq : selectingSet) {
             if (lcp == null) {
-                lcp = eq.parent;
-            } else if (!eq.parent.equals(lcp)) {
+                lcp = eq;//eq.parent
+            } else  { //if (!eq.parent.equals(lcp))
                 lcp = lcp.lowestCommonContainer(eq);
             }
         }
-        if (lcp != null) {
+        if (lcp != null  && selectingSet.size()>1) {
             // make sure they are a continous block
             ArrayList<Integer> indexs = new ArrayList<Integer>();
             for (Equation eq : selectingSet) {

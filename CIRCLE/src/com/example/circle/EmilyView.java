@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -209,8 +210,26 @@ public class EmilyView extends SuperView {
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        drawShadow(canvas);
+
         for (int i = 0; i < vars.size(); i++) {
             vars.get(i).draw(canvas);
+        }
+    }
+
+    private void drawShadow(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(0x404040);
+        p.setAlpha(0x7f);
+        int at=((int)buttonLine());
+        for (int i=0;i<2;i++){
+            canvas.drawLine(0,at,width,at,p);
+            at--;
+        }
+        while (p.getAlpha() >1){
+            canvas.drawLine(0,at,width,at,p);
+            p.setAlpha((int)(p.getAlpha()/1.2));
+            at--;
         }
     }
 

@@ -213,7 +213,7 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
 
-    protected float measureHeightLower() {
+    public float measureHeightLower() {
         float totalHeight = myHeight/2;
 
         for (int i = 0; i < size(); i++) {
@@ -227,7 +227,7 @@ abstract public class Equation extends ArrayList<Equation> {
         return totalHeight;
     }
 
-    protected float measureHeightUpper() {
+    public float measureHeightUpper() {
         float totalHeight = myHeight/2f;
 
         for (int i = 0; i < size(); i++) {
@@ -261,22 +261,29 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public HashSet<Equation> on(float x, float y) {
         HashSet<Equation> result = new HashSet<Equation>();
+        if (this instanceof EqualsEquation){
+            return result;
+        }
         for (int i = 0; i < lastPoint.size(); i++) {
             if (x < lastPoint.get(i).x + myWidth / 2
                     && x > lastPoint.get(i).x - myWidth / 2
                     && y < lastPoint.get(i).y + myHeight / 2
                     && y > lastPoint.get(i).y - myHeight / 2) {
                 // we need to get the left
-                Equation at = get(i);
-                while (at instanceof AddEquation || at instanceof MultiEquation || at instanceof MinusEquation) {
-                    at = at.get(at.size() - 1);
+                if (this instanceof PowerEquation){
+                    result.add(get(1));
+                }else {
+                    Equation at = get(i);
+                    while (at instanceof AddEquation || at instanceof MultiEquation || at instanceof MinusEquation) {
+                        at = at.get(at.size() - 1);
+                    }
+                    result.add(at);
+                    at = get(i + 1);
+                    while (at instanceof AddEquation || at instanceof MultiEquation || at instanceof MinusEquation) {
+                        at = at.get(0);
+                    }
+                    result.add(at);
                 }
-                result.add(at);
-                at = get(i + 1);
-                while (at instanceof AddEquation || at instanceof MultiEquation || at instanceof MinusEquation) {
-                    at = at.get(0);
-                }
-                result.add(at);
             }
         }
         return result;
@@ -314,8 +321,6 @@ abstract public class Equation extends ArrayList<Equation> {
         return true;
     }
 
-    ;
-
     public void tryOperator(float x, float y) {
         Object[] ons = on(x, y).toArray();
         if (ons.length != 0) {
@@ -332,6 +337,8 @@ abstract public class Equation extends ArrayList<Equation> {
             }
             Log.i("tryOperator",debug);
             if (onsList.size()!=0) {
+                tryOperator(onsList);
+            }else if (this instanceof MinusEquation){
                 tryOperator(onsList);
             }
         }else{
@@ -721,6 +728,8 @@ abstract public class Equation extends ArrayList<Equation> {
             can = canMuli(dragging);
         } else if (op == Op.DIV) {
             can = canDiv(dragging);
+        } else if (op == Op.POWER){
+            can = canPower(dragging);
         }
 
         if (can) {
@@ -732,13 +741,25 @@ abstract public class Equation extends ArrayList<Equation> {
                 this.parent.replace(this);
             }
 
-            if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
+            if (op ==Op.POWER){
+                dragging.demo.remove();
+                Equation power = Operations.flip(dragging.demo);
+                Equation newEq = new PowerEquation(owner);
+                Equation oldEq =this;
+                oldEq.replace(newEq);
+                newEq.add(this);
+                newEq.add(power);
+                dragging.getAndUpdateDemo(power);
+                dragging.updateOps(dragging.demo);
+            }else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
                 dragging.demo.remove();
                 this.replace(dragging.getAndUpdateDemo(this, sameSide));
+                dragging.updateOps(dragging.demo);
                 return null;
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 1 && op == Op.MULTI) {
                 dragging.demo.remove();
                 this.replace(dragging.getAndUpdateDemo(this, sameSide));
+                dragging.updateOps(dragging.demo);
                 // bring back the minus signs on demo
                 for (MinusEquation me : minusSigns) {
                     me.clear();
@@ -757,12 +778,18 @@ abstract public class Equation extends ArrayList<Equation> {
                 Log.i("", "added to existing");
                 if (dragging.demo.x < x) {
                     parent.add(myIndex + 1, dragging.getAndUpdateDemo(this, sameSide));
+                    dragging.updateOps(dragging.demo);
                 } else {
                     parent.add(myIndex, dragging.getAndUpdateDemo(this, sameSide));
+                    dragging.updateOps(dragging.demo);
                 }
             } else {
-                dragging.demo.remove();
-                Log.i("", "added to new");
+                if ((op ==Op.DIV || op ==Op.MULTI)&& dragging.demo.parent instanceof EqualsEquation){
+                    dragging.demo.replace(new NumConstEquation(1,owner));
+                }else{
+                    dragging.demo.remove();
+                }
+                Log.i("added to new", ""+ this.toString());
                 Equation oldEq = this;
                 Equation newEq = null;
                 if (op == Op.ADD) {
@@ -774,19 +801,21 @@ abstract public class Equation extends ArrayList<Equation> {
                 }
 
                 if (op != Op.DIV) {
-
                     oldEq.replace(newEq);
                     if (right) {
                         newEq.add(dragging.getAndUpdateDemo(this, sameSide));
                         newEq.add(oldEq);
+                        dragging.updateOps(dragging.demo);
                     } else {
                         newEq.add(oldEq);
                         newEq.add(dragging.getAndUpdateDemo(this, sameSide));
+                        dragging.updateOps(dragging.demo);
                     }
                 } else {
                     oldEq.replace(newEq);
                     newEq.add(oldEq);
                     newEq.add(dragging.getAndUpdateDemo(this, sameSide));
+                    dragging.updateOps(dragging.demo);
                 }
 
             }
@@ -799,18 +828,16 @@ abstract public class Equation extends ArrayList<Equation> {
             }
             return null;
         }
-        if (parent instanceof EqualsEquation) {
-            return new ArrayList<EquationDis>();
+        return new ArrayList<EquationDis>();
+    }
+
+    private boolean canPower(DragEquation dragging) {
+        if (dragging.demo.parent instanceof PowerEquation && dragging.demo.parent.parent instanceof EqualsEquation) {
+            if (this.parent instanceof EqualsEquation && dragging.demo.side() != this.side()) {
+                return true;
+            }
         }
-        // we need the ArrayList of the parents stuff
-        ArrayList<EquationDis> result = new  ArrayList<EquationDis>();
-        result.add(new EquationDis(parent,dragging.eq.x,dragging.eq.y, EquationDis.Side.left));
-        result.add(new EquationDis(parent,dragging.eq.x,dragging.eq.y,EquationDis.Side.right));
-        if (!(this instanceof DivEquation)) {
-            result.add(new EquationDis(parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.top));
-            result.add(new EquationDis(parent, dragging.eq.x, dragging.eq.y, EquationDis.Side.bottom));
-        }
-        return result;
+        return false;
     }
 
     public void justRemove() {
@@ -904,5 +931,5 @@ abstract public class Equation extends ArrayList<Equation> {
         return false;
     }
 
-    public enum Op {ADD, DIV, MULTI}
+    public enum Op {ADD, DIV, POWER, MULTI}
 }
