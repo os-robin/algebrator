@@ -316,21 +316,63 @@ public class Operations {
             }
         } else {
             // figure out what is common
+
             MultiCountData top = new MultiCountData(a);
             MultiCountData bot = new MultiCountData(b);
-            MultiCountData common = findCommon(top, bot);
-            if (common.value != 1 || !common.key.isEmpty()) {
+
+            MultiCountData atTop = new MultiCountData(a);
+            MultiCountData atBot = new MultiCountData(b);
+            MultiCountData common = findCommon(atTop, atBot);
+            int depth =0;
+            while ((atBot.under !=null && atTop.under != null ) && (common.value == 1 && common.key.isEmpty())){
+                atTop = atTop.under;
+                atBot = atBot.under;
+                common = findCommon(atTop, atBot);
+                depth++;
+            }
+            if (common.value != 1 || !common.key.isEmpty()){
                 if (!common.key.isEmpty()) {
-                    top = remainder(top, common);
-                    bot = remainder(bot, common);
+                    atTop = remainder(atTop, common);
+                    atBot = remainder(atBot, common);
                 } else {
-                    top.value /= common.value;
-                    bot.value /= common.value;
+                    atTop.value /= common.value;
+                    atBot.value /= common.value;
                 }
+                // now we need to put atTop and atBot back
+                MultiCountData parentTop = top;
+                MultiCountData parentBot = bot;
+                if (depth >0){
+                    while (depth>1){
+                        parentTop = parentTop.under;
+                        parentBot =parentBot.under;
+                    }
+                    parentTop.under =atTop;
+                    parentBot.under = atBot;
+                }else{
+                    top = atTop;
+                    bot =atBot;
+                }
+
                 Equation topEq = top.getEquation(owner);
                 Equation botEq = bot.getEquation(owner);
                 result = getResult(topEq, botEq);
-            } else if (bot.value !=1){
+            }
+
+            //old code
+            //MultiCountData common = findCommon(top, bot);
+            //if (common.value != 1 || !common.key.isEmpty()) {
+            //    if (!common.key.isEmpty()) {
+            //        top = remainder(top, common);
+            //        bot = remainder(bot, common);
+            //    } else {
+            //        top.value /= common.value;
+            //        bot.value /= common.value;
+            //    }
+            //    Equation topEq = top.getEquation(owner);
+            //    Equation botEq = bot.getEquation(owner);
+            //    result = getResult(topEq, botEq);
+            //}
+            else if (bot.value !=1){
 
                 top.value /= bot.value;
                 bot.value /= bot.value;

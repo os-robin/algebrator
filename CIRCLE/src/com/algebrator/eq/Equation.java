@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.circle.ColinView;
 import com.example.circle.SuperView;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -261,9 +262,6 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public HashSet<Equation> on(float x, float y) {
         HashSet<Equation> result = new HashSet<Equation>();
-        if (this instanceof EqualsEquation){
-            return result;
-        }
         for (int i = 0; i < lastPoint.size(); i++) {
             if (x < lastPoint.get(i).x + myWidth / 2
                     && x > lastPoint.get(i).x - myWidth / 2
@@ -289,10 +287,28 @@ abstract public class Equation extends ArrayList<Equation> {
         return result;
     }
 
-    public HashSet<Equation> onAny(float x, float y) {
+    public HashSet<Equation> OnAnyEqualsIncluded(float x, float y) {
         HashSet<Equation> result = on(x, y);
         if (result.size() != 0) {
             return result;
+        }
+        for (int i = 0; i < size(); i++) {
+            result = get(i).onAny(x, y);
+            if (result.size() != 0) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    public HashSet<Equation> onAny(float x, float y) {
+        HashSet<Equation> result = on(x, y);
+
+        if (!(this instanceof EqualsEquation)) {
+
+            if (result.size() != 0) {
+                return result;
+            }
         }
         for (int i = 0; i < size(); i++) {
             result = get(i).onAny(x, y);
@@ -556,6 +572,14 @@ abstract public class Equation extends ArrayList<Equation> {
                 e.remove();
             }
         }
+    }
+
+    public boolean reallyInstanceOf(Class t){
+        Equation at =this;
+        while (at instanceof MinusEquation){
+            at= at.get(0);
+        }
+        return t.isInstance(at);
     }
 
     @Override

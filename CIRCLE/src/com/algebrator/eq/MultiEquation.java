@@ -223,8 +223,13 @@ class MultiCountData {
                 top =new  NumConstEquation(value, owner);
             }
         } else {
-            if (key.size() == 1 && value == 1) {
-               top =(Equation) key.toArray()[0];
+            if (key.size() == 1 && Math.abs(value) == 1) {
+                if (value ==1) {
+                    top = (Equation) key.toArray()[0];
+                }else{
+                    top = new MinusEquation(owner);
+                    top.add((Equation) key.toArray()[0]);
+                }
             }else {
                 top = new MultiEquation(owner);
 

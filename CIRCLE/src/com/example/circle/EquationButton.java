@@ -28,23 +28,52 @@ public class EquationButton extends Button {
     }
 
     public void draw(Canvas canvas,int stupidX,int stupidY) {
-        ((EqualsEquation)myEq).drawCentered(canvas,x+stupidX,y+stupidY);
+            ((EqualsEquation)myEq).drawCentered(canvas,x+stupidX,y+stupidY);
     }
 
-    long lastTap = 0;
+    public void tryRevert(Canvas canvas){
+        if (!this.equals(cv.history.get(0))) {
+            if (lastLongTouch != null && lastLongTouch.started()) {
+                if (lastLongTouch.done()) {
+                    Log.i("lastLongTouch", "done");
+                    cv.animation.add(new DragStarted(cv, 0x7f));
+                    revert();
+                    lastLongTouch = null;
+                } else {
+                    cv.drawProgress(canvas, lastLongTouch.percent(), 0x7f);
+                    Log.i("lastLongTouch", lastLongTouch.percent() + "");
+                }
+            }
+        }
+    }
+
+    LongTouch lastLongTouch=null;
+    //long lastTap = 0;
     public void click(MotionEvent event) {
-        if (myEq.onAny(event.getX(),event.getY()).size() !=0){
+        if (myEq.OnAnyEqualsIncluded(event.getX(), event.getY()).size() !=0){
             currentAlpha = 0xff;
             //TODO act
 
-            if (cv.history.indexOf(this) != 0) {
-                long now = System.currentTimeMillis();
-                if (now - lastTap < Algebrator.getAlgebrator().doubleTapSpacing) {
-                    Log.i("", "I was double tapped");
-                    revert();
+            if (lastLongTouch==null){
+                lastLongTouch= new LongTouch(event);
+            }else{
+                if (lastLongTouch.outside(event)){
+                    lastLongTouch = new LongTouch(event);
                 }
-                lastTap = now;
             }
+
+//            if (cv.history.indexOf(this) != 0) {
+//                long now = System.currentTimeMillis();
+//                if (now - lastTap < Algebrator.getAlgebrator().doubleTapSpacing) {
+//                    Log.i("", "I was double tapped");
+//                    revert();
+//                }
+//                lastTap = now;
+//            }
+        }
+
+        if (event.getAction() ==MotionEvent.ACTION_UP){
+            lastLongTouch = null;
         }
 
     }

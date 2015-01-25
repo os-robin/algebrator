@@ -1,14 +1,7 @@
 package com.example.circle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
@@ -20,8 +13,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
@@ -29,18 +20,20 @@ import android.view.WindowManager;
 
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.DragEquation;
-import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
-import com.algebrator.eq.LeafEquation;
 import com.algebrator.eq.MinusEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+
 public abstract class SuperView extends View implements
-		OnTouchListener {//Runnable,
+        OnTouchListener {//Runnable,
     public Equation selected;
     public DragEquation dragging;
     //SurfaceHolder surfaceHolder;
@@ -52,10 +45,11 @@ public abstract class SuperView extends View implements
     int offsetX = 0;
     int offsetY = 0;
     protected float buttonsPercent;
+    public ArrayList<Animation> animation = new ArrayList<Animation>();
 
 
-    protected float buttonLine(){
-        return height*buttonsPercent;
+    protected float buttonLine() {
+        return height * buttonsPercent;
     }
 
     public TextPaint text = new TextPaint();
@@ -93,12 +87,12 @@ public abstract class SuperView extends View implements
         text.setTextAlign(Align.CENTER);
         text.setColor(0xff000000);
 
-        highlight = 0xff000000 + (int) (Math.random() * 0xffffff);
+        highlight = Algebrator.getAlgebrator().highLight;
 
         bkg = new Paint();
         bkg.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
         bkg.setTextAlign(Align.CENTER);
-        bkg.setColor(0xff000000 + (int) (Math.random() * 0xffffff));
+        bkg.setColor(Algebrator.getAlgebrator().mainColor);
 
         Log.i("lifeCycle", "SuperView-init");
     }
@@ -133,7 +127,7 @@ public abstract class SuperView extends View implements
 
         // Get navigation bar height
         int navBarHeight = 0;
-		/*
+        /*
 		 * Resources resources = context.getResources(); int resourceId =
 		 * resources.getIdentifier("navigation_bar_height", "dimen", "android");
 		 * if (resourceId > 0) { navBarHeight =
@@ -176,12 +170,31 @@ public abstract class SuperView extends View implements
         // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
+
         if (dragging != null) {
             dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
         }
 
+        if (canDrag) {
+            if (lastLongTouch != null && lastLongTouch.started()) {
+                if (lastLongTouch.done()) {
+                    Log.i("lastLongTouch", "done");
+                    animation.add(new DragStarted(this, 0x7f));
+                    startDragging();
+                    lastLongTouch = null;
+                } else {
+                    drawProgress(canvas, lastLongTouch.percent(), 0x7f);
+                    Log.i("lastLongTouch", lastLongTouch.percent() + "");
+                }
+            }
+        }
+
+        for (int i = 0; i < animation.size(); i++) {
+            animation.get(i).draw(canvas);
+        }
+
         // keep selected on the screen
-        float targetV= 4.0f;
+        float targetV = 4.0f;
 
         if (selected != null) {
             //TODO scale by dpi
@@ -222,7 +235,7 @@ public abstract class SuperView extends View implements
             vy *= friction;
             updateOffsetX(vx);
             updateOffsetY(vy);
-            if (vx == 0 && vy == 0){
+            if (vx == 0 && vy == 0) {
                 slidding = false;
             }
         }
@@ -239,6 +252,37 @@ public abstract class SuperView extends View implements
         }
 
         invalidate();
+    }
+
+    public void drawProgress(Canvas canvas, float percent, float startAt) {
+        Paint p = new Paint();
+        p.setColor(Algebrator.getAlgebrator().highLight - 0xff000000);
+        float targetAlpha = startAt;
+        p.setAlpha((int) targetAlpha);
+        int at = 0;
+        for (int i = 0; i < 10; i++) {
+            p.setAlpha((int) targetAlpha);
+            canvas.drawLine(0, at, width * percent, at, p);
+            float atX = ((int) (width * percent));
+            while (p.getAlpha() > 1) {
+                canvas.drawLine(atX, at, atX + 1, at, p);
+                p.setAlpha((int) (p.getAlpha() / 1.1));
+                atX++;
+            }
+            at++;
+        }
+        while (targetAlpha > 1) {
+            p.setAlpha((int) targetAlpha);
+            canvas.drawLine(0, at, width * percent, at, p);
+            float atX = ((int) (width * percent));
+            while (p.getAlpha() > 1) {
+                canvas.drawLine(atX, at, atX + 1, at, p);
+                p.setAlpha((int) (p.getAlpha() / 1.1));
+                atX++;
+            }
+            targetAlpha = targetAlpha / 1.1f;
+            at++;
+        }
     }
 
     private void updateOffsetX(float vx) {
@@ -276,13 +320,15 @@ public abstract class SuperView extends View implements
     }
 
     public void removeSelected() {
-        if (selected instanceof PlaceholderEquation){
-            if (!(selected.parent.size()==1 && selected.parent!= null)) {
-                selected.remove();
+        if (selected instanceof PlaceholderEquation) {
+            if (!(selected.parent.size() == 1 && selected.parent != null)) {
+                Equation oldEq = selected;
+                selected.setSelected(false);
+                oldEq.remove();
             }
         }
-        if (selected != null ){
-            if (!(selected.parent.size()==1 && selected.parent!= null)) {
+        if (selected != null) {
+            if (!(selected.parent.size() == 1 && selected.parent != null)) {
                 Equation oldEq = selected;
                 selected.setSelected(false);
                 oldEq.tryFlatten();
@@ -292,9 +338,11 @@ public abstract class SuperView extends View implements
 
     enum TouchMode {BUTTON, DRAG, SELECT, MOVE, ZOOM, DEAD}
 
-    public boolean canDrag=false;
+    public boolean canDrag = false;
 
     private TouchMode myMode;
+
+    LongTouch lastLongTouch = null;
 
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
@@ -307,7 +355,7 @@ public abstract class SuperView extends View implements
                 } else if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
                     removeSelected();
-                } else  {
+                } else {
                     myMode = TouchMode.MOVE;
                     if (selected != null) {
                         removeSelected();
@@ -329,39 +377,24 @@ public abstract class SuperView extends View implements
 
                     addToSelectingSet(ons);
 
-
                     String toLog = "";
-                    for (Equation e: selectingSet){
+                    for (Equation e : selectingSet) {
                         toLog += e.toString() + ",";
                     }
 
                     Log.i("selectingSet", toLog);
 
-                    // see if they left the box
-                    if (canDrag &&  !stupid.inBox(event.getX(), event.getY())) {
-                        //if (!(selectingSet.size() ==1 && selectingSet.toArray()[0] instanceof  MinusEquation)){
-                            resolveSelected(event);
-                        //}else{
-                        //    selected = (Equation)selectingSet.toArray()[0];
-                        //}
-
-
-                        if (selected != null) {
-                            myMode = TouchMode.DRAG;
-                            // we need to take all the - signs with us
-                            while (selected.parent instanceof MinusEquation){
-                                selected = selected.parent;
-                            }
-                            //if (selected.canPop()) {
-                            dragging = new DragEquation(selected);
-                            selected.isDemo(true);
-                            dragging.eq.x = event.getX();
-                            dragging.eq.y = event.getY();
-                            //}
-                        } else {
-                            myMode = TouchMode.DEAD;
-                        }
+                    if (lastLongTouch == null) {
+                        lastLongTouch = new LongTouch(event);
+                    } else if (lastLongTouch.outside(event)) {
+                        lastLongTouch = new LongTouch(event);
                     }
+
+                    // see if they left the box
+                    // TODO both version might be good
+                    //if (canDrag &&  !stupid.inBox(event.getX(), event.getY())) {
+                    //startDragging();
+                    //}
                 }
 
                 // if we are dragging something move it
@@ -383,7 +416,7 @@ public abstract class SuperView extends View implements
                                 + closest.get(i).dis
                                 + " ";
                     }
-                    Log.i("closest", dragging.demo.hashCode()+ "|" + dragging.demo.toString()+" "+whatdowehavehere);
+                    Log.i("closest", dragging.demo.hashCode() + "|" + dragging.demo.toString() + " " + whatdowehavehere);
 
                     boolean found = false;
                     while (closest.size() != 0 && !found) {
@@ -391,7 +424,7 @@ public abstract class SuperView extends View implements
                         closest.remove(0);
                         if (dragging.demo.deepContains(current.equation)) {
                             found = true;
-                            Log.i("drag", "no Move "+dragging.demo.toString() + " current Eq "+current.equation.toString());
+                            Log.i("drag", "no Move " + dragging.demo.toString() + " current Eq " + current.equation.toString());
                         } else {
                             if (!current.equation.deepContains(dragging.demo)) {
                                 Log.i("drag", dragging.ops + "");
@@ -437,7 +470,7 @@ public abstract class SuperView extends View implements
                     Point tapPoint = new Point();
                     tapPoint.x = (int) event.getX();
                     tapPoint.y = (int) event.getY();
-                    if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode ==TouchMode.SELECT) {
+                    if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode == TouchMode.SELECT) {
                         Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
                         if (canDrag) {
                             stupid.tryOperator(event.getX(),
@@ -451,7 +484,7 @@ public abstract class SuperView extends View implements
                         lastTapPoint = tapPoint;
                     }
                 }
-                if (!clicked){
+                if (!clicked) {
                     endOnePointer(event);
                 }
                 selectingSet = new HashSet<Equation>();
@@ -461,6 +494,8 @@ public abstract class SuperView extends View implements
                     slidding = true;
                 }
 
+                lastLongTouch = null;
+
             }
 
         } else if (event.getPointerCount() == 2) {
@@ -468,24 +503,42 @@ public abstract class SuperView extends View implements
                 endOnePointer(event);
                 myMode = TouchMode.ZOOM;
             }
+        } else
+
+        {
+            myMode = TouchMode.DEAD;
+        }
+
+        Log.i("", stupid.toString());
+        return true;
     }
 
-    else
+    private void startDragging() {
+        if (canDrag) {
+            selectSet();
 
-    {
-        myMode = TouchMode.DEAD;
+            if (selected != null) {
+                myMode = TouchMode.DRAG;
+                // we need to take all the - signs with us
+                while (selected.parent instanceof MinusEquation) {
+                    selected = selected.parent;
+                }
+                //if (selected.canPop()) {
+                dragging = new DragEquation(selected);
+                selected.isDemo(true);
+                //}
+            } else {
+                myMode = TouchMode.DEAD;
+            }
+        }
     }
-
-    Log.i("",stupid.toString());
-    return true;
-}
 
     private void addToSelectingSet(HashSet<Equation> ons) {
         // we only want them to select equation on the same side as
 
         // we should not be select the = sign
-        for (Equation e : ons){
-            if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")){
+        for (Equation e : ons) {
+            if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")) {
                 ons.remove(e);
             }
         }
@@ -497,12 +550,12 @@ public abstract class SuperView extends View implements
             int side;
             if (!selectingSet.isEmpty()) {
                 side = ((Equation) selectingSet.toArray()[0]).side();
-            }else {
+            } else {
                 side = ((Equation) ons.toArray()[0]).side();
             }
 
             // only add bits form the correct side
-            for (Equation e:ons){
+            for (Equation e : ons) {
                 if (e.side() == side) {
                     selectingSet.add(e);
                 }
@@ -510,34 +563,33 @@ public abstract class SuperView extends View implements
         }
     }
 
-    protected boolean inButtons(MotionEvent event){
-        for (Button b : buttons){
-            if (b.couldClick(event)){
+    protected boolean inButtons(MotionEvent event) {
+        for (Button b : buttons) {
+            if (b.couldClick(event)) {
                 return true;
             }
         }
         return false;
     }
 
-	private float dis(Point a, Point b) {
-		// TODO Auto-generated method stub
-		double dx = a.x -b.x;
-		double dy = a.y - b.y;
-		return (float) Math.sqrt((dx*dx)+(dy*dy));
-	}
+    private float dis(Point a, Point b) {
+        // TODO Auto-generated method stub
+        double dx = a.x - b.x;
+        double dy = a.y - b.y;
+        return (float) Math.sqrt((dx * dx) + (dy * dy));
+    }
 
-	private void endOnePointer(MotionEvent event) {
-		if (myMode == TouchMode.BUTTON) {
-			for (int i = 0; i < buttons.size(); i++) {
-				buttons.get(i).click(event);
-			}
-		}
-		else if (myMode == TouchMode.SELECT) {
-			// what did we select?
-			HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
+    private void endOnePointer(MotionEvent event) {
+        if (myMode == TouchMode.BUTTON) {
+            for (int i = 0; i < buttons.size(); i++) {
+                buttons.get(i).click(event);
+            }
+        } else if (myMode == TouchMode.SELECT) {
+            // what did we select?
+            HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
             addToSelectingSet(ons);
-			resolveSelected(event);
-		}else if (myMode == TouchMode.DRAG){
+            resolveSelected(event);
+        } else if (myMode == TouchMode.DRAG) {
             stupid.fixIntegrety();
 
             dragging.demo.isDemo(false);
@@ -547,14 +599,14 @@ public abstract class SuperView extends View implements
                 selected.setSelected(false);
             }
         }
-	}
+    }
 
-    protected void selectSet(){
-        Equation lcp=null;
+    protected void selectSet() {
+        Equation lcp = null;
         // if anything in selectingSet is contained by something else remove it
         HashSet<Equation> setCopy = new HashSet<Equation>(selectingSet);
-        for (Equation eq1: setCopy){
-            for (Equation eq2: setCopy){
+        for (Equation eq1 : setCopy) {
+            for (Equation eq2 : setCopy) {
                 if (!(eq1.equals(eq2)) && eq1.deepContains(eq2)) {
                     Log.i("removed", eq2.toString());
                     selectingSet.remove(eq2);
@@ -564,35 +616,35 @@ public abstract class SuperView extends View implements
         for (Equation eq : selectingSet) {
             if (lcp == null) {
                 lcp = eq;//eq.parent
-            } else  { //if (!eq.parent.equals(lcp))
+            } else { //if (!eq.parent.equals(lcp))
                 lcp = lcp.lowestCommonContainer(eq);
             }
         }
-        if (lcp != null  && selectingSet.size()>1) {
+        if (lcp != null && selectingSet.size() > 1) {
             // make sure they are a continous block
             ArrayList<Integer> indexs = new ArrayList<Integer>();
             for (Equation eq : selectingSet) {
-                int index =lcp.deepIndexOf(eq);
+                int index = lcp.deepIndexOf(eq);
                 if (!indexs.contains(index)) {
                     indexs.add(index);
                 }
             }
             Collections.sort(indexs);
             int min = indexs.get(0);
-            if (lcp.get(min) instanceof WritingLeafEquation){
+            if (lcp.get(min) instanceof WritingLeafEquation) {
                 // the div lines in isOp could be a problem here
                 // i think it's no a problem... I hope
                 ((WritingLeafEquation) lcp.get(min)).isOpRight();
-                if (min != 0){
+                if (min != 0) {
                     indexs.add(0, min - 1);
                 }
             }
             int max = indexs.get(indexs.size() - 1);
-            if (lcp.get(max) instanceof WritingLeafEquation){
+            if (lcp.get(max) instanceof WritingLeafEquation) {
                 // the div lines in isOp could be a problem here
                 // i think it's no a problem... I hope
                 ((WritingLeafEquation) lcp.get(max)).isOpLeft();
-                if (max != lcp.size()-1) {
+                if (max != lcp.size() - 1) {
                     indexs.add(max + 1);
                 }
             }

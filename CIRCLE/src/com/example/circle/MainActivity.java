@@ -96,6 +96,7 @@ public class MainActivity extends Activity {
             }
         }
 		setContentView(view);
+        //setContentView(R.layout.menu);
         view.measureScreen(this);
         myView = view;
 	}
