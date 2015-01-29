@@ -1,7 +1,6 @@
 package com.example.circle.Actions;
 
 import com.algebrator.eq.BinaryEquation;
-import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.VarEquation;
@@ -22,18 +21,18 @@ public class VarAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-                if (l == null || !(l.parent instanceof BinaryEquation)) {
-                    Equation newEq = new VarEquation(var, emilyView);
-                    emilyView.insert(newEq);
-                } else {
-                    Equation oldEq = emilyView.selected;
-                    Equation holder = new WritingEquation(emilyView);
-                    Equation newEq = new VarEquation(var, emilyView);
-                    oldEq.replace(holder);
-                    holder.add(newEq);
-                    holder.add(oldEq);
-                    oldEq.setSelected(true);
-                }
+            if ((l == null || !(l.parent instanceof BinaryEquation)) && !(emilyView.selected.parent instanceof BinaryEquation)) {
+                Equation newEq = new VarEquation(var, emilyView);
+                emilyView.insert(newEq);
+            } else {
+                Equation oldEq = emilyView.selected;
+                Equation holder = new WritingEquation(emilyView);
+                Equation newEq = new VarEquation(var, emilyView);
+                oldEq.replace(holder);
+                holder.add(newEq);
+                holder.add(oldEq);
+                oldEq.setSelected(true);
+            }
         } else if (emilyView.selected != null) {
             Equation numEq = new VarEquation(var, emilyView);
             addToBlock(numEq);

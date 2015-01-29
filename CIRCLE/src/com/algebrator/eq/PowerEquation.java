@@ -48,9 +48,9 @@ public class PowerEquation extends Operation implements BinaryEquation {
 
     @Override
     public float measureWidth() {
-        if (isSqrt()){
+        if (isSqrt()) {
             return sqrtMeasureWidth();
-        }else {
+        } else {
             // TODO
             float totalWidth = 0;
 
@@ -65,7 +65,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     private float sqrtMeasureWidth() {
-        return get(0).measureWidth()+ width_addition;
+        return get(0).measureWidth() + width_addition;
     }
 
     @Override
@@ -85,6 +85,12 @@ public class PowerEquation extends Operation implements BinaryEquation {
         Log.i("try op power", (eqs.size() == 0 ? "no eqs passed in" : db));
 
         Equation result = null;
+
+        if (isSqrt()) {
+            this.get(1).replace(new NumConstEquation(.5, owner));
+        }
+
+        boolean wasEven = isEven();
 
         // if it is a power equation
         if (get(0) instanceof PowerEquation) {
@@ -109,9 +115,15 @@ public class PowerEquation extends Operation implements BinaryEquation {
 
             this.get(0).get(1).replace(result);
 
-            this.replace(get(0));
+            if (wasEven){
+                result = new PlusMinusEquation(owner);
+                result.add(get(0));
+                replace(result);
+            }else {
+                replace(get(0));
+            }
         } else {
-            // if it's and add split it up
+            // if it's an add split it up
             // if it's numb and number you can just do it
             // if it's numb on top
             boolean neg = false;
@@ -122,94 +134,109 @@ public class PowerEquation extends Operation implements BinaryEquation {
                 neg = !neg;
             }
 
-            // if the right is a number
-            if (temp instanceof NumConstEquation) {
+            if (neg) {
+                Equation oldEq = this;
+                Equation newEq = new NumConstEquation(1, owner);
+                result = new DivEquation(owner);
+                result.add(newEq);
+                result.add(oldEq);
+            } else {
 
-                // if you have something like ((2^2)^0.5)
-                double value = ((NumConstEquation) temp).getValue();
+                // if the right is a number
+                if (temp instanceof NumConstEquation) {
 
-                // if it is an int
-                if ((value == Math.floor(value)) && !Double.isInfinite(value)) {
-                    int val = (int) Math.floor(value);
+                    // if you have something like ((2^2)^0.5)
+                    double value = ((NumConstEquation) temp).getValue();
 
-                    // if left is a var write x^3 -> x*x*x
-                    if (val > 1 && get(0).reallyInstanceOf(VarEquation.class)) {
-                        result = new MultiEquation(owner);
-                        for (int i = 0; i < val; i++) {
-                            result.add(get(0).copy());
-                        }
-                    } else {
-                        HashSet<MultiCountData> left = new HashSet<MultiCountData>();
-                        left.add(new MultiCountData(new NumConstEquation(1, owner)));
-                        for (int i = 0; i < val; i++) {
-                            HashSet<MultiCountData> right = new HashSet<MultiCountData>();
-                            Operations.findEquation(get(0).copy(), right);
-                            left = Operations.Multiply(left, right);
-                        }
-                        if (left.size() == 1) {
-                            MultiCountData mine = ((MultiCountData) left.toArray()[0]);
-                            result = mine.getEquation(owner);
-                        } else if (left.size() > 1) {
-                            result = new AddEquation(owner);
-                            for (MultiCountData e : left) {
-                                result.add(e.getEquation(owner));
+                    // if it is an int
+                    if ((value == Math.floor(value)) && !Double.isInfinite(value)) {
+                        int val = (int) Math.floor(value);
+
+                        // if left is a var write x^3 -> x*x*x
+                        if (val > 1 && get(0).reallyInstanceOf(VarEquation.class)) {
+                            result = new MultiEquation(owner);
+                            for (int i = 0; i < val; i++) {
+                                result.add(get(0).copy());
+                            }
+                        } else {
+                            HashSet<MultiCountData> left = new HashSet<MultiCountData>();
+                            left.add(new MultiCountData(new NumConstEquation(1, owner)));
+                            for (int i = 0; i < val; i++) {
+                                HashSet<MultiCountData> right = new HashSet<MultiCountData>();
+                                Operations.findEquation(get(0).copy(), right);
+                                left = Operations.Multiply(left, right);
+                            }
+                            if (left.size() == 1) {
+                                MultiCountData mine = ((MultiCountData) left.toArray()[0]);
+                                result = mine.getEquation(owner);
+                            } else if (left.size() > 1) {
+                                result = new AddEquation(owner);
+                                for (MultiCountData e : left) {
+                                    result.add(e.getEquation(owner));
+                                }
                             }
                         }
+                    } else {
+                        boolean innerNeg = false;
+
+                        Equation leftTemp = get(0);
+                        while (leftTemp instanceof MinusEquation) {
+                            leftTemp = leftTemp.get(0);
+                            innerNeg = !innerNeg;
+                        }
+
+                        if (leftTemp instanceof NumConstEquation) {
+
+                            double leftValue = ((NumConstEquation) leftTemp).getValue() * (innerNeg ? -1 : 1);
+
+                            double resultValue = Math.pow(leftValue, value);
+
+                            result = new NumConstEquation(resultValue, owner);
+                        }
                     }
-                } else {
-                    boolean innerNeg = false;
-
-                    Equation leftTemp = get(0);
-                    while (leftTemp instanceof MinusEquation) {
-                        leftTemp = leftTemp.get(0);
-                        innerNeg = !innerNeg;
-                    }
-
-                    if (leftTemp instanceof NumConstEquation) {
-
-                        double leftValue = ((NumConstEquation) leftTemp).getValue() * (innerNeg ? -1 : 1);
-
-                        double resultValue = Math.pow(leftValue, value);
-
-                        result = new NumConstEquation(resultValue, owner);
-                    }
-
-
                 }
-                if (neg) {
+            }
+            if (result != null) {
+                if (wasEven){
                     Equation oldEq = result;
-                    Equation newEq = new NumConstEquation(1, owner);
-                    result = new DivEquation(owner);
-                    result.add(newEq);
+                    result = new PlusMinusEquation(owner);
                     result.add(oldEq);
                 }
-                if (result != null) {
-                    this.replace(result);
-                }
+                replace(result);
             }
         }
     }
 
-
-    private boolean isSqrt(){
-        if (get(1) instanceof NumConstEquation && ((NumConstEquation) get(1)).getValue()==.5){
+    // is used to tell if we need to +/- cases A^(1/(O*2))
+    private boolean isEven() {
+        if (get(1) instanceof NumConstEquation && 1/((NumConstEquation) get(1)).getValue() %2 ==0) {
             return true;
         }
-        if (get(1) instanceof DivEquation && get(1).get(0) instanceof NumConstEquation && ((NumConstEquation) get(1).get(0)).getValue()==1 && get(1).get(1) instanceof NumConstEquation && ((NumConstEquation) get(1).get(1)).getValue()==2){
+        // there are other cases but we do not worry about them
+        return false;
+
+    }
+
+    private boolean isSqrt() {
+        if (get(1) instanceof NumConstEquation && ((NumConstEquation) get(1)).getValue() == .5) {
+            return true;
+        }
+        if (get(1) instanceof DivEquation && get(1).get(0) instanceof NumConstEquation && ((NumConstEquation) get(1).get(0)).getValue() == 1 && get(1).get(1) instanceof NumConstEquation && ((NumConstEquation) get(1).get(1)).getValue() == 2) {
             return true;
         }
         // there are other cases but we do not worry about them
         return false;
     }
+
     // y is not centered is that a problem - this at a problem
     // yes i think it is
     @Override
     public void privateDraw(Canvas canvas, float x, float y) {
         Paint temp = getPaint();
         lastPoint = new ArrayList<Point>();
-        if (isSqrt()){
-            sqrtDraw( canvas, x, y,temp);
-        }else {
+        if (isSqrt()) {
+            sqrtDraw(canvas, x, y, temp);
+        } else {
             float totalWidth = measureWidth();
             float atX = x - (totalWidth / 2);
             float atY = y;
@@ -255,37 +282,41 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
 
-    private float height_addition =20;
-    private float width_addition = 60;
+    public static float height_addition = 20;
+    public static float width_addition = 60;
+
+    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,Equation e){
+        canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y, atX + width_addition / 3f, y + e.measureHeightLower(), p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y + e.measureHeightLower(), atX + width_addition / 3f, y - e.measureHeightUpper(), p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y - e.measureHeightUpper(), e.x + e.measureWidth() / 2, y - e.measureHeightUpper(), p);
+    }
 
     //TODO need some width
-    private void sqrtDraw(Canvas canvas, float x, float y,Paint p) {
+    private void sqrtDraw(Canvas canvas, float x, float y, Paint p) {
         // let's start by drawing the sqrt sign
-        float atX = x-measureWidth()/2;
-        canvas.drawLine(atX,y,atX + width_addition/3f,y,p);
-        atX+= width_addition/3f;
-        canvas.drawLine(atX,y,atX + width_addition/3f,y+measureHeightLower(),p);
-        atX+= width_addition/3f;
-        canvas.drawLine(atX,y+measureHeightLower(),atX + width_addition/3f,y-measureHeightUpper(),p);
-        atX+= width_addition/3f;
-        canvas.drawLine(atX,y-measureHeightUpper(),x+measureWidth()/2,y-measureHeightUpper(),p);
+        float atX = x - measureWidth() / 2;
+
 
         // now let's draw the content
-        get(0).draw(canvas, x+width_addition/2, y);
+        get(0).draw(canvas, x + width_addition / 2, y);
 
         // now we need to put the last point
         Point point = new Point();
-        point.x = (int)( x-measureWidth()/2 + width_addition/6);
-        point.y = (int) (y-(measureHeightUpper()/2));
-        canvas.drawLine(point.x+3,point.y,point.x-3,point.y,p);
+        point.x = (int) (x - measureWidth() / 2 + width_addition / 6);
+        point.y = (int) (y - (measureHeightUpper() / 2));
+        //canvas.drawLine(point.x + 3, point.y, point.x - 3, point.y, p);
         lastPoint.add(point);
 
     }
 
     public float measureHeightLower() {
-        if (isSqrt()){
+        if (isSqrt()) {
             return sqrtMeasureHeightLower();
-        }else {
+        } else {
             float result = get(0).measureHeightLower();
             if (parenthesis()) {
                 result += PARN_HEIGHT_ADDITION / 2f;
@@ -317,7 +348,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     private float sqrtMeasureHeightUpper() {
-        return get(0).measureHeightUpper()+height_addition;
+        return get(0).measureHeightUpper() + height_addition;
     }
 
     @Override

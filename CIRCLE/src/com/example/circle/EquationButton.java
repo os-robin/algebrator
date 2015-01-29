@@ -83,6 +83,15 @@ public class EquationButton extends Button {
         cv.offsetX +=x;
         cv.offsetY +=y;
 
+        //TODO
+        //TODO
+        //TODO
+        // we are moving from draw to drawCentered
+        // we need to update
+        float myCenter = myEq.x;
+        float stupidCenter = cv.stupid.x;
+        cv.offsetX -=   (-myCenter + stupidCenter);
+
         // and set this back to be the boss
         cv.stupid = myEq.copy();
 

@@ -229,6 +229,39 @@ public abstract class SuperView extends View implements
             }
         }
 
+        if (dragging != null) {
+            //TODO scale by dpi
+            int buffer = 100;
+            if (dragging.eq.x + buffer > width) {
+                if (vx > -targetV) {
+                    vx = -targetV;
+                    slidding = true;
+                }
+            }
+
+
+            if (dragging.eq.y + buffer > buttonLine()) {
+                if (vy > -targetV) {
+                    vy = -targetV;
+                    slidding = true;
+                }
+            }
+
+            if (dragging.eq.x - buffer < 0) {
+                if (vx < targetV) {
+                    vx = targetV;
+                    slidding = true;
+                }
+            }
+
+            if (dragging.eq.y - buffer < 0) {
+                if (vy < targetV) {
+                    vy = targetV;
+                    slidding = true;
+                }
+            }
+        }
+
         if (slidding) {
             //Log.i("",vx +","+ vy);
             vx *= friction;
@@ -347,6 +380,8 @@ public abstract class SuperView extends View implements
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
         if (event.getPointerCount() == 1) {
+
+
             // we need to know if they started in the box
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // figure out the mode;
@@ -354,7 +389,10 @@ public abstract class SuperView extends View implements
                     myMode = TouchMode.BUTTON;
                 } else if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
-                    removeSelected();
+                    HashSet<Equation> ons = stupid.onAny(event.getX(),
+                            event.getY());
+                    addToSelectingSet(ons);
+                    updateLastTouch(event);
                 } else {
                     myMode = TouchMode.MOVE;
                     if (selected != null) {
@@ -376,6 +414,7 @@ public abstract class SuperView extends View implements
                             event.getY());
 
                     addToSelectingSet(ons);
+                    updateLastTouch(event);
 
                     String toLog = "";
                     for (Equation e : selectingSet) {
@@ -384,11 +423,6 @@ public abstract class SuperView extends View implements
 
                     Log.i("selectingSet", toLog);
 
-                    if (lastLongTouch == null) {
-                        lastLongTouch = new LongTouch(event);
-                    } else if (lastLongTouch.outside(event)) {
-                        lastLongTouch = new LongTouch(event);
-                    }
 
                     // see if they left the box
                     // TODO both version might be good
@@ -513,6 +547,14 @@ public abstract class SuperView extends View implements
         return true;
     }
 
+    private void updateLastTouch(MotionEvent event) {
+        if (lastLongTouch == null) {
+            lastLongTouch = new LongTouch(event);
+        } else if (lastLongTouch.outside(event)) {
+            lastLongTouch = new LongTouch(event);
+        }
+    }
+
     private void startDragging() {
         if (canDrag) {
             selectSet();
@@ -525,6 +567,8 @@ public abstract class SuperView extends View implements
                 }
                 //if (selected.canPop()) {
                 dragging = new DragEquation(selected);
+                dragging.eq.x =lastX;
+                dragging.eq.y =lastY;
                 selected.isDemo(true);
                 //}
             } else {

@@ -47,23 +47,34 @@ public class WritingPraEquation extends WritingLeafEquation {
     protected void drawParentheses(Canvas canvas, float x, float y, Paint temp, boolean left) {
         Paint ptemp = new Paint(temp);
         ptemp.setStrokeWidth(3);
-        float h = measureHeight();
+        float uh = measureHeightUpper();
+        float lh = measureHeightLower();
+        //TODO sace 9 by dpi
         if (left) {
             //left side
-            canvas.drawLine(x + 3, y - (h / 2) + 3, x + 9, y - (h / 2) + 3, ptemp);
-            canvas.drawLine(x + 3, y - (h / 2) + 3, x + 3, y + (h / 2) - 3, ptemp);
-            canvas.drawLine(x + 3, y + (h / 2) - 3, x + 9, y + (h / 2) - 3, ptemp);
+            canvas.drawLine(x + 3, y - uh  + 3, x + 9, y - uh + 3, ptemp);
+            canvas.drawLine(x + 3, y - uh  + 3, x + 3, y + lh - 3, ptemp);
+            canvas.drawLine(x + 3, y + lh - 3, x + 9, y + lh - 3, ptemp);
         } else {
-
             //right side
-            canvas.drawLine(x - 3, y - (h / 2) + 3, x - 9, y - (h / 2) + 3, ptemp);
-            canvas.drawLine(x - 3, y - (h / 2) + 3, x - 3, y + (h / 2) - 3, ptemp);
-            canvas.drawLine(x - 3, y + (h / 2) - 3, x - 9, y + (h / 2) - 3, ptemp);
+            canvas.drawLine(x - 3, y - uh  + 3, x - 9, y - uh  + 3, ptemp);
+            canvas.drawLine(x - 3, y - uh  + 3, x - 3, y + lh  - 3, ptemp);
+            canvas.drawLine(x - 3, y + lh  - 3, x - 9, y + lh  - 3, ptemp);
         }
     }
 
-    public float measureHeight() {
-        float totalHeight = myHeight;
+    @Override
+    public float measureHeightUpper(){
+        return measureHeightHelper(true);
+    }
+
+    @Override
+    public float measureHeightLower(){
+        return measureHeightHelper(false);
+    }
+
+    public float measureHeightHelper(boolean upper) {
+        float totalHeight = myHeight/2;
 
         // if left
         // move left through parent
@@ -79,7 +90,7 @@ public class WritingPraEquation extends WritingLeafEquation {
                     if (current instanceof WritingPraEquation) {
                         if (((WritingPraEquation) current).left) {
                             if (depth == 1) {
-                                totalHeight = Math.max(totalHeight, current.measureHeight() + PARN_HEIGHT_ADDITION);
+                                totalHeight = Math.max(totalHeight,(upper?current.measureHeightUpper():current.measureHeightLower()) + PARN_HEIGHT_ADDITION/2);
                             }
                             depth++;
                         } else {
@@ -90,7 +101,7 @@ public class WritingPraEquation extends WritingLeafEquation {
                         }
                     } else {
                         if (depth == 1) {
-                            totalHeight = Math.max(totalHeight, current.measureHeight() + PARN_HEIGHT_ADDITION);
+                            totalHeight = Math.max(totalHeight, (upper?current.measureHeightUpper():current.measureHeightLower()) + PARN_HEIGHT_ADDITION/2);
                         }
                     }
                     current = current.right();
@@ -108,7 +119,7 @@ public class WritingPraEquation extends WritingLeafEquation {
                         } else {
                             depth--;
                             if (depth == 0) {
-                                totalHeight = current.measureHeight();
+                                totalHeight = (upper?current.measureHeightUpper():current.measureHeightLower());
                                 go = false;
                             }
                         }
@@ -120,7 +131,6 @@ public class WritingPraEquation extends WritingLeafEquation {
                 }
             }
         }
-
         return totalHeight;
     }
 

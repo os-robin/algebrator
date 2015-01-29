@@ -1,5 +1,6 @@
 package com.example.circle.Actions;
 
+import com.algebrator.eq.BinaryEquation;
 import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
@@ -20,7 +21,7 @@ public class DeleteAction extends Action {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
             if (l != null) {
-                if (l.parent instanceof DivEquation) {
+                if (l.parent instanceof BinaryEquation) {
                     l.parent.replace(l);
                     int pos = l.parent.indexOf(l);
                     l.parent.add(pos + 1, emilyView.selected);

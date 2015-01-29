@@ -265,6 +265,8 @@ public class EmilyView extends SuperView {
                         boolean left = event.getX() < lcp.x;
                         // insert a Placeholder to the left of everything
                         Equation toSelect = new PlaceholderEquation(this);
+                        toSelect.x = event.getX();
+                        toSelect.y = event.getY();
                         // add toSelect left of lcp
                         if (lcp.parent instanceof WritingEquation) {
                             int at = lcp.parent.indexOf(lcp);

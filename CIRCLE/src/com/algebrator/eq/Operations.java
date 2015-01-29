@@ -87,7 +87,9 @@ public class Operations {
         } else if (left.under != null && right.under != null) {
             MultiCountData common = findCommon(left.under, right.under);
             MultiCountData leftRem = remainder(left.under, common);
+            leftRem.value /= common.value;
             MultiCountData rightRem = remainder(right.under, common);
+            rightRem.value /= common.value;
 
 
             right = Multiply(right, leftRem);
@@ -130,11 +132,18 @@ public class Operations {
         //otherwise we are done
         else {
             //return (left + right ) /under
-
-
+            Equation lEq = left.getEquation(owner);
+            Equation rEq = right.getEquation(owner);
             Equation top = new AddEquation(owner);
-            top.add(left.getEquation(owner));
-            top.add(right.getEquation(owner));
+            for (Equation eq: new Equation[]{rEq,lEq}) {
+                if (eq instanceof AddEquation) {
+                    for (Equation e : eq) {
+                        top.add(e);
+                    }
+                } else {
+                    top.add(eq);
+                }
+            }
             Equation bot = under.getEquation(owner);
             Equation result = new DivEquation(owner);
             result.add(top);
