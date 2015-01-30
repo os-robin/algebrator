@@ -391,6 +391,7 @@ public abstract class SuperView extends View implements
                     myMode = TouchMode.SELECT;
                     HashSet<Equation> ons = stupid.onAny(event.getX(),
                             event.getY());
+                    removeSelected();
                     addToSelectingSet(ons);
                     updateLastTouch(event);
                 } else {

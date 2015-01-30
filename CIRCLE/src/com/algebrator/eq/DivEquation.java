@@ -107,6 +107,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 				Point point = new Point();
 				point.x = (int) x;
 				point.y = (int) (currentY + (myHeight) / 2);
+                // TODO scale by dpi
 				temp.setStrokeWidth(3);
 				int halfwidth = (int) ((measureWidth() - (2 * BUFFER)) / 2);
 				canvas.drawLine(point.x - halfwidth, point.y, point.x

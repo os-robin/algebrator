@@ -121,6 +121,7 @@ class MultiCountData {
     public HashSet<Equation> key = new HashSet<Equation>();
     public Double value = 1.0;
     public MultiCountData under;
+    public boolean plusMinus= false;
 
     public MultiCountData() {
     }
@@ -150,6 +151,10 @@ class MultiCountData {
             value *= -1;
             e = e.get(0);
         }
+        if (e instanceof PlusMinusEquation) {
+            plusMinus = true;
+            e = e.get(0);
+        }
         if (e instanceof NumConstEquation) {
             value *= ((NumConstEquation) e).getValue();
         } else if (e instanceof MultiEquation) {
@@ -172,6 +177,10 @@ class MultiCountData {
         if (mcd ==null){
             return false;
         }
+        if (mcd.plusMinus != plusMinus){
+            return false;
+        }
+
         // if everything in this is the same as something in the other
         if (key.size() != mcd.key.size()) {
             return false;
@@ -273,6 +282,12 @@ class MultiCountData {
         }else{
             result =top;
         }
+        if (plusMinus){
+            Equation oldEq = result;
+            result = new PlusMinusEquation(owner);
+            result.add(oldEq);
+        }
+
         return result;
     }
 }

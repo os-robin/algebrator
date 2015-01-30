@@ -129,11 +129,19 @@ public class WritingEquation extends Equation {
                     minus++;
                 } else {
                     if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
+                        boolean wasSqrt =at instanceof WritingSqrtEquation;
+
                         Equation temp = ((WritingPraEquation) at).popBlock();
                         temp.remove(0);
                         temp.remove(temp.size() - 1);
                         // we need to remove the first and last
                         left = convert(temp);
+                        if (wasSqrt){
+                            Equation oldEq = left;
+                            left = new PowerEquation(owner);
+                            left.add(oldEq);
+                            left.add(new NumConstEquation(.5,owner));
+                        }
                         wasParen = true;
 
                     } else {
@@ -258,11 +266,18 @@ public class WritingEquation extends Equation {
                         }
                     } else {
                         if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
+                            boolean wasSqrt = at instanceof WritingSqrtEquation;
                             Equation temp = ((WritingPraEquation) at).popBlock();
                             temp.remove(0);
                             temp.remove(temp.size() - 1);
                             // we need to remove the first and last
                             at = convert(temp);
+                            if (wasSqrt){
+                                Equation oldEq = at;
+                                at = new PowerEquation(owner);
+                                at.add(oldEq);
+                                at.add(new NumConstEquation(.5,owner));
+                            }
                             wasParen = true;
 
                             while (minus > 0) {

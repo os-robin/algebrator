@@ -34,6 +34,7 @@ import com.example.circle.Actions.ParenthesesAction;
 import com.example.circle.Actions.PlusAction;
 import com.example.circle.Actions.PowerAction;
 import com.example.circle.Actions.Solve;
+import com.example.circle.Actions.SqrtAction;
 import com.example.circle.Actions.TimesAction;
 import com.example.circle.Actions.VarAction;
 
@@ -79,11 +80,14 @@ public class EmilyView extends SuperView {
             buttons.add(new Button(i / 11f, (i + 1) / 11f,
                     4 / 6f, 5 / 6f, i + 1 + "", text, bkg,
                     highlight));
-            if (i!=1) {
+            if (i!=1 &&  i!=2) {
                 buttons.get(i).myAction = new NumberAction(this, i + 1 + "");
-            }else{
+            }else if (i==1){
                 buttons.get(i).text = "^";
                 buttons.get(i).myAction = new PowerAction(this);
+            }else if (i==2){
+                buttons.get(i).text = "sqrt";
+                buttons.get(i).myAction = new SqrtAction(this);
             }
         }
 

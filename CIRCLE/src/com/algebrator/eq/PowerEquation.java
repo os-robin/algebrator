@@ -90,7 +90,8 @@ public class PowerEquation extends Operation implements BinaryEquation {
             this.get(1).replace(new NumConstEquation(.5, owner));
         }
 
-        boolean wasEven = isEven();
+        boolean wasEvenRoot = isEven();
+        boolean wasEven = get(1) instanceof NumConstEquation && ((NumConstEquation) get(1)).getValue() %2 ==0;
 
         // if it is a power equation
         if (get(0) instanceof PowerEquation) {
@@ -113,9 +114,13 @@ public class PowerEquation extends Operation implements BinaryEquation {
                 }
             }
 
-            this.get(0).get(1).replace(result);
+            if (result instanceof  NumConstEquation && ((NumConstEquation) result).getValue()==1){
+                get(0).replace(get(0).get(0));
+            }else {
+                get(0).get(1).replace(result);
+            }
 
-            if (wasEven){
+            if (wasEvenRoot){
                 result = new PlusMinusEquation(owner);
                 result.add(get(0));
                 replace(result);
@@ -175,19 +180,28 @@ public class PowerEquation extends Operation implements BinaryEquation {
                                     result.add(e.getEquation(owner));
                                 }
                             }
+
+                            if (wasEven && result instanceof PlusMinusEquation){
+                                result = result.get(0);
+                            }
                         }
                     } else {
                         boolean innerNeg = false;
+                        boolean plusMinus = false;
 
                         Equation leftTemp = get(0);
-                        while (leftTemp instanceof MinusEquation) {
+                        while (leftTemp instanceof MinusEquation || leftTemp instanceof PlusMinusEquation) {
                             leftTemp = leftTemp.get(0);
-                            innerNeg = !innerNeg;
+                            if (leftTemp instanceof  MinusEquation) {
+                                innerNeg = !innerNeg;
+                            }else if (leftTemp instanceof  PlusMinusEquation){
+                                plusMinus = true;
+                            }
                         }
 
-                        if (leftTemp instanceof NumConstEquation) {
+                        if (leftTemp instanceof NumConstEquation && (!innerNeg || plusMinus)) {
 
-                            double leftValue = ((NumConstEquation) leftTemp).getValue() * (innerNeg ? -1 : 1);
+                            double leftValue = ((NumConstEquation) leftTemp).getValue();
 
                             double resultValue = Math.pow(leftValue, value);
 
@@ -197,7 +211,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
                 }
             }
             if (result != null) {
-                if (wasEven){
+                if (wasEvenRoot){
                     Equation oldEq = result;
                     result = new PlusMinusEquation(owner);
                     result.add(oldEq);
@@ -286,20 +300,26 @@ public class PowerEquation extends Operation implements BinaryEquation {
     public static float width_addition = 60;
 
     public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,Equation e){
-        canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y, atX + width_addition / 3f, y + e.measureHeightLower(), p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y + e.measureHeightLower(), atX + width_addition / 3f, y - e.measureHeightUpper(), p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y - e.measureHeightUpper(), e.x + e.measureWidth() / 2, y - e.measureHeightUpper(), p);
+        sqrtSignDraw(canvas, atX, y, p, e.measureHeightLower(), e.measureHeightUpper(), e.x + e.measureWidth() / 2);
     }
 
-    //TODO need some width
+    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,float lower, float upper,float end){
+        // TODO scale by dpi
+        p.setStrokeWidth(3);
+        canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y, atX + width_addition / 3f, y + lower, p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y + lower, atX + width_addition / 3f, y - upper, p);
+        atX += width_addition / 3f;
+        canvas.drawLine(atX, y - upper, end , y - upper, p);
+    }
+
+
     private void sqrtDraw(Canvas canvas, float x, float y, Paint p) {
         // let's start by drawing the sqrt sign
         float atX = x - measureWidth() / 2;
-
+        sqrtSignDraw(canvas, atX, y, p ,this);
 
         // now let's draw the content
         get(0).draw(canvas, x + width_addition / 2, y);

@@ -24,16 +24,38 @@ public class WritingSqrtEquation extends WritingPraEquation {
     }
 
 
+    //TODO scale by dpi
+    private float buffer = 10;
     @Override
     public void privateDraw(Canvas canvas, float x, float y) {
         Paint temp = getPaint();
-        PowerEquation.sqrtSignDraw(canvas, x - measureWidth()/2, y, temp ,this);
 
-        super.privateDraw(canvas,x,y);
+        Equation match = getMatch();
+        float end;
+        if (match != null){
+            end =match.x+(match.measureWidth()/2);
+        }else{
+            Equation current = this;
+            while (current.right() != null){
+                current =  current.right();
+            }
+            end = current.x + (current.measureWidth()/2);
+        }
+
+
+        PowerEquation.sqrtSignDraw(canvas, x - measureWidth()/2,  y, temp ,measureHeightLower(), measureHeightUpper(),end);
+
+        super.privateDraw(canvas,x+ (PowerEquation.width_addition + buffer)/2,y);
     }
 
     @Override
     public float measureHeightUpper() {
-        return super.measureHeightUpper() + PowerEquation.height_addition;
+        return super.measureHeightUpper() + PowerEquation.height_addition ;
     }
+
+    @Override
+    public float measureWidth(){
+        return super.measureWidth() + buffer + PowerEquation.width_addition;
+    }
+
 }

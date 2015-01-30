@@ -50,7 +50,7 @@ public class EquationButton extends Button {
     LongTouch lastLongTouch=null;
     //long lastTap = 0;
     public void click(MotionEvent event) {
-        if (myEq.OnAnyEqualsIncluded(event.getX(), event.getY()).size() !=0){
+        if (inBox(event)){
             currentAlpha = 0xff;
             //TODO act
 
@@ -61,15 +61,6 @@ public class EquationButton extends Button {
                     lastLongTouch = new LongTouch(event);
                 }
             }
-
-//            if (cv.history.indexOf(this) != 0) {
-//                long now = System.currentTimeMillis();
-//                if (now - lastTap < Algebrator.getAlgebrator().doubleTapSpacing) {
-//                    Log.i("", "I was double tapped");
-//                    revert();
-//                }
-//                lastTap = now;
-//            }
         }
 
         if (event.getAction() ==MotionEvent.ACTION_UP){
@@ -78,14 +69,26 @@ public class EquationButton extends Button {
 
     }
 
+    private boolean inBox(MotionEvent event) {
+        float stupidX = cv.stupid.x;
+        float stupidY = cv.stupid.y;
+
+        float middle = myEq.measureWidth() - ( myEq.get(0).measureWidth() + myEq.get(1).measureWidth());
+        float leftEnd = x+stupidX - (middle/2) - myEq.get(0).measureWidth();
+        float rightEnd = x+stupidX + (middle/2) + myEq.get(1).measureWidth();
+        float topEnd = y+stupidY  - myEq.measureHeightUpper();
+        float bottomEnd = y+stupidY + myEq.measureHeightLower();
+        if (event.getX() < rightEnd && event.getX() > leftEnd && event.getY() > topEnd && event.getY() < bottomEnd){
+            return true;
+        }
+        return false;
+    }
+
     private void revert() {
         // update the offset
         cv.offsetX +=x;
         cv.offsetY +=y;
 
-        //TODO
-        //TODO
-        //TODO
         // we are moving from draw to drawCentered
         // we need to update
         float myCenter = myEq.x;

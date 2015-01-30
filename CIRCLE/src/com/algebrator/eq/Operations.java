@@ -48,6 +48,7 @@ public class Operations {
         MultiCountData target = result;
         while (at != null) {
             target.value *= at.value;
+            target.plusMinus |= at.plusMinus;
             for (Equation e : at.key) {
                 target.key.add(e.copy());
             }
