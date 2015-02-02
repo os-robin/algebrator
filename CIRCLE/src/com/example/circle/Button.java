@@ -31,18 +31,26 @@ public class Button {
 
     }
 
-	public Button(float left, float right, float top, float bottom, String text, Paint textPaint,Paint bkgPaint, int highlightColor) {
-		super();
+    public Button(String text,Action myAction) {
+        super();
 
+        this.myAction= myAction;
+        this.text = text;
+        this.bkgPaint = new TextPaint(Algebrator.getAlgebrator().bkgPaint);
+        targetBkgColor = Algebrator.getAlgebrator().mainColor;
+        this.textPaint = new TextPaint(Algebrator.getAlgebrator().textPaint);
+    }
+
+    public void setLocation(float left, float right, float top, float bottom){
         this.left = left;
-		this.right = right;
-		this.top = top;
-		this.bottom = bottom;
-		this.text = text;
-		this.bkgPaint=new Paint(bkgPaint);
-		targetBkgColor = bkgPaint.getColor();
-		this.textPaint = new TextPaint(textPaint);
-		this.highlightColor = highlightColor;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+    }
+
+	public Button(String text,Action myAction,float left, float right, float top, float bottom) {
+		this(text, myAction);
+        setLocation(left, right,  top, bottom);
 	}
 
 	final float SCALE = 10;

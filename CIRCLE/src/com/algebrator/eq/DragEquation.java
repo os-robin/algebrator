@@ -13,15 +13,22 @@ public class DragEquation {
     // this is the one in the equation
     public Equation demo;
     public ArrayList<Op> ops = new ArrayList<Op>();
-    public Equation oldDemo;
+    //public Equation oldDemo;
+
+    // used to tell if the equation has moved
+    Equation startParent = null;
+    int startIndex = -1;
 
     public DragEquation(Equation eq) {
         super();
         this.eq = eq.copy();
         // is this a good idea?
         this.eq.parent = null;
-        this.oldDemo = eq;
+        //this.oldDemo = eq;
         this.demo = eq;
+
+        this.startParent = this.demo.parent.copy();
+        this.startIndex = startParent.indexOf(this.demo.parent);
         // figure out if it is add
         //TODO what happens if it is a Equals equation?
         updateOps(eq);
@@ -60,6 +67,13 @@ public class DragEquation {
             toInsert = demo;
         }
         return getAndUpdateDemo(toInsert);
+    }
+
+    public boolean moved(){
+        if (demo.parent.same(startParent) && startIndex ==demo.parent.indexOf(demo)){
+            return false;
+        }
+        return true;
     }
 
     public Equation getAndUpdateDemo(Equation toInsert) {

@@ -52,10 +52,7 @@ public abstract class SuperView extends View implements
         return height * buttonsPercent;
     }
 
-    public TextPaint text = new TextPaint();
-
     int highlight;
-    Paint bkg;
 
     ArrayList<Button> buttons = new ArrayList<Button>();
 
@@ -80,19 +77,7 @@ public abstract class SuperView extends View implements
 
         measureScreen(context);
 
-        text.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
-        //text.setAntiAlias(true);
-        //text.setDither(true);
-        //text.setSubpixelText(true);
-        text.setTextAlign(Align.CENTER);
-        text.setColor(0xff000000);
-
         highlight = Algebrator.getAlgebrator().highLight;
-
-        bkg = new Paint();
-        bkg.setTextSize(Algebrator.getAlgebrator().TEXT_SIZE);
-        bkg.setTextAlign(Align.CENTER);
-        bkg.setColor(Algebrator.getAlgebrator().mainColor);
 
         Log.i("lifeCycle", "SuperView-init");
     }
@@ -636,6 +621,12 @@ public abstract class SuperView extends View implements
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
             stupid.fixIntegrety();
+
+
+
+            if (this instanceof ColinView && dragging.moved()){
+                ((ColinView)this).changed = true;
+            }
 
             dragging.demo.isDemo(false);
             dragging = null;

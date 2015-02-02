@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.circle.Algebrator;
 import com.example.circle.ColinView;
 import com.example.circle.SuperView;
 
@@ -48,7 +49,7 @@ abstract public class Equation extends ArrayList<Equation> {
         owner = owner2;
         id = idBacker++;
 
-        textPaint = new Paint(owner.text);
+        textPaint = new Paint(Algebrator.getAlgebrator().textPaint);
         // probably not needed
         textPaint.setAntiAlias(true);
         textPaint.setDither(true);
@@ -339,6 +340,8 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public void tryOperator(float x, float y) {
         Object[] ons = on(x, y).toArray();
+        Equation old = owner.stupid.copy();
+
         if (ons.length != 0) {
             ArrayList<Equation> onsList = new ArrayList<Equation>();
             String debug="";
@@ -362,6 +365,10 @@ abstract public class Equation extends ArrayList<Equation> {
                 e.tryOperator(x,y);
             }
         }
+
+       if (owner instanceof ColinView && !(old.same(owner.stupid))){
+           ((ColinView)owner).changed = true;
+       }
     }
 
     public void tryOperator(ArrayList<Equation> equation) {

@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
 
-        Algebrator.getAlgebrator().TEXT_SIZE = (int) ((metrics.densityDpi  / 160f) * 30);
+        Algebrator.getAlgebrator().setTextSize((int) ((metrics.densityDpi  / 160f) * 30));
         Algebrator.getAlgebrator().DEFAULT_SIZE = (int) ((metrics.densityDpi  / 160f) * 50);
 
         if ( Algebrator.getAlgebrator().superView ==null){

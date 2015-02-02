@@ -1,5 +1,6 @@
 package com.example.circle;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
@@ -21,6 +22,8 @@ public class EquationButton extends Button {
     float targetY;
     int currentAlpha = 0;
     int targetAlpha =0xff;
+    int bkgCurrentAlpha = 0x0;
+    int bkgTargetAlpha = 0x0;
     final int rate = 10;
     ColinView cv;
     public EquationButton(Equation e, ColinView cv) {
@@ -28,7 +31,29 @@ public class EquationButton extends Button {
     }
 
     public void draw(Canvas canvas,int stupidX,int stupidY) {
-            ((EqualsEquation)myEq).drawCentered(canvas,x+stupidX,y+stupidY);
+        drawBkg(canvas, x + stupidX, y + stupidY);
+        ((EqualsEquation)myEq).drawCentered(canvas,x+stupidX,y+stupidY);
+
+    }
+
+    // x and y are the center of the equation
+    public void drawBkg(Canvas canvas,float x,float y){
+
+        float middle = myEq.measureWidth() - ( myEq.get(0).measureWidth() + myEq.get(1).measureWidth());
+        float leftEnd = x - (middle/2) - myEq.get(0).measureWidth();
+        float rightEnd = x + (middle/2) + myEq.get(1).measureWidth();
+        float topEnd = y  - myEq.measureHeightUpper();
+        float bottomEnd = y + myEq.measureHeightLower();
+
+        Paint temp = new Paint();
+        //TODO scale by dpi
+        temp.setMaskFilter(new BlurMaskFilter(32, BlurMaskFilter.Blur.NORMAL));
+
+        temp.setColor(Algebrator.getAlgebrator().highLight);
+        temp.setAlpha(bkgCurrentAlpha);
+
+        canvas.drawRect(leftEnd,topEnd,rightEnd,bottomEnd, temp);
+
     }
 
     public void tryRevert(Canvas canvas){
@@ -51,7 +76,7 @@ public class EquationButton extends Button {
     //long lastTap = 0;
     public void click(MotionEvent event) {
         if (inBox(event)){
-            currentAlpha = 0xff;
+            targetAlpha = 0xff;
             //TODO act
 
             if (lastLongTouch==null){
@@ -110,11 +135,16 @@ public class EquationButton extends Button {
         }
         x=0;
         y=0;
-
     }
 
     public void update(int stupidX,int stupidY) {
         currentAlpha = (currentAlpha*rate + targetAlpha)/(rate+1);
+        bkgCurrentAlpha = (bkgCurrentAlpha*rate + bkgTargetAlpha)/(rate+1);
+        if (lastLongTouch == null){
+            bkgTargetAlpha = 0x00;
+        }else{
+            bkgTargetAlpha = 0xff;
+        }
         x = (x*rate + targetX)/(rate+1);
         y = (y*rate + targetY)/(rate+1);
         myEq.textPaint.setAlpha(currentAlpha);
