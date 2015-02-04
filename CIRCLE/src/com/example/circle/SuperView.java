@@ -366,7 +366,6 @@ public abstract class SuperView extends View implements
     public synchronized boolean onTouch(View view, MotionEvent event) {
         if (event.getPointerCount() == 1) {
 
-
             // we need to know if they started in the box
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // figure out the mode;

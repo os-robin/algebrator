@@ -2,6 +2,7 @@ package com.example.circle;
 
 import android.app.Application;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 
 /**
@@ -37,9 +38,13 @@ public class Algebrator extends Application {
 
 
         bkgPaint.setTextAlign(Paint.Align.CENTER);
+        bkgPaint.setAntiAlias(true);
         bkgPaint.setColor(Algebrator.getAlgebrator().mainColor);
 
         textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setAntiAlias(true);
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
+        textPaint.setTypeface(myTypeface);
         textPaint.setColor(0xff000000);
     }
 

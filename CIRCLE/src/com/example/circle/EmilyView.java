@@ -1,7 +1,6 @@
 package com.example.circle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 import android.content.Context;
@@ -12,27 +11,21 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.algebrator.eq.AddEquation;
-import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
-import com.algebrator.eq.LeafEquation;
-import com.algebrator.eq.MultiEquation;
-import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
-import com.algebrator.eq.PowerEquation;
-import com.algebrator.eq.VarEquation;
 import com.algebrator.eq.WritingEquation;
-import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.Actions.DecimalAction;
 import com.example.circle.Actions.DeleteAction;
 import com.example.circle.Actions.DivAction;
 import com.example.circle.Actions.EqualsAction;
+import com.example.circle.Actions.LeftAction;
 import com.example.circle.Actions.MinusAction;
 import com.example.circle.Actions.NumberAction;
 import com.example.circle.Actions.ParenthesesAction;
 import com.example.circle.Actions.PlusAction;
 import com.example.circle.Actions.PowerAction;
+import com.example.circle.Actions.RightAction;
 import com.example.circle.Actions.Solve;
 import com.example.circle.Actions.SqrtAction;
 import com.example.circle.Actions.TimesAction;
@@ -118,7 +111,7 @@ public class EmilyView extends SuperView {
 //			}
 //
 //		};
-        buttonsPercent=3f/6f;
+        buttonsPercent=4f/6f;
 
     }
 
@@ -128,13 +121,14 @@ public class EmilyView extends SuperView {
         firstRow.add(new Button("7",new NumberAction(this, "7")));
         firstRow.add(new Button("8",new NumberAction(this, "8")));
         firstRow.add(new Button("9",new NumberAction(this, "9")));
+        firstRow.add(new Button("a",new VarAction(this, "a")));
+        firstRow.add(new Button("b",new VarAction(this, "b")));
         firstRow.add(new Button("(",new ParenthesesAction(this,true)));
         firstRow.add(new Button(")",new ParenthesesAction(this,false)));
-        firstRow.add(new Button("x",new VarAction(this, "x")));
-        firstRow.add(new Button("y",new VarAction(this, "y")));
         firstRow.add(new Button("=",new EqualsAction(this)));
+        //TODO this does not work since my font does not support this
         char[] backSpaceUnicode = { '\u232B'};
-        firstRow.add(new Button(new String(backSpaceUnicode),new DeleteAction(this)));
+        firstRow.add(new Button("⌫",new DeleteAction(this)));
 
         ArrayList<Button> secondRow = new ArrayList<Button>();
         secondRow.add(new Button("4",new NumberAction(this, "4")));
@@ -145,7 +139,7 @@ public class EmilyView extends SuperView {
         char[] timesUnicode = { '\u00D7'};
         secondRow.add(new Button(new String(timesUnicode),new TimesAction(this)));
         secondRow.add(new Button("^",new PowerAction(this)));
-        secondRow.add(new Button("Solve",new Solve(this)));
+
 
         ArrayList<Button> thridRow = new ArrayList<Button>();
         thridRow.add(new Button("1",new NumberAction(this, "1")));
@@ -157,24 +151,35 @@ public class EmilyView extends SuperView {
         thridRow.add(new Button(new String(divisionUnicode),new DivAction(this)));
         char[] sqrtUnicode = { '\u221A'};
         thridRow.add(new Button(new String(sqrtUnicode),new SqrtAction(this)));
-        char[] leftUnicode = { '\u25C0'};
-        thridRow.add(new Button(new String(leftUnicode),new NumberAction(this,"1")));
-        char[] rightUnicode = { '\u25B6'};
-        thridRow.add(new Button(new String(rightUnicode),new NumberAction(this,"1")));
+        char[] leftUnicode = { '\u2190'};
+        thridRow.add(new Button(new String(leftUnicode),new LeftAction(this)));
+        char[] rightUnicode = { '\u2192'};
+        thridRow.add(new Button(new String(rightUnicode),new RightAction(this)));
 
-        addButtonsRow(firstRow,3f/6f,4f/6f);
-        addButtonsRow(secondRow,4f/6f,5f/6f);
-        addButtonsRow(thridRow,5f/6f,6f/6f);
+        addButtonsRow(firstRow,6f/9f,7f/9f);
+        addButtonsRow(secondRow,0f,7f/9f,7f/9f,8f/9f);
+        Button solve = new Button("Solve",new Solve(this));
+        solve.setLocation(7f/9f,1f,7f/9f,8f/9f);
+        buttons.add(solve);
+        addButtonsRow(thridRow, 8f / 9f, 9f / 9f);
 
     }
 
     private void addButtonsRow(ArrayList<Button> row, float top , float bottum) {
-        float width = row.size();
+        addButtonsRow(row,0,1, top ,bottum);
 
-        for (float i=0;i<row.size();i++){
+    }
+
+    private void addButtonsRow(ArrayList<Button> row, float left, float right, float top , float bottum) {
+        float count = row.size();
+        float at = left;
+        float step = (right-left)/count;
+
+        for (float i=0;i<count;i++){
             Button b =row.get((int)i);
-            b.setLocation(i/width, (i+1f)/width, top, bottum);
+            b.setLocation(at, at+step, top, bottum);
             buttons.add(b);
+            at +=step;
         }
 
     }

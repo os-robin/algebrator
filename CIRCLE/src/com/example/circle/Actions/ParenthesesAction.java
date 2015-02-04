@@ -44,7 +44,6 @@ public class ParenthesesAction extends Action {
                     can &= !op;
                     if (!hasMatch()) {
                         can = false;
-                        tryMoveRight();
                     }
 
                     if (can) {

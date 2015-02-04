@@ -1,8 +1,8 @@
 package com.example.circle.Actions;
 
 import com.algebrator.eq.BinaryEquation;
-import com.algebrator.eq.DivEquation;
 import com.algebrator.eq.Equation;
+import com.algebrator.eq.MonaryEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
 import com.algebrator.eq.WritingLeafEquation;
@@ -76,31 +76,77 @@ public abstract class Action {
     }
 
     protected void tryMoveRight() {
-        Equation current = getMoveRightCurrent();
-        if (current instanceof BinaryEquation) {
+        tryMove(false);
+    }
+
+    void tryMoveLeft() {
+        tryMove(true);
+    }
+
+    void tryMove(boolean left) {
+        Equation current = getMoveCurrent(left);
+        if (current != null){
             Equation oldEq = emilyView.selected;
             oldEq.remove();
             int at = current.parent.indexOf(current);
-            current.parent.add(at + 1, oldEq);
+            current.parent.add(at +(left?0:1), oldEq);
+        }else {
+            Equation next = (left?emilyView.selected.left():emilyView.selected.right());
+            if (next != null) {
+                Equation oldEq = emilyView.selected;
+
+                while (next.size() != 0) {
+                    next = next.get((left?next.size() - 1:0));
+                }
+                if (next.parent.equals(emilyView.selected.parent)) {
+                    int at = next.parent.indexOf(next);
+                    oldEq.justRemove();
+                    // at does not need to be adjusted since we remove the old equation
+                    next.parent.add(at, oldEq);
+                } else {
+                    if (next.parent instanceof BinaryEquation || next instanceof MonaryEquation) {
+                        Equation oldNext = next;
+                        Equation newEq = new WritingEquation(emilyView);
+                        next.replace(newEq);
+                        if (left){
+                            newEq.add(oldNext);
+                            oldEq.remove();
+                            newEq.add(oldEq);
+                        }else{
+                            oldEq.remove();
+                            newEq.add(oldEq);
+                            newEq.add(oldNext);
+
+                        }
+                    } else {
+                        int at = next.parent.indexOf(next) + (left?1:0);
+                        oldEq.remove();
+                        next.parent.add(at, oldEq);
+                    }
+                }
+            }
         }
     }
 
 
-    private Equation getMoveRightCurrent() {
+    private Equation getMoveCurrent(boolean left) {
         Equation current = emilyView.selected;
-        boolean done = false;
-        while (current.parent != null && !done) {
+        while (current.parent != null && current.parent.indexOf(current) == (left?0:current.parent.size()-1)) {
             if (current instanceof BinaryEquation) {
-                done = true;
+                return current;
             } else {
                 current = current.parent;
             }
         }
-        return current;
+        return null;
     }
 
     protected boolean canMoveRight() {
-        return getMoveRightCurrent() instanceof BinaryEquation;
+        return canMove(false);
+    }
+
+    private boolean canMove(boolean left){
+        return getMoveCurrent(left) instanceof BinaryEquation;
     }
 
     protected int countEquals(Equation stupid) {

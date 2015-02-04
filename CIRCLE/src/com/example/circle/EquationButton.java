@@ -39,11 +39,14 @@ public class EquationButton extends Button {
     // x and y are the center of the equation
     public void drawBkg(Canvas canvas,float x,float y){
 
+        //TODO scale by dpi
+        float buffer = 10;
+
         float middle = myEq.measureWidth() - ( myEq.get(0).measureWidth() + myEq.get(1).measureWidth());
-        float leftEnd = x - (middle/2) - myEq.get(0).measureWidth();
-        float rightEnd = x + (middle/2) + myEq.get(1).measureWidth();
-        float topEnd = y  - myEq.measureHeightUpper();
-        float bottomEnd = y + myEq.measureHeightLower();
+        float leftEnd = x - (middle/2) - myEq.get(0).measureWidth() -buffer;
+        float rightEnd = x + (middle/2) + myEq.get(1).measureWidth() +buffer;
+        float topEnd = y  - myEq.measureHeightUpper() -buffer;
+        float bottomEnd = y + myEq.measureHeightLower()+buffer;
 
         Paint temp = new Paint();
         //TODO scale by dpi
@@ -75,7 +78,7 @@ public class EquationButton extends Button {
     LongTouch lastLongTouch=null;
     //long lastTap = 0;
     public void click(MotionEvent event) {
-        if (inBox(event)){
+        if (inBox(event) && !cv.history.get(0).equals(this)){
             targetAlpha = 0xff;
             //TODO act
 
@@ -95,14 +98,14 @@ public class EquationButton extends Button {
     }
 
     private boolean inBox(MotionEvent event) {
-        float stupidX = cv.stupid.x;
-        float stupidY = cv.stupid.y;
+        float stupidX = cv.stupid.lastPoint.get(0).x;
+        float stupidY = cv.stupid.lastPoint.get(0).y;
 
         float middle = myEq.measureWidth() - ( myEq.get(0).measureWidth() + myEq.get(1).measureWidth());
-        float leftEnd = x+stupidX - (middle/2) - myEq.get(0).measureWidth();
-        float rightEnd = x+stupidX + (middle/2) + myEq.get(1).measureWidth();
-        float topEnd = y+stupidY  - myEq.measureHeightUpper();
-        float bottomEnd = y+stupidY + myEq.measureHeightLower();
+        float leftEnd = (x+stupidX) - (middle/2) - myEq.get(0).measureWidth();
+        float rightEnd = (x+stupidX) + (middle/2) + myEq.get(1).measureWidth();
+        float topEnd = (y+stupidY)  - myEq.measureHeightUpper();
+        float bottomEnd = (y+stupidY) + myEq.measureHeightLower();
         if (event.getX() < rightEnd && event.getX() > leftEnd && event.getY() > topEnd && event.getY() < bottomEnd){
             return true;
         }

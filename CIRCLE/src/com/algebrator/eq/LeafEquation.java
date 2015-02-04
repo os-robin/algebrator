@@ -109,7 +109,7 @@ public abstract class LeafEquation extends Equation {
 			drawParentheses(canvas,x,y,temp);
 		} 
 		Rect out =  new Rect();
-		textPaint.getTextBounds(display, 0, display.length(),out);
+		textPaint.getTextBounds("A", 0, "A".length(),out);
 		float h= out.height();
 		float w= out.width();
 		canvas.drawText(getDisplay(-1), x, y+ (h/2), temp);

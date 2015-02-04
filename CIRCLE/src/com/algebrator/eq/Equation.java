@@ -194,6 +194,7 @@ abstract public class Equation extends ArrayList<Equation> {
             currentX += PARN_WIDTH_ADDITION / 2;
         }
         Rect out = new Rect();
+        //we always want to center operation?
         textPaint.getTextBounds(display, 0, display.length(), out);
         float h = out.height();
         for (int i = 0; i < size(); i++) {
@@ -534,6 +535,9 @@ abstract public class Equation extends ArrayList<Equation> {
         if (!this.getClass().equals(eq.getClass())) {
             return false;
         }
+        if(this.size() != eq.size()){
+            return false;
+        }
         for (Equation e : eq) {
             boolean any = false;
             for (Equation ee : this) {
@@ -699,28 +703,25 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public Equation left() {
-        Equation at = this;
-        while (at.parent != null && at.parent.indexOf(at) == 0) {
-            at = at.parent;
-            if (at.parent == null) {
-                return null;
-            }
-        }
-        return at.parent.get(at.parent.indexOf(at) - 1);
+        return  next(true);
     }
 
     public Equation right() {
+        return  next(false);
+    }
+
+    private Equation next(boolean left){
         Equation at = this;
-        while (at.parent != null && at.parent.indexOf(at) == (at.parent.size() - 1)) {
+        if ( at.parent == null){
+            return null;
+        }
+        while ( at.parent.indexOf(at) == (left?0:(at.parent.size() - 1))) {
             at = at.parent;
             if (at.parent == null) {
                 return null;
             }
-            if (at.parent instanceof DivEquation) {
-                return null;
-            }
         }
-        return at.parent.get(at.parent.indexOf(at) + 1);
+        return at.parent.get(at.parent.indexOf(at) +(left?- 1:1));
     }
 
     public Integer deepIndexOf(Equation eq) {

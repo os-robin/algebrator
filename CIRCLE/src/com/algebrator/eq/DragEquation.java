@@ -28,7 +28,7 @@ public class DragEquation {
         this.demo = eq;
 
         this.startParent = this.demo.parent.copy();
-        this.startIndex = startParent.indexOf(this.demo.parent);
+        this.startIndex = this.demo.parent.indexOf(this.demo);
         // figure out if it is add
         //TODO what happens if it is a Equals equation?
         updateOps(eq);

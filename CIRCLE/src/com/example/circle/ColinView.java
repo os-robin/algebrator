@@ -60,7 +60,8 @@ public class ColinView extends SuperView {
                 eb.x = 0;
                 eb.targetY = atHeight;
                 eb.update(stupid.lastPoint.get(0).x, stupid.lastPoint.get(0).y);
-                if ((stupid.lastPoint.get(0).y + atHeight + eb.myEq.measureHeightLower()) > 0) {
+                if ((stupid.lastPoint.get(0).y + atHeight + eb.myEq.measureHeightLower()) > 0 &&
+                        (stupid.lastPoint.get(0).y + atHeight - eb.myEq.measureHeightUpper()) < height) {
                     eb.draw(canvas, stupid.lastPoint.get(0).x, stupid.lastPoint.get(0).y);
                 }
                 atHeight -= eb.myEq.measureHeightUpper() + buffer;
