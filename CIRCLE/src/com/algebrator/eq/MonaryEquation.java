@@ -26,13 +26,13 @@ public abstract class MonaryEquation extends Equation {
 
     @Override
     public void privateDraw(Canvas canvas, float x, float y) {
-        if (!(parent instanceof AddEquation) || (parent.indexOf(this) == 0)) {
+        if(drawSign()) {
             lastPoint = new ArrayList<Point>();
             float totalWidth = measureWidth();
             float currentX = 0;
             Paint temp = getPaint();
             if (parenthesis()) {
-                drawParentheses(canvas, x, y, temp);
+                    drawParentheses(canvas, x, y, temp);
                 currentX+= PARN_WIDTH_ADDITION/2;
             }
             Rect out = new Rect();
@@ -43,7 +43,9 @@ public abstract class MonaryEquation extends Equation {
             Point point = new Point();
             point.x = (int) (x - (totalWidth / 2) + currentX + (myWidth / 2));
             point.y = (int) (y + (h / 2));
-            canvas.drawText(getDisplay(0), point.x, point.y, temp);
+            if (canvas != null) {
+                canvas.drawText(getDisplay(0), point.x, point.y, temp);
+            }
 
             lastPoint.add(point);
             currentX += myWidth;
@@ -59,10 +61,18 @@ public abstract class MonaryEquation extends Equation {
         }
     }
 
+    public boolean drawSign() {
+        Equation lft = left();
+        if (parenthesis()){
+            return true;
+        }
+        return lft == null || !(lft.parent instanceof AddEquation);
+    }
+
     @Override
     public float measureWidth() {
         // if we are not the first element in an add equation
-        if (!(parent instanceof AddEquation) || (parent.indexOf(this) == 0)) {
+        if (drawSign()) {
             return myWidth + super.measureWidth();
         }else{
             return super.measureWidth();

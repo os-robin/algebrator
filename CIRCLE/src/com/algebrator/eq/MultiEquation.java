@@ -64,7 +64,8 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
 
     public MultiEquation(SuperView owner) {
         super(owner);
-        display = "*";
+        char[] timesUnicode = { '\u00D7'};
+        display = new String(timesUnicode);
 
         myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
         myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
@@ -113,7 +114,20 @@ public class MultiEquation extends FlexOperation implements MultiDivSuperEquatio
     }
 
 
-
+    public boolean hasSign(int i) {
+        Equation left = get(i);
+        while (left instanceof MultiEquation){
+            left = left.get(left.size()-1);
+        }
+        Equation right = left.right();
+        while (right instanceof MultiEquation){
+            right = right.get(0);
+        }
+        if (left instanceof NumConstEquation && right instanceof NumConstEquation){
+            return true;
+        }
+        return false;
+    }
 }
 
 class MultiCountData {

@@ -45,21 +45,23 @@ public class WritingPraEquation extends WritingLeafEquation {
 
 
     protected void drawParentheses(Canvas canvas, float x, float y, Paint temp, boolean left) {
-        Paint ptemp = new Paint(temp);
-        ptemp.setStrokeWidth(3);
-        float uh = measureHeightUpper()+ (this instanceof WritingSqrtEquation?-PowerEquation.height_addition:0) + (getMatch() instanceof WritingSqrtEquation?-PowerEquation.height_addition:0);
-        float lh = measureHeightLower() ;
-        //TODO sace 9 by dpi
-        if (left) {
-            //left side
-            canvas.drawLine(x + 3, y - uh  + 3, x + 9, y - uh + 3, ptemp);
-            canvas.drawLine(x + 3, y - uh  + 3, x + 3, y + lh - 3, ptemp);
-            canvas.drawLine(x + 3, y + lh - 3, x + 9, y + lh - 3, ptemp);
-        } else {
-            //right side
-            canvas.drawLine(x - 3, y - uh  + 3, x - 9, y - uh  + 3, ptemp);
-            canvas.drawLine(x - 3, y - uh  + 3, x - 3, y + lh  - 3, ptemp);
-            canvas.drawLine(x - 3, y + lh  - 3, x - 9, y + lh  - 3, ptemp);
+        if (canvas != null) {
+            Paint ptemp = new Paint(temp);
+            ptemp.setStrokeWidth(3);
+            float uh = measureHeightUpper() + (this instanceof WritingSqrtEquation ? -PowerEquation.height_addition : 0) + (getMatch() instanceof WritingSqrtEquation ? -PowerEquation.height_addition : 0);
+            float lh = measureHeightLower();
+            //TODO sace 9 by dpi
+            if (left) {
+                //left side
+                canvas.drawLine(x + 3, y - uh + 3, x + 9, y - uh + 3, ptemp);
+                canvas.drawLine(x + 3, y - uh + 3, x + 3, y + lh - 3, ptemp);
+                canvas.drawLine(x + 3, y + lh - 3, x + 9, y + lh - 3, ptemp);
+            } else {
+                //right side
+                canvas.drawLine(x - 3, y - uh + 3, x - 9, y - uh + 3, ptemp);
+                canvas.drawLine(x - 3, y - uh + 3, x - 3, y + lh - 3, ptemp);
+                canvas.drawLine(x - 3, y + lh - 3, x - 9, y + lh - 3, ptemp);
+            }
         }
     }
 

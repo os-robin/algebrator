@@ -11,7 +11,6 @@ import com.example.circle.Algebrator;
 import com.example.circle.ColinView;
 import com.example.circle.SuperView;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,14 +34,15 @@ abstract public class Equation extends ArrayList<Equation> {
     private int id;
     private int buffer = 10;
 
-    public boolean parenthesis(){
+    public boolean parenthesis() {
         // are we an add inside a * or a -
-        boolean result =  this instanceof AddEquation && (this .parent instanceof  MultiEquation || this.parent instanceof MinusEquation);
+        boolean result = this instanceof AddEquation && (this.parent instanceof MultiEquation || this.parent instanceof MinusEquation);
         // are we an a the first element of a ^
         if (owner instanceof ColinView) {
             result = result || (this.parent instanceof PowerEquation && this.parent.indexOf(this) == 0 && this.size() != 0);
+            //result = result || (this.parent instanceof MultiEquation && (this instanceof MinusEquation || this instanceof PlusMinusEquation));
         }
-        return  result;
+        return result;
     }
 
     public Equation(SuperView owner2) {
@@ -95,17 +95,17 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public boolean tryFlatten() {
-            if (((this instanceof WritingEquation && this.parent instanceof WritingEquation) ||
-                    (this instanceof AddEquation && this.parent instanceof AddEquation) ||
-                    (this instanceof MultiEquation && this.parent instanceof MultiEquation))) {
-                // add all the bits of this to it's parent
-                int at = this.parent.indexOf(this);
-                justRemove();
-                for (Equation e : this) {
-                    parent.add(at++, e);
-                }
-                return true;
+        if (((this instanceof WritingEquation && this.parent instanceof WritingEquation) ||
+                (this instanceof AddEquation && this.parent instanceof AddEquation) ||
+                (this instanceof MultiEquation && this.parent instanceof MultiEquation))) {
+            // add all the bits of this to it's parent
+            int at = this.parent.indexOf(this);
+            justRemove();
+            for (Equation e : this) {
+                parent.add(at++, e);
             }
+            return true;
+        }
         return false;
     }
 
@@ -131,9 +131,9 @@ abstract public class Equation extends ArrayList<Equation> {
             result.addAll(get(i).closest(dragging));
 
         }
-        if (this instanceof DivEquation){
-            result.add(new EquationDis(this,dragging, EquationDis.Side.left));
-            result.add(new EquationDis(this,dragging,EquationDis.Side.right));
+        if (this instanceof DivEquation) {
+            result.add(new EquationDis(this, dragging, EquationDis.Side.left));
+            result.add(new EquationDis(this, dragging, EquationDis.Side.right));
         }
 
         Collections.sort(result);
@@ -144,14 +144,13 @@ abstract public class Equation extends ArrayList<Equation> {
         ArrayList<EquationDis> result = new ArrayList<EquationDis>();
         for (int i = 0; i < size(); i++) {
             //result.add(new EquationDis(get(i),x,y));
-            result.addAll(get(i).closest(x,y));
+            result.addAll(get(i).closest(x, y));
 
         }
-        if (this instanceof DivEquation){
-            result.add(new EquationDis(this,x,y, EquationDis.Side.left));
-            result.add(new EquationDis(this,x,y,EquationDis.Side.right));
+        if (this instanceof DivEquation) {
+            result.add(new EquationDis(this, x, y, EquationDis.Side.left));
+            result.add(new EquationDis(this, x, y, EquationDis.Side.right));
         }
-
 
 
         Collections.sort(result);
@@ -159,7 +158,12 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureWidth() {
-        float totalWidth = (size() - 1) * myWidth;
+        float totalWidth = 0;
+        for (int i = 0; i < size() - 1; i++) {
+            if (!(this instanceof MultiEquation) || (((MultiEquation) this).hasSign(i))) {
+                totalWidth += myWidth;
+            }
+        }
 
         for (int i = 0; i < size(); i++) {
             totalWidth += get(i).measureWidth();
@@ -179,10 +183,14 @@ abstract public class Equation extends ArrayList<Equation> {
         drawBkgBox(canvas, x, y);
         privateDraw(canvas, x, y);
         //}
+        if (canvas == null) {
+            Log.d("I updated myself: ", this.toString() + " , " + lastPoint.size());
+        }
     }
 
     /**
      * x,y is the center of the equation to be drawn
+     * if canvas is null it just updates the location but does not draw anything
      */
     protected void privateDraw(Canvas canvas, float x, float y) {
         lastPoint = new ArrayList<Point>();
@@ -201,23 +209,32 @@ abstract public class Equation extends ArrayList<Equation> {
             float currentWidth = get(i).measureWidth();
             float currentHeight = get(i).measureHeight();
             get(i).draw(canvas,
-                    x - (totalWidth / 2) + currentX + (currentWidth / 2), y );
+                    x - (totalWidth / 2) + currentX + (currentWidth / 2), y);
             currentX += currentWidth;
-            if (i != size() - 1) {
-                Point point = new Point();
-                point.x = (int) (x - (totalWidth / 2) + currentX + (myWidth / 2));
-                point.y = (int) (y + (h / 2));
-                canvas.drawText(getDisplay(i + 1), point.x, point.y, temp);
 
-                lastPoint.add(point);
-                currentX += myWidth;
+            if (i != size() - 1) {
+                if (!(this instanceof MultiEquation) || (((MultiEquation) this).hasSign(i))) {
+                    Point point = new Point();
+                    point.x = (int) (x - (totalWidth / 2) + currentX + (myWidth / 2));
+                    point.y = (int) (y + (h / 2));
+                    if (canvas != null) {
+                        canvas.drawText(getDisplay(i + 1), point.x, point.y, temp);
+                    }
+                    lastPoint.add(point);
+                    currentX += myWidth;
+                } else {
+                    Point point = new Point();
+                    point.x = (int) (x - (totalWidth / 2) + currentX);
+                    point.y = (int) (y + (h / 2));
+                    lastPoint.add(point);
+                }
             }
         }
     }
 
 
     public float measureHeightLower() {
-        float totalHeight = myHeight/2;
+        float totalHeight = myHeight / 2;
 
         for (int i = 0; i < size(); i++) {
             if (get(i).measureHeightLower() > totalHeight) {
@@ -225,13 +242,13 @@ abstract public class Equation extends ArrayList<Equation> {
             }
         }
         if (parenthesis()) {
-            totalHeight += PARN_HEIGHT_ADDITION/2f;
+            totalHeight += PARN_HEIGHT_ADDITION / 2f;
         }
         return totalHeight;
     }
 
     public float measureHeightUpper() {
-        float totalHeight = myHeight/2f;
+        float totalHeight = myHeight / 2f;
 
         for (int i = 0; i < size(); i++) {
             if (get(i).measureHeightUpper() > totalHeight) {
@@ -239,7 +256,7 @@ abstract public class Equation extends ArrayList<Equation> {
             }
         }
         if (parenthesis()) {
-            totalHeight += PARN_HEIGHT_ADDITION/2f;
+            totalHeight += PARN_HEIGHT_ADDITION / 2f;
         }
         return totalHeight;
     }
@@ -270,9 +287,11 @@ abstract public class Equation extends ArrayList<Equation> {
                     && y < lastPoint.get(i).y + myHeight / 2
                     && y > lastPoint.get(i).y - myHeight / 2) {
                 // we need to get the left
-                if (this instanceof PowerEquation){
+                if (this instanceof PowerEquation) {
                     result.add(get(1));
-                }else {
+                } else {
+                    Log.d("at: ", this.toString());
+                    Log.d("at: ", this.lastPoint.size() + "");
                     Equation at = get(i);
                     while (at instanceof AddEquation || at instanceof MultiEquation || at instanceof MinusEquation) {
                         at = at.get(at.size() - 1);
@@ -345,31 +364,31 @@ abstract public class Equation extends ArrayList<Equation> {
 
         if (ons.length != 0) {
             ArrayList<Equation> onsList = new ArrayList<Equation>();
-            String debug="";
-            for (Object o:ons){
-                Equation e =(Equation)o;
-                if (o!= this) {
+            String debug = "";
+            for (Object o : ons) {
+                Equation e = (Equation) o;
+                if (o != this) {
                     int at = deepIndexOf(e);
                     Equation toAdd = get(at);
                     debug += toAdd.toString() + ",";
                     onsList.add(toAdd);
                 }
             }
-            Log.i("tryOperator",debug);
-            if (onsList.size()!=0) {
+            Log.i("tryOperator", debug);
+            if (onsList.size() != 0) {
                 tryOperator(onsList);
-            }else if (this instanceof MinusEquation){
+            } else if (this instanceof MinusEquation) {
                 tryOperator(onsList);
             }
-        }else{
-            for (Equation e: this){
-                e.tryOperator(x,y);
+        } else {
+            for (Equation e : this) {
+                e.tryOperator(x, y);
             }
         }
 
-       if (owner instanceof ColinView && !(old.same(owner.stupid))){
-           ((ColinView)owner).changed = true;
-       }
+        if (owner instanceof ColinView && !(old.same(owner.stupid))) {
+            ((ColinView) owner).changed = true;
+        }
     }
 
     public void tryOperator(ArrayList<Equation> equation) {
@@ -377,7 +396,7 @@ abstract public class Equation extends ArrayList<Equation> {
 
     float MIN_TEXT_SIZE = 12;
 
-    protected float getScale(Equation e){
+    protected float getScale(Equation e) {
         return 1f;
     }
 
@@ -398,9 +417,9 @@ abstract public class Equation extends ArrayList<Equation> {
             temp.setColor(Color.RED);
         }
         float targetTextSize = temp.getTextSize();
-        if (parent != null){
+        if (parent != null) {
             targetTextSize *= parent.getScale(this);
-            if (targetTextSize < MIN_TEXT_SIZE){
+            if (targetTextSize < MIN_TEXT_SIZE) {
                 targetTextSize = MIN_TEXT_SIZE;
             }
         }
@@ -411,14 +430,16 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     protected void drawBkgBox(Canvas canvas, float x, float y) {
-		Rect r = new Rect((int) (x - measureWidth() / 2),
-				(int) (y - measureHeightUpper()),
-				(int) (x + measureWidth() / 2), (int) (y + measureHeightLower() ));
-		Paint p = new Paint();
-		p.setAlpha(255 / 2);
-		Random rand = new Random();
-		p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
-		//canvas.drawRect(r, p);
+        Rect r = new Rect((int) (x - measureWidth() / 2),
+                (int) (y - measureHeightUpper()),
+                (int) (x + measureWidth() / 2), (int) (y + measureHeightLower()));
+        Paint p = new Paint();
+        p.setAlpha(255 / 2);
+        Random rand = new Random();
+        p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
+        if (canvas != null) {
+            //canvas.drawRect(r, p);
+        }
 
     }
 
@@ -439,19 +460,21 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     protected void drawParentheses(Canvas canvas, float x, float y, Paint temp) {
-        Paint ptemp = new Paint(temp);
-        ptemp.setStrokeWidth(3);
-        float w = measureWidth();
-        float h = measureHeight();
-        //left side
-        canvas.drawLine(x - (w / 2) + 3, y - (h / 2) + 3, x - (w / 2) + 9, y - (h / 2) + 3, ptemp);
-        canvas.drawLine(x - (w / 2) + 3, y - (h / 2) + 3, x - (w / 2) + 3, y + (h / 2) - 3, ptemp);
-        canvas.drawLine(x - (w / 2) + 3, y + (h / 2) - 3, x - (w / 2) + 9, y + (h / 2) - 3, ptemp);
+        if (canvas != null) {
+            Paint ptemp = new Paint(temp);
+            ptemp.setStrokeWidth(3);
+            float w = measureWidth();
+            float h = measureHeight();
+            //left side
+            canvas.drawLine(x - (w / 2) + 3, y - (h / 2) + 3, x - (w / 2) + 9, y - (h / 2) + 3, ptemp);
+            canvas.drawLine(x - (w / 2) + 3, y - (h / 2) + 3, x - (w / 2) + 3, y + (h / 2) - 3, ptemp);
+            canvas.drawLine(x - (w / 2) + 3, y + (h / 2) - 3, x - (w / 2) + 9, y + (h / 2) - 3, ptemp);
 
-        //right side
-        canvas.drawLine(x + (w / 2) - 3, y - (h / 2) + 3, x + (w / 2) - 9, y - (h / 2) + 3, ptemp);
-        canvas.drawLine(x + (w / 2) - 3, y - (h / 2) + 3, x + (w / 2) - 3, y + (h / 2) - 3, ptemp);
-        canvas.drawLine(x + (w / 2) - 3, y + (h / 2) - 3, x + (w / 2) - 9, y + (h / 2) - 3, ptemp);
+            //right side
+            canvas.drawLine(x + (w / 2) - 3, y - (h / 2) + 3, x + (w / 2) - 9, y - (h / 2) + 3, ptemp);
+            canvas.drawLine(x + (w / 2) - 3, y - (h / 2) + 3, x + (w / 2) - 3, y + (h / 2) - 3, ptemp);
+            canvas.drawLine(x + (w / 2) - 3, y + (h / 2) - 3, x + (w / 2) - 9, y + (h / 2) - 3, ptemp);
+        }
     }
 
 
@@ -471,7 +494,7 @@ abstract public class Equation extends ArrayList<Equation> {
     public EqualsEquation getEquals() {
         Equation at = this.parent;
         while (!(at instanceof EqualsEquation)) {
-            if (at instanceof WritingEquation){
+            if (at instanceof WritingEquation) {
                 return null;
             }
             at = at.parent;
@@ -535,7 +558,7 @@ abstract public class Equation extends ArrayList<Equation> {
         if (!this.getClass().equals(eq.getClass())) {
             return false;
         }
-        if(this.size() != eq.size()){
+        if (this.size() != eq.size()) {
             return false;
         }
         for (Equation e : eq) {
@@ -585,10 +608,10 @@ abstract public class Equation extends ArrayList<Equation> {
         }
     }
 
-    public boolean reallyInstanceOf(Class t){
-        Equation at =this;
-        while (at instanceof MinusEquation){
-            at= at.get(0);
+    public boolean reallyInstanceOf(Class t) {
+        Equation at = this;
+        while (at instanceof MinusEquation) {
+            at = at.get(0);
         }
         return t.isInstance(at);
     }
@@ -643,33 +666,33 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public int side() {
         Equation equals = getEquals();
-        if (equals != null){
-            return ((EqualsEquation)equals).side(this);
-        }else{
+        if (equals != null) {
+            return ((EqualsEquation) equals).side(this);
+        } else {
             //find the root
             Equation at = this;
-            while (at.parent != null){
+            while (at.parent != null) {
                 at = at.parent;
             }
-            if (at instanceof WritingEquation){
+            if (at instanceof WritingEquation) {
                 int ourIndex = at.deepIndexOf(this);
-                int equalsIndex=-1;
-                for (Equation e: at){
-                    if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")){
+                int equalsIndex = -1;
+                for (Equation e : at) {
+                    if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")) {
                         equalsIndex = at.indexOf(e);
                     }
                 }
-                if (equalsIndex==-1){
-                    Log.e("","it should really have an equals");
+                if (equalsIndex == -1) {
+                    Log.e("", "it should really have an equals");
                     return 0;
                 }
-                if (ourIndex==equalsIndex){
-                    Log.e("","we should really not be checking the side of the equals");
+                if (ourIndex == equalsIndex) {
+                    Log.e("", "we should really not be checking the side of the equals");
                     return 0;
                 }
-                return (ourIndex<equalsIndex?0:1);
-            }else{
-                Log.e("","this is bad");
+                return (ourIndex < equalsIndex ? 0 : 1);
+            } else {
+                Log.e("", "this is bad");
                 return 0;
             }
         }
@@ -703,41 +726,41 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public Equation left() {
-        return  next(true);
+        return next(true);
     }
 
     public Equation right() {
-        return  next(false);
+        return next(false);
     }
 
-    private Equation next(boolean left){
+    private Equation next(boolean left) {
         Equation at = this;
-        if ( at.parent == null){
+        if (at.parent == null) {
             return null;
         }
-        while ( at.parent.indexOf(at) == (left?0:(at.parent.size() - 1))) {
+        while (at.parent.indexOf(at) == (left ? 0 : (at.parent.size() - 1))) {
             at = at.parent;
             if (at.parent == null) {
                 return null;
             }
         }
-        return at.parent.get(at.parent.indexOf(at) +(left?- 1:1));
+        return at.parent.get(at.parent.indexOf(at) + (left ? -1 : 1));
     }
 
     public Integer deepIndexOf(Equation eq) {
         Equation at = eq;
-        if (at.parent ==null){
+        if (at.parent == null) {
             debug();
         }
         while (at.parent != this) {
             at = at.parent;
-            if (at.parent ==null){
+            if (at.parent == null) {
                 debug();
             }
         }
         int result = indexOf(at);
-        if (result == -1){
-            Log.i("cgrrr","oh man is that bad");
+        if (result == -1) {
+            Log.i("cgrrr", "oh man is that bad");
         }
         return result;
     }
@@ -760,7 +783,7 @@ abstract public class Equation extends ArrayList<Equation> {
             can = canMuli(dragging);
         } else if (op == Op.DIV) {
             can = canDiv(dragging);
-        } else if (op == Op.POWER){
+        } else if (op == Op.POWER) {
             can = canPower(dragging);
         }
 
@@ -773,17 +796,17 @@ abstract public class Equation extends ArrayList<Equation> {
                 this.parent.replace(this);
             }
 
-            if (op ==Op.POWER){
+            if (op == Op.POWER) {
                 dragging.demo.remove();
                 Equation power = Operations.flip(dragging.demo);
                 Equation newEq = new PowerEquation(owner);
-                Equation oldEq =this;
+                Equation oldEq = this;
                 oldEq.replace(newEq);
                 newEq.add(this);
                 newEq.add(power);
                 dragging.getAndUpdateDemo(power);
                 dragging.updateOps(dragging.demo);
-            }else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
+            } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
                 dragging.demo.remove();
                 this.replace(dragging.getAndUpdateDemo(this, sameSide));
                 dragging.updateOps(dragging.demo);
@@ -816,12 +839,12 @@ abstract public class Equation extends ArrayList<Equation> {
                     dragging.updateOps(dragging.demo);
                 }
             } else {
-                if ((op ==Op.DIV || op ==Op.MULTI)&& dragging.demo.parent instanceof EqualsEquation){
-                    dragging.demo.replace(new NumConstEquation(1,owner));
-                }else{
+                if ((op == Op.DIV || op == Op.MULTI) && dragging.demo.parent instanceof EqualsEquation) {
+                    dragging.demo.replace(new NumConstEquation(1, owner));
+                } else {
                     dragging.demo.remove();
                 }
-                Log.i("added to new", ""+ this.toString());
+                Log.i("added to new", "" + this.toString());
                 Equation oldEq = this;
                 Equation newEq = null;
                 if (op == Op.ADD) {
@@ -961,6 +984,10 @@ abstract public class Equation extends ArrayList<Equation> {
         }
         Log.i("", "not div multi contained. multi: " + multi);
         return false;
+    }
+
+    public void updateLocation() {
+        draw(null, x, y);
     }
 
     public enum Op {ADD, DIV, POWER, MULTI}

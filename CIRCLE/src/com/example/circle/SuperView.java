@@ -160,7 +160,7 @@ public abstract class SuperView extends View implements
             dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
         }
 
-        if (canDrag) {
+        if (canDrag && !selectingSet.isEmpty()) {
             if (lastLongTouch != null && lastLongTouch.started()) {
                 if (lastLongTouch.done()) {
                     Log.i("lastLongTouch", "done");
@@ -454,12 +454,6 @@ public abstract class SuperView extends View implements
                                     closest.addAll(retuended);
                                     Collections.sort(closest);
                                 }
-
-                                if (dragging.demo.parent == null) {
-                                    @SuppressWarnings("unused")
-                                    int dbg = 0;
-                                    Log.i("weee", "I am null!");
-                                }
                             }
                         }
                     }
@@ -619,13 +613,12 @@ public abstract class SuperView extends View implements
             addToSelectingSet(ons);
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
-            stupid.fixIntegrety();
-
 
 
             if (this instanceof ColinView && dragging.moved()){
                 ((ColinView)this).changed = true;
             }
+            stupid.fixIntegrety();
 
             dragging.demo.isDemo(false);
             dragging = null;
@@ -634,6 +627,7 @@ public abstract class SuperView extends View implements
                 selected.setSelected(false);
             }
         }
+        stupid.updateLocation();
     }
 
     protected void selectSet() {

@@ -9,8 +9,9 @@ import android.text.TextPaint;
  * Created by Colin on 12/30/2014.
  */
 public class Algebrator extends Application {
+    public static final int DEFAULT_TEXT_SIZE = 40;
     private static Algebrator instance;
-    private int TEXT_SIZE;
+    private int TEXT_SIZE= DEFAULT_TEXT_SIZE;
     public SuperView superView = null;
     public int DEFAULT_SIZE;
     public long doubleTapSpacing = 1000;

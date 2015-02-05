@@ -47,8 +47,9 @@ public class NumConstEquation extends LeafEquation implements LegallityCheck {
 	
 	@Override
 	public boolean same(Equation eq){
-		if (!(eq instanceof NumConstEquation))
-			return false;
+		if (!(eq instanceof NumConstEquation)) {
+            return false;
+        }
 		NumConstEquation e = (NumConstEquation)eq;
 		return getValue() == e.getValue();
 	}

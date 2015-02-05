@@ -80,7 +80,7 @@ public class EquationButton extends Button {
     public void click(MotionEvent event) {
         if (inBox(event) && !cv.history.get(0).equals(this)){
             targetAlpha = 0xff;
-            //TODO act
+            Log.d("highlighting ",myEq.toString());
 
             if (lastLongTouch==null){
                 lastLongTouch= new LongTouch(event);
@@ -121,13 +121,15 @@ public class EquationButton extends Button {
         // we need to update
         float myCenter = myEq.x;
         float stupidCenter = cv.stupid.x;
-        cv.offsetX -=   (-myCenter + stupidCenter);
+        cv.offsetX -=  (-myCenter + stupidCenter);
 
         // and set this back to be the boss
         cv.stupid = myEq.copy();
+        cv.stupid.updateLocation();
 
         // we need to remove all history and including this
         cv.history = new ArrayList<EquationButton>(cv.history.subList(cv.history.indexOf(this),cv.history.size()));
+
 
         // update the offsets of the remaining histories
         for (EquationButton eb: cv.history){
@@ -138,6 +140,8 @@ public class EquationButton extends Button {
         }
         x=0;
         y=0;
+        bkgCurrentAlpha = 0x0;
+        bkgTargetAlpha = 0x0;
     }
 
     public void update(int stupidX,int stupidY) {

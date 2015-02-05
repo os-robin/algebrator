@@ -101,7 +101,8 @@ public class Button {
         textPaint.getTextBounds("A", 0, "A".length(), out);
         float h = out.height();
 
-        /*Paint textHighlight = new Paint();
+        /*
+        Paint textHighlight = new Paint();
         textHighlight.setColor(textPaint.getColor());
         textHighlight.setAlpha(textPaint.getAlpha());
         textHighlight.setTextSize(textPaint.getTextSize());
@@ -109,11 +110,15 @@ public class Button {
         textHighlight.setTextAlign(Paint.Align.CENTER);
         //textHighlight.setAntiAlias(true);
         //TODO scale by dpi
-        textHighlight.setMaskFilter(new BlurMaskFilter(4, BlurMaskFilter.Blur.NORMAL));
-        textHighlight.setColor(Color.WHITE);
+        textHighlight.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+        textHighlight.setARGB(0xff,
+                (android.graphics.Color.red(bkgPaint.getColor())*2+0xff)/3,
+                (android.graphics.Color.green(bkgPaint.getColor())*2+0xff)/3,
+                (android.graphics.Color.blue(bkgPaint.getColor())*2+0xff)/3);
 
-        canvas.drawText(text, (right() + left()) / 2, (bottom() + top()) / 2 + h / 2 , textHighlight);*/
+        canvas.drawText(text, (right() + left()) / 2, (bottom() + top()) / 2 + h / 2 , textHighlight);
         //textHighlight.setMaskFilter(null);
+        */
         canvas.drawText(text, (right() + left()) / 2, (bottom() + top()) / 2 + h / 2, textPaint);
     }
 

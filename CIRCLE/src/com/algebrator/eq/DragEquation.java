@@ -73,6 +73,7 @@ public class DragEquation {
         if (demo.parent.same(startParent) && startIndex ==demo.parent.indexOf(demo)){
             return false;
         }
+        Log.d("moved", demo.parent.toString() + " " + startParent);
         return true;
     }
 

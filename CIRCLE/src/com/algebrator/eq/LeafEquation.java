@@ -78,7 +78,7 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public float measureWidth() {
 		// not tested
-		float totalWidth= Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
+		float totalWidth= myWidth + textPaint.measureText(display) -textPaint.measureText("A");//Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
 		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;
@@ -103,17 +103,20 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public void privateDraw(Canvas canvas, float x, float y) {
 		drawBkgBox(canvas, x, y);
-		lastPoint =new ArrayList<Point>();
-		Paint temp = getPaint();
-		if (parenthesis()){
-			drawParentheses(canvas,x,y,temp);
-		} 
-		Rect out =  new Rect();
-		textPaint.getTextBounds("A", 0, "A".length(),out);
-		float h= out.height();
-		float w= out.width();
-		canvas.drawText(getDisplay(-1), x, y+ (h/2), temp);
-		
+
+        if (canvas !=null ) {
+            Paint temp = getPaint();
+            if (parenthesis()){
+                drawParentheses(canvas,x,y,temp);
+            }
+            Rect out =  new Rect();
+            textPaint.getTextBounds("A", 0, "A".length(),out);
+            float h= out.height();
+            float w= out.width();
+            canvas.drawText(getDisplay(-1), x, y + (h / 2), temp);
+        }
+
+        lastPoint =new ArrayList<Point>();
 		Point point = new Point();
 		point.x =(int) x;
 		point.y = (int) y;

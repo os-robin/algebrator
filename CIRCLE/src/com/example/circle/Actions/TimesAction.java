@@ -8,8 +8,12 @@ import com.example.circle.EmilyView;
 
 public class TimesAction extends Action {
 
+    String display;
     public TimesAction(EmilyView emilyView) {
         super(emilyView);
+
+        char[] timesUnicode = { '\u00D7'};
+        display = new String(timesUnicode);
     }
 
     @Override
@@ -24,12 +28,12 @@ public class TimesAction extends Action {
                 can = false;
             }
             if (l != null && can) {
-                Equation newEq = new WritingLeafEquation("*", emilyView);
+                Equation newEq = new WritingLeafEquation(display, emilyView);
                 emilyView.insert(newEq);
             }
         } else if (emilyView.selected != null) {
 
-            Equation numEq = new WritingLeafEquation("*", emilyView);
+            Equation numEq = new WritingLeafEquation(display, emilyView);
             addToBlock(numEq);
         }
 

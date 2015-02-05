@@ -256,7 +256,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
             float atY = y;
 
             if (parenthesis()) {
-                drawParentheses(canvas, x, y, temp);
+                    drawParentheses(canvas, x, y, temp);
                 atX += PARN_WIDTH_ADDITION / 2;
             }
             Rect out = new Rect();
@@ -304,22 +304,24 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,float lower, float upper,float end){
-        // TODO scale by dpi
-        p.setStrokeWidth(3);
-        canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y, atX + width_addition / 3f, y + lower, p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y + lower, atX + width_addition / 3f, y - upper, p);
-        atX += width_addition / 3f;
-        canvas.drawLine(atX, y - upper, end , y - upper, p);
+        if (canvas != null) {
+            // TODO scale by dpi
+            p.setStrokeWidth(3);
+            canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
+            atX += width_addition / 3f;
+            canvas.drawLine(atX, y, atX + width_addition / 3f, y + lower, p);
+            atX += width_addition / 3f;
+            canvas.drawLine(atX, y + lower, atX + width_addition / 3f, y - upper, p);
+            atX += width_addition / 3f;
+            canvas.drawLine(atX, y - upper, end, y - upper, p);
+        }
     }
 
 
     private void sqrtDraw(Canvas canvas, float x, float y, Paint p) {
         // let's start by drawing the sqrt sign
         float atX = x - measureWidth() / 2;
-        sqrtSignDraw(canvas, atX, y, p ,this);
+            sqrtSignDraw(canvas, atX, y, p, this);
 
         // now let's draw the content
         get(0).draw(canvas, x + width_addition / 2, y);

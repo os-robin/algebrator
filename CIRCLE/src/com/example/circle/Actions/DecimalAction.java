@@ -5,7 +5,6 @@ import com.algebrator.eq.Equation;
 import com.algebrator.eq.NumConstEquation;
 import com.algebrator.eq.PlaceholderEquation;
 import com.algebrator.eq.WritingEquation;
-import com.algebrator.eq.WritingLeafEquation;
 import com.example.circle.EmilyView;
 
 public class DecimalAction extends Action {
@@ -21,28 +20,36 @@ public class DecimalAction extends Action {
     public void act() {
         if (emilyView.selected instanceof PlaceholderEquation) {
             Equation l = emilyView.left();
-            if ((l != null) &&
-                    (l instanceof NumConstEquation && l.getDisplay(-1).contains(".") == false) ){
-                 if (
-                    !(l.parent instanceof BinaryEquation && l.parent.indexOf(l) == 0)) {
-                     String toSet = l.getDisplay(0) + dec;
-                     l.setDisplay(toSet);
-                 }else{
-                     Equation oldEq = emilyView.selected;
-                     Equation holder = new WritingEquation(emilyView);
-                     Equation newEq = getEq();
-                     oldEq.replace(holder);
-                     holder.add(newEq);
-                     holder.add(oldEq);
-                     oldEq.setSelected(true);
-                 }
+            if ((l != null) && (l instanceof NumConstEquation && l.getDisplay(-1).contains(".") == false)) {
+                if (!(l.parent instanceof BinaryEquation && l.parent.indexOf(l) == 0)) {
+                    String toSet = l.getDisplay(0) + dec;
+                    l.setDisplay(toSet);
+                } else {
+                    Equation oldEq = emilyView.selected;
+                    Equation holder = new WritingEquation(emilyView);
+                    Equation newEq = getEq();
+                    oldEq.replace(holder);
+                    holder.add(newEq);
+                    holder.add(oldEq);
+                    oldEq.setSelected(true);
+                }
             } else {
-                emilyView.insert(getEq());
+                if (l == null || !(l.parent instanceof BinaryEquation && l.parent.indexOf(l) == 0)) {
+                    emilyView.insert(getEq());
+                }else{
+                    Equation oldEq = emilyView.selected;
+                    Equation holder = new WritingEquation(emilyView);
+                    Equation newEq = getEq();
+                    oldEq.replace(holder);
+                    holder.add(newEq);
+                    holder.add(oldEq);
+                    oldEq.setSelected(true);
+                }
             }
         } else {
-            if (emilyView.selected != null) {
-                addToBlock(getEq());
-            }
+            //if (emilyView.selected != null) {
+            //    addToBlock(getEq());
+            //}
 
         }
     }
@@ -52,7 +59,5 @@ public class DecimalAction extends Action {
         numEq.setDisplay(numEq.getDisplay(0) + ".");
         return numEq;
     }
-
-
 }
 

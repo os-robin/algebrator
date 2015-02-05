@@ -96,7 +96,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 		float currentY = -(totalHieght / 2) + y;
 		Paint temp = getPaint();
 		if (parenthesis()) {
-			drawParentheses(canvas, x, y, temp);
+                drawParentheses(canvas, x, y, temp);
 			currentY += PARN_HEIGHT_ADDITION / 2;
 		}
 
@@ -110,8 +110,10 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
                 // TODO scale by dpi
 				temp.setStrokeWidth(3);
 				int halfwidth = (int) ((measureWidth() - (2 * BUFFER)) / 2);
-				canvas.drawLine(point.x - halfwidth, point.y, point.x
-						+ halfwidth, point.y, temp);
+                if (canvas !=null ) {
+                    canvas.drawLine(point.x - halfwidth, point.y, point.x
+                            + halfwidth, point.y, temp);
+                }
 
 				lastPoint.add(point);
 				currentY += myHeight;

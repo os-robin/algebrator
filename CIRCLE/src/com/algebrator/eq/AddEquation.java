@@ -60,8 +60,17 @@ public class AddEquation extends FlexOperation {
         if (pos ==-1){
             return display;
         }
-        if (get(pos) instanceof MinusEquation){
-            return "-";
+        Equation at = get(pos);
+        while(at.size()>1){
+            at = at.get(0);
+        }
+        if (at instanceof MonaryEquation && !((MonaryEquation) at).drawSign()) {
+            if (at instanceof MinusEquation) {
+                return "-";
+            }
+            if (at instanceof PlusMinusEquation) {
+                return "\u00B1";
+            }
         }
 		return display;
 	}

@@ -121,8 +121,8 @@ public class EmilyView extends SuperView {
         firstRow.add(new Button("7",new NumberAction(this, "7")));
         firstRow.add(new Button("8",new NumberAction(this, "8")));
         firstRow.add(new Button("9",new NumberAction(this, "9")));
-        firstRow.add(new Button("a",new VarAction(this, "a")));
-        firstRow.add(new Button("b",new VarAction(this, "b")));
+        firstRow.add(new Button("A",new VarAction(this, "A")));
+        firstRow.add(new Button("B",new VarAction(this, "B")));
         firstRow.add(new Button("(",new ParenthesesAction(this,true)));
         firstRow.add(new Button(")",new ParenthesesAction(this,false)));
         firstRow.add(new Button("=",new EqualsAction(this)));

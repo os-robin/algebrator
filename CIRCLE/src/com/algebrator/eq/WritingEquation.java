@@ -15,6 +15,9 @@ import java.util.ArrayList;
  */
 public class WritingEquation extends Equation {
 
+    char[] timesUnicode = { '\u00D7'};
+    String times = new String(timesUnicode);
+
     public WritingEquation(SuperView o) {
         super(o);
         display = "\"";
@@ -118,7 +121,7 @@ public class WritingEquation extends Equation {
                 Log.i("left", (left == null ? "null" : left.toString()));
                 if (at.getDisplay(-1).equals("+")) {
                     currentToAdd = new AddEquation(owner);
-                } else if (at.getDisplay(-1).equals("*")) {
+                } else if (at.getDisplay(-1).equals(times)) {
                     currentToAdd = new MultiEquation(owner);
                 } else if (at.getDisplay(-1).equals("=")) {
                     currentToAdd = new EqualsEquation(owner);
@@ -179,14 +182,14 @@ public class WritingEquation extends Equation {
                     Equation newEq = null;
                     if (at.getDisplay(-1).equals("+")) {
                         newEq = new AddEquation(owner);
-                    } else if (at.getDisplay(-1).equals("*")) {
+                    } else if (at.getDisplay(-1).equals(times)) {
                         newEq = new MultiEquation(owner);
                     } else if (at.getDisplay(-1).equals("=")) {
                         newEq = new EqualsEquation(owner);
                     } else if (at instanceof WritingPraEquation && ((WritingPraEquation) at).left) {
                         //openParen = true;
                     } else if (at.getDisplay(-1).equals("-")) {
-                        if (!get(i - 1).getDisplay(-1).equals("*")) {
+                        if (!get(i - 1).getDisplay(-1).equals(times)) {
                             newEq = new AddEquation(owner);
                         }
                         minus++;
@@ -348,7 +351,7 @@ public class WritingEquation extends Equation {
             if ((left instanceof BinaryEquation || left instanceof NumConstEquation || left instanceof VarEquation || (left instanceof WritingPraEquation && !((WritingPraEquation) left).left)) &&
                     (right instanceof BinaryEquation || right instanceof NumConstEquation || right instanceof VarEquation || (right instanceof WritingPraEquation && ((WritingPraEquation) right).left))) {
                 // we need to insert a *
-                add(i + 1, new WritingLeafEquation("*", owner));
+                add(i + 1, new WritingLeafEquation(times, owner));
             }
         }
     }

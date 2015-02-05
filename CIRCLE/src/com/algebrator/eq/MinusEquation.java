@@ -19,7 +19,6 @@ public class MinusEquation extends MonaryEquation {
 
     public MinusEquation(SuperView owner2) {
         super(owner2);
-
         display ="-";
     }
 
@@ -38,7 +37,7 @@ public class MinusEquation extends MonaryEquation {
         }else
         if (get(0) instanceof MinusEquation){
             replace(get(0).get(0));
-        }else{
+        }else if (get(0) instanceof AddEquation){
             if (get(0).size()>1){
                 for (Equation e: get(0)){
                     Equation minus = new MinusEquation(owner);

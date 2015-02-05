@@ -20,9 +20,9 @@ public class MinusAction extends Action {
             Equation l = emilyView.left();
             if (l != null) {
                 if (!(l.parent instanceof BinaryEquation)) {
-                    if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
-                        l.justRemove();
-                    }
+                    //if (l instanceof WritingLeafEquation && l.getDisplay(-1) == "+") {
+                    //    l.justRemove();
+                    //}
                     Equation newEq = new WritingLeafEquation("-", emilyView);
                     emilyView.insert(newEq);
                 } else {
