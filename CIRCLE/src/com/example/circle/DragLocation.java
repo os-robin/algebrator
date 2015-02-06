@@ -1,53 +1,73 @@
-
 package com.example.circle;
 
-import com.algebrator.eq.DragEquation;
-import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
 
 /**
  * Created by Colin on 2/5/2015.
  */
-public class DragLocation implements Comparable<DragLocation>{
+public class DragLocation implements Comparable<DragLocation> {
     public float x;
     public float y;
     public Equation myStupid;
-    public DragLocation(Equation.Op op, Equation dragging, Equation equation,boolean right) {
-        myStupid = equation.owner.stupid.copy();
+    public SuperView owner;
 
-        //let's follow the path down
-        Equation at = equation.owner.stupid;
-        Equation myAt = myStupid;
-        while (!at.equals(equation)){
-            int index = at.deepIndexOf(equation);
-            at = at.get(index);
-            myAt = myAt.get(index);
+    public DragLocation(Equation.Op op, Equation dragging, Equation equation, boolean right) {
+
+        this.owner = equation.owner;
+
+        if (dragging.equals(equation)) {
+            myStupid = equation.owner.stupid;
+
+            //myStupid.updateLocation();
+            this.x = equation.x - myStupid.x;
+            this.y = equation.y - myStupid.y;
+        } else {
+            myStupid = equation.owner.stupid.copy();
+            //let's follow the path down
+            Equation at = owner.stupid;
+            Equation myAt = myStupid;
+            while (!at.equals(equation)) {
+                int index = at.deepIndexOf(equation);
+                at = at.get(index);
+                myAt = myAt.get(index);
+            }
+            Equation ourEquation = myAt;
+
+            at = equation.owner.stupid;
+            myAt = myStupid;
+            while (!at.equals(dragging)) {
+                int index = at.deepIndexOf(dragging);
+                at = at.get(index);
+                myAt = myAt.get(index);
+            }
+            Equation ourDragging = myAt;
+
+            // try op with our copies
+            ourEquation.tryOp(ourDragging, right, op);
+
+            myStupid.x = 0;
+            myStupid.y = 0;
+
+            myStupid.updateLocation();
+            this.x = ourDragging.x;
+            this.y = ourDragging.y;
         }
-        Equation ourEquation= myAt;
 
-        at = equation.owner.stupid;
-        myAt = myStupid;
-        while (!at.equals(dragging)){
-            int index = at.deepIndexOf(dragging);
-            at = at.get(index);
-            myAt = myAt.get(index);
-        }
-        Equation ourDragging=myAt;
-
-        // try op with our copies
-        ourEquation.tryOp(ourDragging,right,op);
-        myStupid.x = equation.owner.stupid.x;
-        myStupid.y = equation.owner.stupid.y;
-
-        myStupid.updateLocation();
-        this.x = ourDragging.x;
-        this.y = ourDragging.y;
     }
 
-    public float dis=0;
+    public float dis = 0;
 
-    public void updateDis(float x, float y){
-        this.dis = (float)Math.sqrt((myStupid.x - x)*(myStupid.x - x)+(myStupid.y - y)*(myStupid.y - y));
+    public DragLocation(Equation equation) {
+        myStupid = equation.owner.stupid;
+        this.owner = equation.owner;
+
+        //myStupid.updateLocation();
+        this.x = equation.x - myStupid.x;
+        this.y = equation.y - myStupid.y;
+    }
+
+    public void updateDis(float eventX, float eventY) {
+        this.dis = (float) Math.sqrt((x + owner.stupid.x - eventX) * (x + owner.stupid.x - eventX) + (y + owner.stupid.y - eventY) * (y + owner.stupid.y - eventY));
     }
 
     @Override

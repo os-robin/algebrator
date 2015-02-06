@@ -12,13 +12,14 @@ public class Algebrator extends Application {
     public static final int DEFAULT_TEXT_SIZE = 40;
     private static Algebrator instance;
     private int TEXT_SIZE= DEFAULT_TEXT_SIZE;
-    public SuperView superView = null;
     public int DEFAULT_SIZE;
     public long doubleTapSpacing = 1000;
     public int mainColor;
     public int highLight;
     public TextPaint textPaint = new TextPaint();
     public Paint bkgPaint = new Paint();
+    public SuperView writeView  = null;
+    public SuperView solveView  = null;
 
     public int getTextSize(){
         return  this.TEXT_SIZE;
@@ -37,7 +38,6 @@ public class Algebrator extends Application {
         highLight = 0xff000000 + (int) (Math.random() * 0xffffff);
         instance = this;
 
-
         bkgPaint.setTextAlign(Paint.Align.CENTER);
         bkgPaint.setAntiAlias(true);
         bkgPaint.setColor(Algebrator.getAlgebrator().mainColor);
@@ -45,7 +45,7 @@ public class Algebrator extends Application {
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setAntiAlias(true);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
-        textPaint.setTypeface(myTypeface);
+        //textPaint.setTypeface(myTypeface);
         textPaint.setColor(0xff000000);
     }
 

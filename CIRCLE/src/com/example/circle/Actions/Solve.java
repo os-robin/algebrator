@@ -8,7 +8,7 @@ import com.algebrator.eq.WritingEquation;
 import com.example.circle.Algebrator;
 import com.example.circle.ColinView;
 import com.example.circle.EmilyView;
-import com.example.circle.MainActivity;
+import com.example.circle.SolveScreen;
 
 
 public class Solve extends Action {
@@ -30,10 +30,10 @@ public class Solve extends Action {
                 Context c = emilyView.getContext();
                 ColinView colinView = new ColinView(c);
                 colinView.stupid = newEq;
-                Algebrator.getAlgebrator().superView = colinView;
+                Algebrator.getAlgebrator().solveView = colinView;
                 //((MainActivity) c).lookAt(colinView);
 
-                Intent myIntent = new Intent(c, MainActivity.class);
+                Intent myIntent = new Intent(c, SolveScreen.class);
                 c.startActivity(myIntent);
             }
     }

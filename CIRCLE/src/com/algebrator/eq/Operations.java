@@ -107,7 +107,7 @@ public class Operations {
         }
 
         //TODO get owner a different way?
-        SuperView owner = Algebrator.getAlgebrator().superView;
+        SuperView owner = Algebrator.getAlgebrator().solveView;
 
         //if under == null we actully add
         if (under == null) {
@@ -154,7 +154,7 @@ public class Operations {
     }
 
     private static Equation addHelper(MultiCountData left, MultiCountData right) {
-        SuperView owner = Algebrator.getAlgebrator().superView;
+        SuperView owner = Algebrator.getAlgebrator().solveView;
         // if they are both just numbers make a NumConst
         if (left.key.size() == 0 && right.key.size() == 0) {
             double sum = right.value + left.value;
@@ -314,7 +314,7 @@ public class Operations {
     // **************************** DIVIDE *****************************************
 
     public static Equation divide(Equation a, Equation b) {
-        SuperView owner = Algebrator.getAlgebrator().superView;
+        SuperView owner = Algebrator.getAlgebrator().solveView;
         Equation result = null;
         if (a instanceof AddEquation) {
             result = new AddEquation(owner);
@@ -427,7 +427,7 @@ public class Operations {
     }
 
     private static Equation getResult(Equation topEq, Equation botEq) {
-        SuperView owner = Algebrator.getAlgebrator().superView;
+        SuperView owner = Algebrator.getAlgebrator().solveView;
         // if the top is 0 and the bottom is not
         if ((sortaNumber(topEq) && getValue(topEq) == 0) && !((sortaNumber(botEq) && getValue(botEq) == 0))) {
             return new NumConstEquation(0, owner);
@@ -475,7 +475,7 @@ public class Operations {
 
     public static Equation flip(Equation demo) {
 
-        SuperView owner = Algebrator.getAlgebrator().superView;
+        SuperView owner = Algebrator.getAlgebrator().solveView;
         // if it's a div equation flip it over
         if (demo instanceof  DivEquation){
             if (demo.get(0) instanceof NumConstEquation && ((NumConstEquation) demo.get(0)).getValue()==1){

@@ -3,6 +3,7 @@ package com.example.circle;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Point;
@@ -156,6 +157,14 @@ public abstract class SuperView extends View implements
         // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
 
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
+
+        for (DragLocation dl:dragLocations){
+            float dlx = dl.x + stupid.x;
+            float dly = dl.y + stupid.y;
+            Paint temp =new Paint();
+            temp.setColor(Color.GREEN);
+            canvas.drawCircle(dlx,dly,15,temp);
+        }
 
 
         if (dragging != null) {
@@ -423,7 +432,6 @@ public abstract class SuperView extends View implements
                     dragging.eq.x = event.getX();
                     dragging.eq.y = event.getY();
 
-                    float min= Float.MAX_VALUE;
                     DragLocation closest = dragLocations.closest(event);
 
 
@@ -544,7 +552,7 @@ public abstract class SuperView extends View implements
         }
     }
 
-    private DragLocations dragLocations= null;
+    private DragLocations dragLocations= new DragLocations();
 
     private void startDragging() {
         if (canDrag) {

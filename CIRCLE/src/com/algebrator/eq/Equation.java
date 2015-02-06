@@ -1024,9 +1024,16 @@ abstract public class Equation extends ArrayList<Equation> {
                 DragLocation newset = new DragLocation(Op.POWER, dragging, this, false);
                 dragLocations.add(newset);
             }
+
         }
-        for (Equation e:this){
-            e.getDragLocations(dragging,dragLocations,ops);
+        if (dragging.equals(this)){
+            // left and op
+            DragLocation newset = new DragLocation(this);
+            dragLocations.add(newset);
+        }else {
+            for (Equation e : this) {
+                e.getDragLocations(dragging, dragLocations, ops);
+            }
         }
     }
 
