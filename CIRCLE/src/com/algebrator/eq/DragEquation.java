@@ -29,10 +29,11 @@ public class DragEquation {
 
         this.startParent = this.demo.parent.copy();
         this.startIndex = this.demo.parent.indexOf(this.demo);
-        // figure out if it is add
-        //TODO what happens if it is a Equals equation?
+
         updateOps(eq);
+
     }
+
 
     public void updateOps(Equation equation) {
         ops = new ArrayList<Op>();

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.circle.Algebrator;
 import com.example.circle.ColinView;
+import com.example.circle.DragLocation;
 import com.example.circle.SuperView;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ abstract public class Equation extends ArrayList<Equation> {
     protected boolean selected = false;
     protected int myWidth;
     protected int myHeight;
-    SuperView owner;
+    public SuperView owner;
     private int id;
     private int buffer = 10;
 
@@ -770,7 +771,7 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     // returns null on sucess
-    ArrayList<EquationDis> tryOp(DragEquation dragging, boolean right, Op op) {
+    public ArrayList<EquationDis> tryOp(Equation dragging, boolean right, Op op) {
         Log.i("try", this.hashCode() + " " + this.display);
 
         if (parent.indexOf(this) == -1) {
@@ -788,7 +789,7 @@ abstract public class Equation extends ArrayList<Equation> {
         }
 
         if (can) {
-            boolean sameSide = (op == Op.ADD && side() != dragging.demo.side());
+            boolean sameSide = (op == Op.ADD && side() != dragging.side());
             //peel off the minus signs
             ArrayList<MinusEquation> minusSigns = new ArrayList<MinusEquation>();
             while (this.parent instanceof MinusEquation) {
@@ -797,52 +798,52 @@ abstract public class Equation extends ArrayList<Equation> {
             }
 
             if (op == Op.POWER) {
-                dragging.demo.remove();
-                Equation power = Operations.flip(dragging.demo);
+                dragging.remove();
+                Equation power = Operations.flip(dragging);
                 Equation newEq = new PowerEquation(owner);
                 Equation oldEq = this;
                 oldEq.replace(newEq);
                 newEq.add(this);
                 newEq.add(power);
-                dragging.getAndUpdateDemo(power);
-                dragging.updateOps(dragging.demo);
+                //dragging.getAndUpdateDemo(power);
+                //dragging.updateOps(dragging.demo);
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
-                dragging.demo.remove();
-                this.replace(dragging.getAndUpdateDemo(this, sameSide));
-                dragging.updateOps(dragging.demo);
+                dragging.remove();
+                dragging = update(dragging,sameSide);
+                this.replace(dragging);
                 return null;
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 1 && op == Op.MULTI) {
-                dragging.demo.remove();
-                this.replace(dragging.getAndUpdateDemo(this, sameSide));
-                dragging.updateOps(dragging.demo);
+                dragging.remove();
+                dragging = update(dragging,sameSide);
+                this.replace(dragging);
                 // bring back the minus signs on demo
                 for (MinusEquation me : minusSigns) {
                     me.clear();
-                    dragging.demo.replace(me);
-                    me.add(dragging.demo);
+                    dragging.replace(me);
+                    me.add(dragging);
                 }
                 return null;
             } else if ((parent instanceof AddEquation && op == Op.ADD) ||
                     (parent instanceof MultiEquation && op == Op.MULTI)) {
-                if (parent.equals(dragging.demo.parent)) {
-                    dragging.demo.justRemove();
+                if (parent.equals(dragging.parent)) {
+                    dragging.justRemove();
                 } else {
-                    dragging.demo.remove();
+                    dragging.remove();
                 }
                 int myIndex = parent.indexOf(this);
                 Log.i("", "added to existing");
-                if (dragging.demo.x < x) {
-                    parent.add(myIndex + 1, dragging.getAndUpdateDemo(this, sameSide));
-                    dragging.updateOps(dragging.demo);
+                if (!right) {
+                    dragging = update(dragging,sameSide);
+                    parent.add(myIndex + 1, dragging);
                 } else {
-                    parent.add(myIndex, dragging.getAndUpdateDemo(this, sameSide));
-                    dragging.updateOps(dragging.demo);
+                    dragging = update(dragging,sameSide);
+                    parent.add(myIndex, dragging);
                 }
             } else {
-                if ((op == Op.DIV || op == Op.MULTI) && dragging.demo.parent instanceof EqualsEquation) {
-                    dragging.demo.replace(new NumConstEquation(1, owner));
+                if ((op == Op.DIV || op == Op.MULTI) && dragging.parent instanceof EqualsEquation) {
+                    dragging.replace(new NumConstEquation(1, owner));
                 } else {
-                    dragging.demo.remove();
+                    dragging.remove();
                 }
                 Log.i("added to new", "" + this.toString());
                 Equation oldEq = this;
@@ -858,21 +859,20 @@ abstract public class Equation extends ArrayList<Equation> {
                 if (op != Op.DIV) {
                     oldEq.replace(newEq);
                     if (right) {
-                        newEq.add(dragging.getAndUpdateDemo(this, sameSide));
+                        dragging = update(dragging,sameSide);
+                        newEq.add(dragging);
                         newEq.add(oldEq);
-                        dragging.updateOps(dragging.demo);
                     } else {
                         newEq.add(oldEq);
-                        newEq.add(dragging.getAndUpdateDemo(this, sameSide));
-                        dragging.updateOps(dragging.demo);
+                        dragging = update(dragging,sameSide);
+                        newEq.add(dragging);
                     }
                 } else {
                     oldEq.replace(newEq);
                     newEq.add(oldEq);
-                    newEq.add(dragging.getAndUpdateDemo(this, sameSide));
-                    dragging.updateOps(dragging.demo);
+                    dragging = update(dragging,sameSide);
+                    newEq.add(dragging);
                 }
-
             }
             // bring back the minus signs
             Equation at = this;
@@ -886,9 +886,24 @@ abstract public class Equation extends ArrayList<Equation> {
         return new ArrayList<EquationDis>();
     }
 
-    private boolean canPower(DragEquation dragging) {
-        if (dragging.demo.parent instanceof PowerEquation && dragging.demo.parent.parent instanceof EqualsEquation) {
-            if (this.parent instanceof EqualsEquation && dragging.demo.side() != this.side()) {
+    private Equation update(Equation dragging, boolean sameSide) {
+        Equation toInsert;
+        if (sameSide) {
+            if (dragging instanceof MinusEquation) {
+                toInsert = dragging.get(0);
+            } else {
+                toInsert = new MinusEquation(dragging.owner);
+                toInsert.add(dragging);
+            }
+        } else {
+            toInsert = dragging;
+        }
+        return toInsert;
+    }
+
+    private boolean canPower(Equation dragging) {
+        if (dragging.parent instanceof PowerEquation && dragging.parent.parent instanceof EqualsEquation) {
+            if (this.parent instanceof EqualsEquation && dragging.side() != this.side()) {
                 return true;
             }
         }
@@ -903,28 +918,28 @@ abstract public class Equation extends ArrayList<Equation> {
         super.remove(equation);
     }
 
-    private boolean CanAdd(DragEquation dragging) {
-        Equation lcc = lowestCommonContainer(dragging.demo);
+    private boolean CanAdd(Equation dragging) {
+        Equation lcc = lowestCommonContainer(dragging);
 
         // if these are in the same add block
-        if (lcc instanceof AddEquation && lcc.addContain(this) && lcc.addContain(dragging.demo)) {
+        if (lcc instanceof AddEquation && lcc.addContain(this) && lcc.addContain(dragging)) {
             return true;
         }
         // if they are only both only adds away form equals
         if (lcc instanceof EqualsEquation) {
             EqualsEquation ee = (EqualsEquation) lcc;
-            if (ee.addContain(dragging.demo) && ee.addContain(this)) {
+            if (ee.addContain(dragging) && ee.addContain(this)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean canMuli(DragEquation dragging) {
+    public boolean canMuli(Equation dragging) {
         return canMultiDiv(dragging, true);
     }
 
-    public boolean canDiv(DragEquation dragging) {
+    public boolean canDiv(Equation dragging) {
         return canMultiDiv(dragging, false);
     }
 
@@ -943,13 +958,13 @@ abstract public class Equation extends ArrayList<Equation> {
         return display + internals;
     }
 
-    private boolean canMultiDiv(DragEquation dragging, boolean multi) {
+    private boolean canMultiDiv(Equation dragging, boolean multi) {
         boolean result = false;
-        Equation lcc = lowestCommonContainer(dragging.demo);
+        Equation lcc = lowestCommonContainer(dragging);
         // if these are in the same multi block
-        if (lcc instanceof MultiDivSuperEquation && lcc.DivMultiContain(this) && lcc.DivMultiContain(dragging.demo)) {
+        if (lcc instanceof MultiDivSuperEquation && lcc.DivMultiContain(this) && lcc.DivMultiContain(dragging)) {
             MultiDivSuperEquation lccmdse = (MultiDivSuperEquation) lcc;
-            result = ((lccmdse.onTop(this) == lccmdse.onTop(dragging.demo)) == multi);
+            result = ((lccmdse.onTop(this) == lccmdse.onTop(dragging)) == multi);
             if (!result) {
                 Log.i("", "same sides, tops are wrong. multi: " + multi);
             } else {
@@ -960,7 +975,7 @@ abstract public class Equation extends ArrayList<Equation> {
         // if they are only div/multi away form the equals
         if (lcc instanceof EqualsEquation) {
             EqualsEquation ee = (EqualsEquation) lcc;
-            if (ee.DivMultiContain(dragging.demo) && ee.DivMultiContain(this)) {
+            if (ee.DivMultiContain(dragging) && ee.DivMultiContain(this)) {
 
                 // 1*2=_ the _ on top and multiDivContained by the equals
                 boolean myTop = true;
@@ -969,9 +984,9 @@ abstract public class Equation extends ArrayList<Equation> {
                             .get(ee.side(this))).onTop(this);
                 }
                 boolean eqTop = true;
-                if (ee.get(ee.side(dragging.demo)) instanceof MultiDivSuperEquation) {
+                if (ee.get(ee.side(dragging)) instanceof MultiDivSuperEquation) {
                     eqTop = ((MultiDivSuperEquation) ee
-                            .get(ee.side(dragging.demo))).onTop(dragging.demo);
+                            .get(ee.side(dragging))).onTop(dragging);
                 }
                 result = ((myTop != eqTop) == multi);
                 if (!result) {
@@ -988,6 +1003,31 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public void updateLocation() {
         draw(null, x, y);
+    }
+
+
+    public void getDragLocations(Equation dragging, DragLocations dragLocations, ArrayList<Op> ops) {
+        if (this.parent != null && !dragging.deepContains(this)) {
+            if (ops.contains(Op.MULTI) && canMuli(dragging) && !(this instanceof MultiEquation)) {
+                dragLocations.add(new DragLocation(Op.MULTI, dragging, this, true));
+                dragLocations.add(new DragLocation(Op.MULTI, dragging, this, false));
+            }
+            if (ops.contains(Op.ADD) && CanAdd(dragging)&& !(this instanceof AddEquation)) {
+                dragLocations.add(new DragLocation(Op.ADD, dragging, this, true));
+                dragLocations.add(new DragLocation(Op.ADD, dragging, this, false));
+            }
+            if (ops.contains(Op.DIV) && canDiv(dragging)) {
+                DragLocation newset = new DragLocation(Op.DIV, dragging, this, false);
+                dragLocations.add(newset);
+            }
+            if (ops.contains(Op.POWER) && canPower(dragging)) {
+                DragLocation newset = new DragLocation(Op.POWER, dragging, this, false);
+                dragLocations.add(newset);
+            }
+        }
+        for (Equation e:this){
+            e.getDragLocations(dragging,dragLocations,ops);
+        }
     }
 
     public enum Op {ADD, DIV, POWER, MULTI}

@@ -48,10 +48,9 @@ public class AddEquation extends FlexOperation {
 		result.display = this.getDisplay(-1);
 		// pass selected?
 
-		// copy all the kiddos and set this as their parent
+		// copy all the kiddos
 		for (int i = 0; i < this.size(); i++) {
 			result.add(this.get(i).copy());
-			result.get(i).parent = result;
 		}
 		return result;
 	}

@@ -20,6 +20,7 @@ import android.view.WindowManager;
 
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.DragEquation;
+import com.algebrator.eq.DragLocations;
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.MinusEquation;
@@ -153,6 +154,7 @@ public abstract class SuperView extends View implements
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
+
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
 
@@ -421,7 +423,14 @@ public abstract class SuperView extends View implements
                     dragging.eq.x = event.getX();
                     dragging.eq.y = event.getY();
 
+                    float min= Float.MAX_VALUE;
+                    DragLocation closest = dragLocations.closest(event);
 
+
+                    if (closest !=null){
+                        stupid = closest.myStupid;
+                    }
+                    /*
                     ArrayList<EquationDis> closest = stupid.closest(dragging);
 
                     // debug
@@ -456,7 +465,8 @@ public abstract class SuperView extends View implements
                                 }
                             }
                         }
-                    }
+
+                    }*/
                 }
 
                 // if they are moving the equation
@@ -534,6 +544,8 @@ public abstract class SuperView extends View implements
         }
     }
 
+    private DragLocations dragLocations= null;
+
     private void startDragging() {
         if (canDrag) {
             selectSet();
@@ -549,11 +561,23 @@ public abstract class SuperView extends View implements
                 dragging.eq.x =lastX;
                 dragging.eq.y =lastY;
                 selected.isDemo(true);
+
+                getDragLocations();
+                Log.d("Drag Locations", "#######################");
+                for (DragLocation dl:dragLocations){
+                    Log.d("Drag Locations",dl.myStupid.toString());
+                }
                 //}
             } else {
                 myMode = TouchMode.DEAD;
             }
         }
+    }
+
+    //update DragLocations
+    private void getDragLocations() {
+        dragLocations = new DragLocations();
+        stupid.getDragLocations(dragging.demo,dragLocations,dragging.ops);
     }
 
     private void addToSelectingSet(HashSet<Equation> ons) {

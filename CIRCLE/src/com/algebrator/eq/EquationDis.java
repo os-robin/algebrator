@@ -86,12 +86,12 @@ public class EquationDis implements Comparable<EquationDis> {
 	private ArrayList<EquationDis> tryX(DragEquation dragging) {
 		if (dragging.ops.contains(Equation.Op.ADD)) {
 			if (equation.x > x) {
-                ArrayList<EquationDis> result = equation.tryOp(dragging,false,Equation.Op.ADD);
+                ArrayList<EquationDis> result = equation.tryOp(dragging.demo,false,Equation.Op.ADD);
 				if (result==null){
                     return  null;
                 }
 			} else {
-                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.ADD);
+                ArrayList<EquationDis> result =equation.tryOp(dragging.demo,true,Equation.Op.ADD);
                 if (result==null){
                     return  null;
                 }
@@ -99,19 +99,19 @@ public class EquationDis implements Comparable<EquationDis> {
 		}
         if (dragging.ops.contains(Equation.Op.MULTI)){
 			if (equation.x > x) {
-                ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.MULTI);
+                ArrayList<EquationDis> result =equation.tryOp(dragging.demo,false,Equation.Op.MULTI);
                 if (result==null){
                     return  null;
                 }
 			} else {
-                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.MULTI);
+                ArrayList<EquationDis> result =equation.tryOp(dragging.demo,true,Equation.Op.MULTI);
                 if (result==null){
                     return  null;
                 }
 			}
 		}
         if (dragging.ops.contains(Equation.Op.POWER)){
-            ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.POWER);
+            ArrayList<EquationDis> result =equation.tryOp(dragging.demo,false,Equation.Op.POWER);
             if (result==null){
                 return  null;
             }
@@ -122,19 +122,19 @@ public class EquationDis implements Comparable<EquationDis> {
 	private ArrayList<EquationDis> tryY(DragEquation dragging) {
 		if (dragging.ops.contains(Equation.Op.DIV)) {
 			if (equation.x > x) {
-                ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.DIV);
+                ArrayList<EquationDis> result =equation.tryOp(dragging.demo,false,Equation.Op.DIV);
                 if (result==null){
                     return  null;
                 }
 			} else {
-                ArrayList<EquationDis> result =equation.tryOp(dragging,true,Equation.Op.DIV);
+                ArrayList<EquationDis> result =equation.tryOp(dragging.demo,true,Equation.Op.DIV);
                 if (result==null){
                     return  null;
                 }
 			}
 		}
         if (dragging.ops.contains(Equation.Op.POWER)){
-            ArrayList<EquationDis> result =equation.tryOp(dragging,false,Equation.Op.POWER);
+            ArrayList<EquationDis> result =equation.tryOp(dragging.demo,false,Equation.Op.POWER);
             if (result==null){
                 return  null;
             }
