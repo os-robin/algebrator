@@ -17,16 +17,28 @@ public class DragLocations implements Iterable<DragLocation> {
     public void add(DragLocation dragLocation) {
         boolean pass = true;
         for (DragLocation dl:backEnd){
-            if (dl.x == dragLocation.x && dl.y == dragLocation.y && dl.myStupid.same(dragLocation.myStupid)){
+            if (close(dl,dragLocation) && dl.myStupid.same(dragLocation.myStupid)){
                 pass = false;
-            }else if (dl.x == dragLocation.x && dl.y == dragLocation.y){
-                Log.i("dragLocations - add", "collision adding");
+            }else if (close(dl,dragLocation)){
+                // push the old one "out" and the new one "in"
 
+                dragLocation.y -=closeIs/2;
+                dl.y +=closeIs/2;
             }
         }
         if (pass) {
             backEnd.add(dragLocation);
         }
+    }
+
+    //TODO scale by Dpi
+    private float closeIs = 10;
+    private boolean close(DragLocation dl, DragLocation dragLocation) {
+        float x1= dl.x;
+        float x2= dragLocation.x;
+        float y1 = dl.y;
+        float y2= dragLocation.y;
+        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))<closeIs;
     }
 
     public DragLocation closest(MotionEvent event) {

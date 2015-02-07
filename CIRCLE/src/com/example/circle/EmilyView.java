@@ -127,8 +127,8 @@ public class EmilyView extends SuperView {
         firstRow.add(new Button(")",new ParenthesesAction(this,false)));
         firstRow.add(new Button("=",new EqualsAction(this)));
         //TODO this does not work since my font does not support this
-        char[] backSpaceUnicode = { '\u232B'};
-        firstRow.add(new Button("⌫",new DeleteAction(this)));
+        //char[] backSpaceUnicode = { '\u232B'};
+        firstRow.add(new Button("DEL",new DeleteAction(this)));//
 
         ArrayList<Button> secondRow = new ArrayList<Button>();
         secondRow.add(new Button("4",new NumberAction(this, "4")));
@@ -158,7 +158,7 @@ public class EmilyView extends SuperView {
 
         addButtonsRow(firstRow,6f/9f,7f/9f);
         addButtonsRow(secondRow,0f,7f/9f,7f/9f,8f/9f);
-        Button solve = new Button("Solve",new Solve(this));
+        Button solve = new Button("SOLVE",new Solve(this));
         solve.setLocation(7f/9f,1f,7f/9f,8f/9f);
         buttons.add(solve);
         addButtonsRow(thridRow, 8f / 9f, 9f / 9f);

@@ -799,7 +799,12 @@ abstract public class Equation extends ArrayList<Equation> {
 
             if (op == Op.POWER) {
                 dragging.remove();
-                Equation power = Operations.flip(dragging);
+                Equation power;
+                if (dragging instanceof NumConstEquation && Math.floor(1/((NumConstEquation) dragging).getValue()) == 1/((NumConstEquation) dragging).getValue()){
+                    power = new NumConstEquation(1/(((NumConstEquation) dragging).getValue()),((NumConstEquation) dragging).owner);
+                }else {
+                    power = Operations.flip(dragging);
+                }
                 Equation newEq = new PowerEquation(owner);
                 Equation oldEq = this;
                 oldEq.replace(newEq);
@@ -940,7 +945,14 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public boolean canDiv(Equation dragging) {
-        return canMultiDiv(dragging, false);
+        if( !canMultiDiv(dragging, false)){
+            return false;
+        }
+        //we don't allow a/b -> (a/1)/b
+        if (this instanceof DivEquation && dragging.equals(this.get(1))){
+            return false;
+        }
+        return true;
     }
 
     @Override

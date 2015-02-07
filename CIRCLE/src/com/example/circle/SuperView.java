@@ -158,13 +158,13 @@ public abstract class SuperView extends View implements
 
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
-        for (DragLocation dl:dragLocations){
-            float dlx = dl.x + stupid.x;
-            float dly = dl.y + stupid.y;
-            Paint temp =new Paint();
-            temp.setColor(Color.GREEN);
-            canvas.drawCircle(dlx,dly,15,temp);
-        }
+//        for (DragLocation dl:dragLocations){
+//            float dlx = dl.x + stupid.x;
+//            float dly = dl.y + stupid.y;
+//            Paint temp =new Paint();
+//            temp.setColor(Color.GREEN);
+//            canvas.drawCircle(dlx,dly,15,temp);
+//        }
 
 
         if (dragging != null) {
@@ -645,9 +645,7 @@ public abstract class SuperView extends View implements
             addToSelectingSet(ons);
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
-
-
-            if (this instanceof ColinView && dragging.moved()){
+            if (dragging.moved(stupid)){
                 ((ColinView)this).changed = true;
             }
             stupid.fixIntegrety();

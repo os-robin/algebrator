@@ -333,6 +333,9 @@ public class PowerEquation extends Operation implements BinaryEquation {
         //canvas.drawLine(point.x + 3, point.y, point.x - 3, point.y, p);
         lastPoint.add(point);
 
+        //update the location of thing
+        get(1).x = point.x;
+        get(1).y = point.y;
     }
 
     public float measureHeightLower() {

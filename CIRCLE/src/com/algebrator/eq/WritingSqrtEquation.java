@@ -58,4 +58,5 @@ public class WritingSqrtEquation extends WritingPraEquation {
         return super.measureWidth() + buffer + PowerEquation.width_addition;
     }
 
+
 }

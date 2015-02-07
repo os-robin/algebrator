@@ -40,7 +40,15 @@ public class WritingPraEquation extends WritingLeafEquation {
 
     @Override
     public boolean illegal() {
-        return getMatch()== null;
+        Equation match =getMatch();
+        // if it does not have a match
+        if(match == null)
+            return true;
+        // if the match is right next to it
+        if (match .equals(left()) || match.equals(right()))
+            return true;
+        // otherwise we are ok
+        return false;
     }
 
 

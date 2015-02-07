@@ -18,18 +18,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1acd5600-ca35-4a64-a547-f298202292a0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/LeftAction.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SolveScreen.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperScreen.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/WriteScreen.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/assets/fonts/DejaVuSans-ExtraLight.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CIRCLE/assets/fonts/Roboto-Thin.ttf" />
+      <change type="DELETED" beforePath="C:\Users\Colin\Mine\Android\algebrator\CIRCLE\src\com\algebrator\utils\Utils.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Algebrator.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Algebrator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/AndroidManifest.xml" afterPath="$PROJECT_DIR$/CIRCLE/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/MainActivity.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Operations.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Operations.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/Solve.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/Solve.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java" afterPath="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="algebrator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,67 +59,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SuperScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperScreen.java">
+      <file leaf-file-name="DragLocation.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1785">
-              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="35" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Algebrator.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Algebrator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.366337" vertical-offset="273" max-vertical-offset="918">
-              <caret line="47" column="10" selection-start-line="47" selection-start-column="10" selection-end-line="47" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Solve.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/Solve.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="731">
-              <caret line="30" column="51" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="51" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Manifest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/gen/com/example/circle/Manifest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
-              <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="137" max-vertical-offset="748">
-              <caret line="22" column="27" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
-              <folding>
-                <element signature="e#489#507#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Operations.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Operations.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6057" max-vertical-offset="8449">
-              <caret line="488" column="38" selection-start-line="488" selection-start-column="38" selection-end-line="488" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="236" max-vertical-offset="1530">
+              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -126,41 +72,105 @@
       <file leaf-file-name="SuperView.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="9286" max-vertical-offset="12240">
-              <caret line="587" column="0" selection-start-line="587" selection-start-column="0" selection-end-line="587" selection-end-column="0" />
+            <state vertical-scroll-proportion="-8.964286" vertical-offset="1925" max-vertical-offset="12206">
+              <caret line="162" column="42" selection-start-line="162" selection-start-column="42" selection-end-line="162" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/MainActivity.java">
+      <file leaf-file-name="Button.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="273" max-vertical-offset="1870">
-              <caret line="33" column="55" selection-start-line="33" selection-start-column="46" selection-end-line="33" selection-end-column="55" />
-              <folding />
+            <state vertical-scroll-proportion="0.3555133" vertical-offset="1530" max-vertical-offset="2635">
+              <caret line="109" column="55" selection-start-line="109" selection-start-column="55" selection-end-line="109" selection-end-column="55" />
+              <folding>
+                <element signature="e#4386#4387#0" expanded="true" />
+                <element signature="e#4427#4428#0" expanded="true" />
+                <element signature="e#4455#4456#0" expanded="true" />
+                <element signature="e#4496#4497#0" expanded="true" />
+                <element signature="e#4526#4527#0" expanded="true" />
+                <element signature="e#4570#4571#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WriteScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/WriteScreen.java">
+      <file leaf-file-name="DragEquation.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="459">
-              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="21" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="528" max-vertical-offset="1054">
+              <caret line="37" column="46" selection-start-line="37" selection-start-column="46" selection-end-line="37" selection-end-column="46" />
+              <folding>
+                <element signature="e#1542#1543#0" expanded="true" />
+                <element signature="e#1599#1600#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SolveScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SolveScreen.java">
+      <file leaf-file-name="EmilyView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="442">
-              <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="18" selection-end-column="5" />
+            <state vertical-scroll-proportion="-20.5" vertical-offset="1874" max-vertical-offset="5389">
+              <caret line="144" column="66" selection-start-line="144" selection-start-column="66" selection-end-line="144" selection-end-column="66" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ColinView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/ColinView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="936" max-vertical-offset="1717">
+              <caret line="82" column="14" selection-start-line="82" selection-start-column="12" selection-end-line="82" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PowerEquation.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5070" max-vertical-offset="6307">
+              <caret line="337" column="27" selection-start-line="337" selection-start-column="27" selection-end-line="337" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DragLocations.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1088">
+              <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Equation.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-11.107142" vertical-offset="13051" max-vertical-offset="17340">
+              <caret line="817" column="39" selection-start-line="817" selection-start-column="39" selection-end-line="817" selection-end-column="39" />
+              <folding>
+                <element signature="e#18918#18919#0" expanded="true" />
+                <element signature="e#18943#18944#0" expanded="true" />
+                <element signature="e#23742#23757#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RenderNode.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-21/android/view/RenderNode.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3682" max-vertical-offset="14416">
+              <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -194,7 +204,6 @@
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/DeleteAction.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PlaceholderEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/NumberAction.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/SqrtAction.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/ParenthesesAction.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/leftAction.java" />
@@ -204,10 +213,7 @@
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/LeftAction.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/Action.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/ColinView.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DivEquation.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/TimesAction.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/LeafEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingEquation.java" />
@@ -218,14 +224,8 @@
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/MinusEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/EquationButton.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/DecimalAction.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/EquationDis.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/AddEquation.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java" />
-        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/MainActivity.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SolveScreen.java" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/WriteView.java" />
@@ -234,6 +234,16 @@
         <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Operations.java" />
         <option value="$PROJECT_DIR$/CIRCLE/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Algebrator.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java" />
+        <option value="$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java" />
       </list>
     </option>
   </component>
@@ -241,9 +251,10 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="640" />
-    <option name="width" value="640" />
-    <option name="height" value="695" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1296" />
+    <option name="height" value="711" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -271,6 +282,108 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CIRCLE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CIRCLE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="circle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CIRCLE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="eq" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CIRCLE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gen" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="circle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="algebrator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CIRCLE" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fonts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -389,112 +502,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIRCLE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIRCLE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="circle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIRCLE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="circle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Actions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIRCLE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algebrator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIRCLE" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="circle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -533,11 +540,15 @@
     <property name="ExportedModule" value="CIRCLE" />
     <property name="ExportedApkPath" value="C:\Users\Colin\Desktop\Mathew.apk" />
     <property name="AndroidRunProguardForReleaseBuild" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="drag&#9;FILE&#9;file://C:/Users/Colin/Mine/Android/algebrator/CIRCLE/src/com/algebrator/eq/DragLocations.java" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.algebrator.eq" />
       <recent name="com.example.circle" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Colin\Mine\Android\algebrator\CIRCLE\assets\fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Colin\Mine\Android\algebrator\CIRCLE\assets\fonts" />
@@ -823,7 +834,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="640" y="0" width="640" height="695" extended-state="0" />
+    <frame x="-8" y="-8" width="1296" height="711" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32748538" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
@@ -836,14 +847,15 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51805055" sideWeight="0.63106793" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928804" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27436823" sideWeight="0.47572815" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2725632" sideWeight="0.47572815" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.57220215" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32851985" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.72319686" sideWeight="0.37621358" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.71299636" sideWeight="0.37621358" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32851985" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.6637931" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26779935" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5379061" sideWeight="0.6237864" order="13" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32490975" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45126355" sideWeight="0.47653723" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -853,7 +865,6 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928804" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32490975" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -962,30 +973,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java</url>
-          <line>847</line>
+          <line>852</line>
           <properties />
           <option name="timeStamp" value="84" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java</url>
+          <line>60</line>
+          <properties />
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="85" />
+      <option name="time" value="88" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/DivAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/BinaryAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="575" max-vertical-offset="1292">
-          <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/SqrtAction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="952">
@@ -1049,28 +1051,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="247" max-vertical-offset="1003">
-          <caret line="29" column="16" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="502" max-vertical-offset="3723">
-          <caret line="46" column="19" selection-start-line="46" selection-start-column="19" selection-end-line="46" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4871" max-vertical-offset="6256">
-          <caret line="305" column="23" selection-start-line="305" selection-start-column="23" selection-end-line="305" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DivEquation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.0" vertical-offset="1272" max-vertical-offset="3638">
@@ -1082,13 +1062,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="1717">
           <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingLeafEquation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="816" max-vertical-offset="2091">
-          <caret line="12" column="45" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
         </state>
       </provider>
     </entry>
@@ -1173,39 +1146,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4075" max-vertical-offset="4896">
-          <caret line="281" column="16" selection-start-line="281" selection-start-column="16" selection-end-line="281" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Actions/DecimalAction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="188" max-vertical-offset="1088">
           <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2258" max-vertical-offset="2771">
-          <caret line="21" column="22" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/ColinView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1191" max-vertical-offset="1717">
-          <caret line="101" column="16" selection-start-line="101" selection-start-column="16" selection-end-line="101" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-21/android/view/RenderNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3767" max-vertical-offset="14416">
-          <caret line="248" column="0" selection-start-line="248" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1231,42 +1175,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="800" max-vertical-offset="1547">
-          <caret line="58" column="8" selection-start-line="58" selection-start-column="8" selection-end-line="69" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/EquationDis.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2737">
           <caret line="6" column="59" selection-start-line="6" selection-start-column="25" selection-end-line="6" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="250" max-vertical-offset="884">
-          <caret line="35" column="22" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="84" max-vertical-offset="1530">
-          <caret line="20" column="40" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="16215" max-vertical-offset="17068">
-          <caret line="1009" column="23" selection-start-line="1009" selection-start-column="17" selection-end-line="1009" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -1279,21 +1191,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="9286" max-vertical-offset="12240">
-          <caret line="587" column="0" selection-start-line="587" selection-start-column="0" selection-end-line="587" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SolveScreen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="442">
           <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="18" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1301,9 +1203,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1785">
           <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="35" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1335,9 +1235,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="731">
           <caret line="30" column="51" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1345,17 +1243,143 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="137" max-vertical-offset="748">
           <caret line="22" column="27" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
-          <folding>
-            <element signature="e#489#507#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Algebrator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.366337" vertical-offset="273" max-vertical-offset="918">
-          <caret line="47" column="10" selection-start-line="47" selection-start-column="10" selection-end-line="47" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="273" max-vertical-offset="952">
+          <caret line="47" column="29" selection-start-line="47" selection-start-column="29" selection-end-line="47" selection-end-column="29" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/VarEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="595">
+          <caret line="5" column="71" selection-start-line="5" selection-start-column="57" selection-end-line="5" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingLeafEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="2091">
+          <caret line="37" column="30" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingSqrtEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="507" max-vertical-offset="1020">
+          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/WritingPraEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="235" max-vertical-offset="3825">
+          <caret line="49" column="21" selection-start-line="49" selection-start-column="21" selection-end-line="49" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-21/android/view/RenderNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3682" max-vertical-offset="14416">
+          <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragLocations.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1088">
+          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/DragLocation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="236" max-vertical-offset="1530">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/PowerEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5070" max-vertical-offset="6307">
+          <caret line="337" column="27" selection-start-line="337" selection-start-column="27" selection-end-line="337" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/Equation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.107142" vertical-offset="13051" max-vertical-offset="17340">
+          <caret line="817" column="39" selection-start-line="817" selection-start-column="39" selection-end-line="817" selection-end-column="39" />
+          <folding>
+            <element signature="e#18918#18919#0" expanded="true" />
+            <element signature="e#18943#18944#0" expanded="true" />
+            <element signature="e#23742#23757#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/ColinView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="936" max-vertical-offset="1717">
+          <caret line="82" column="14" selection-start-line="82" selection-start-column="12" selection-end-line="82" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/algebrator/eq/DragEquation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="528" max-vertical-offset="1054">
+          <caret line="37" column="46" selection-start-line="37" selection-start-column="46" selection-end-line="37" selection-end-column="46" />
+          <folding>
+            <element signature="e#1542#1543#0" expanded="true" />
+            <element signature="e#1599#1600#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/EmilyView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-20.5" vertical-offset="1874" max-vertical-offset="5389">
+          <caret line="144" column="66" selection-start-line="144" selection-start-column="66" selection-end-line="144" selection-end-column="66" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/SuperView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.964286" vertical-offset="1925" max-vertical-offset="12206">
+          <caret line="162" column="42" selection-start-line="162" selection-start-column="42" selection-end-line="162" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CIRCLE/src/com/example/circle/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3555133" vertical-offset="1530" max-vertical-offset="2635">
+          <caret line="109" column="55" selection-start-line="109" selection-start-column="55" selection-end-line="109" selection-end-column="55" />
+          <folding>
+            <element signature="e#4386#4387#0" expanded="true" />
+            <element signature="e#4427#4428#0" expanded="true" />
+            <element signature="e#4455#4456#0" expanded="true" />
+            <element signature="e#4496#4497#0" expanded="true" />
+            <element signature="e#4526#4527#0" expanded="true" />
+            <element signature="e#4570#4571#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

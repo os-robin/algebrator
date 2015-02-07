@@ -44,8 +44,10 @@ public class Algebrator extends Application {
 
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setAntiAlias(true);
-        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
-        //textPaint.setTypeface(myTypeface);
+        //Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
+        //Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Thin.ttf");
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans-ExtraLight.ttf");
+        textPaint.setTypeface(myTypeface);
         textPaint.setColor(0xff000000);
     }
 
