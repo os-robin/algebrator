@@ -19,6 +19,9 @@ public class DragLocations implements Iterable<DragLocation> {
         for (DragLocation dl:backEnd){
             if (close(dl,dragLocation) && dl.myStupid.same(dragLocation.myStupid)){
                 pass = false;
+                if (dragLocation.og){
+                    dl.og=true;
+                }
             }else if (close(dl,dragLocation)){
                 // push the old one "out" and the new one "in"
 

@@ -158,13 +158,13 @@ public abstract class SuperView extends View implements
 
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
-//        for (DragLocation dl:dragLocations){
-//            float dlx = dl.x + stupid.x;
-//            float dly = dl.y + stupid.y;
-//            Paint temp =new Paint();
-//            temp.setColor(Color.GREEN);
-//            canvas.drawCircle(dlx,dly,15,temp);
-//        }
+        for (DragLocation dl:dragLocations){
+            float dlx = dl.x + stupid.x;
+            float dly = dl.y + stupid.y;
+            Paint temp =new Paint();
+            temp.setColor(Color.GREEN);
+            canvas.drawCircle(dlx,dly,15,temp);
+        }
 
 
         if (dragging != null) {
@@ -373,6 +373,8 @@ public abstract class SuperView extends View implements
 
     LongTouch lastLongTouch = null;
 
+    private boolean hasChanged = false;
+
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
         if (event.getPointerCount() == 1) {
@@ -434,47 +436,10 @@ public abstract class SuperView extends View implements
 
                     DragLocation closest = dragLocations.closest(event);
 
-
                     if (closest !=null){
                         stupid = closest.myStupid;
+                        hasChanged = !closest.isOG();
                     }
-                    /*
-                    ArrayList<EquationDis> closest = stupid.closest(dragging);
-
-                    // debug
-                    String whatdowehavehere = "";
-                    for (int i = 0; i < closest.size(); i++) {
-                        whatdowehavehere += closest.get(i).equation
-                                .hashCode()
-                                + "|"
-                                + closest.get(i).equation.getDisplay(0)
-                                + "|"
-                                + closest.get(i).dis
-                                + " ";
-                    }
-                    Log.i("closest", dragging.demo.hashCode() + "|" + dragging.demo.toString() + " " + whatdowehavehere);
-
-                    boolean found = false;
-                    while (closest.size() != 0 && !found) {
-                        EquationDis current = closest.get(0);
-                        closest.remove(0);
-                        if (dragging.demo.deepContains(current.equation)) {
-                            found = true;
-                            Log.i("drag", "no Move " + dragging.demo.toString() + " current Eq " + current.equation.toString());
-                        } else {
-                            if (!current.equation.deepContains(dragging.demo)) {
-                                Log.i("drag", dragging.ops + "");
-                                ArrayList<EquationDis> retuended = current.tryInsert(dragging);
-                                if (retuended == null) {
-                                    found = true;
-                                } else {
-                                    closest.addAll(retuended);
-                                    Collections.sort(closest);
-                                }
-                            }
-                        }
-
-                    }*/
                 }
 
                 // if they are moving the equation
@@ -645,10 +610,14 @@ public abstract class SuperView extends View implements
             addToSelectingSet(ons);
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
-            if (dragging.moved(stupid)){
-                ((ColinView)this).changed = true;
+            if (hasChanged){
+                ((ColinView)this).changed = hasChanged;
+                hasChanged = false;
             }
+
+
             stupid.fixIntegrety();
+
 
             dragging.demo.isDemo(false);
             dragging = null;

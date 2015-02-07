@@ -10,12 +10,14 @@ public class DragLocation implements Comparable<DragLocation> {
     public float y;
     public Equation myStupid;
     public SuperView owner;
+    public boolean og = false;
 
     public DragLocation(Equation.Op op, Equation dragging, Equation equation, boolean right) {
 
         this.owner = equation.owner;
 
         if (dragging.equals(equation)) {
+            og = true;
             myStupid = equation.owner.stupid;
 
             //myStupid.updateLocation();
@@ -60,6 +62,7 @@ public class DragLocation implements Comparable<DragLocation> {
     public DragLocation(Equation equation) {
         myStupid = equation.owner.stupid;
         this.owner = equation.owner;
+        og = true;
 
         //myStupid.updateLocation();
         this.x = equation.x - myStupid.x;
@@ -81,4 +84,7 @@ public class DragLocation implements Comparable<DragLocation> {
         return 0;
     }
 
+    public boolean isOG() {
+        return og;
+    }
 }

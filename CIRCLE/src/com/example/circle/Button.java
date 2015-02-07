@@ -103,8 +103,6 @@ public class Button {
 
 
         Paint textHighlight = new Paint();
-        textHighlight.setColor(textPaint.getColor());
-        textHighlight.setAlpha(textPaint.getAlpha());
         textHighlight.setTextSize(textPaint.getTextSize());
         textHighlight.setTypeface(textPaint.getTypeface());
         textHighlight.setTextAlign(Paint.Align.CENTER);

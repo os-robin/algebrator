@@ -18,8 +18,8 @@ public class Algebrator extends Application {
     public int highLight;
     public TextPaint textPaint = new TextPaint();
     public Paint bkgPaint = new Paint();
-    public SuperView writeView  = null;
-    public SuperView solveView  = null;
+    public EmilyView writeView  = null;
+    public ColinView solveView  = null;
 
     public int getTextSize(){
         return  this.TEXT_SIZE;

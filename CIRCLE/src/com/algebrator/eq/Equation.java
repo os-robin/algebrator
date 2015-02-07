@@ -800,7 +800,9 @@ abstract public class Equation extends ArrayList<Equation> {
             if (op == Op.POWER) {
                 dragging.remove();
                 Equation power;
-                if (dragging instanceof NumConstEquation && Math.floor(1/((NumConstEquation) dragging).getValue()) == 1/((NumConstEquation) dragging).getValue()){
+                // write as 1/8 or decimal?
+                //&& Math.floor(1/((NumConstEquation) dragging).getValue()) == 1/((NumConstEquation) dragging).getValue()
+                if (dragging instanceof NumConstEquation ){
                     power = new NumConstEquation(1/(((NumConstEquation) dragging).getValue()),((NumConstEquation) dragging).owner);
                 }else {
                     power = Operations.flip(dragging);

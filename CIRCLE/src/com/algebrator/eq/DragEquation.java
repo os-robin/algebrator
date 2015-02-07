@@ -18,7 +18,6 @@ public class DragEquation {
     // used to tell if the equation has moved
     Equation startParent = null;
     int startIndex = -1;
-    Equation startStupid;
 
     public DragEquation(Equation eq) {
         super();
@@ -27,8 +26,6 @@ public class DragEquation {
         this.eq.parent = null;
         //this.oldDemo = eq;
         this.demo = eq;
-
-        this.startStupid = eq.owner.stupid;
 
         updateOps(eq);
 
@@ -55,7 +52,4 @@ public class DragEquation {
         }
     }
 
-    public boolean moved(Equation currentStupid){
-        return !currentStupid.equals(startStupid);
-    }
 }
