@@ -101,7 +101,7 @@ public class Button {
         textPaint.getTextBounds("A", 0, "A".length(), out);
         float h = out.height();
 
-
+/*
         Paint textHighlight = new Paint();
         textHighlight.setTextSize(textPaint.getTextSize());
         textHighlight.setTypeface(textPaint.getTypeface());
@@ -115,7 +115,7 @@ public class Button {
                 (android.graphics.Color.blue(bkgPaint.getColor())*2+0xff)/3);
 
         canvas.drawText(text, (right() + left()) / 2, (bottom() + top()) / 2 + h / 2 , textHighlight);
-        //textHighlight.setMaskFilter(null);
+        //textHighlight.setMaskFilter(null);*/
 
         canvas.drawText(text, (right() + left()) / 2, (bottom() + top()) / 2 + h / 2, textPaint);
     }
