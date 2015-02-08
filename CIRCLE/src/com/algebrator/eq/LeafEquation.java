@@ -102,7 +102,7 @@ public abstract class LeafEquation extends Equation {
 
 	@Override
 	public void privateDraw(Canvas canvas, float x, float y) {
-		drawBkgBox(canvas, x, y);
+		//drawBkgBox(canvas, x, y);
 
         if (canvas !=null ) {
             Paint temp = getPaint();

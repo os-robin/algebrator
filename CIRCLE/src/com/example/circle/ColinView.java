@@ -91,10 +91,42 @@ public class ColinView extends SuperView {
 
     @Override
     protected void resolveSelected(MotionEvent event) {
-        // now we need to figure out what we are selecting
-        // find the least commond parent
+
+        String db1 = "";
+        for (Equation e: willSelect){
+            db1 += e.toString() + ",";
+        }
+
+
+        Log.d("resolving selected, will select:",db1);
+        Log.d("resolving selected, selected:",selected.toString());
+
+        selectingSet = new HashSet<Equation>();
+        if (selected != null){
+            if ( selected.size()!=0) {
+                selectingSet.addAll(selected);
+            }else {
+                selectingSet.add(selected);
+            }
+            selected.setSelected(false);
+            stupid.fixIntegrety();
+        }
+        for (Equation e : willSelect) {
+            if (selectingSet.contains(e)) {
+                selectingSet.remove(e);
+            } else {
+                selectingSet.add(e);
+            }
+        }
+
+        String db2 = "";
+        for (Equation e: selectingSet){
+            db2 += (e==null?null:e.toString()) + ",";
+        }
+        Log.d("resolving selected, selectingSet:",db2);
+
         if (selectingSet.isEmpty()) {
-            // do nothing
+            //do nothing
         } else if (selectingSet.size() == 1) {
             ((Equation) selectingSet.toArray()[0]).setSelected(true);
             selectingSet = new HashSet<Equation>();

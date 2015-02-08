@@ -181,7 +181,9 @@ abstract public class Equation extends ArrayList<Equation> {
         this.x = x;
         this.y = y;
         //if (!demo){
-        drawBkgBox(canvas, x, y);
+        if (isSelected()) {
+            drawBkgBox(canvas, x, y);
+        }
         privateDraw(canvas, x, y);
         //}
         if (canvas == null) {
@@ -435,11 +437,11 @@ abstract public class Equation extends ArrayList<Equation> {
                 (int) (y - measureHeightUpper()),
                 (int) (x + measureWidth() / 2), (int) (y + measureHeightLower()));
         Paint p = new Paint();
-        p.setAlpha(255 / 2);
+        p.setColor(Algebrator.getAlgebrator().mainColor);
         Random rand = new Random();
-        p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
+        //p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
         if (canvas != null) {
-            //canvas.drawRect(r, p);
+            canvas.drawRect(r, p);
         }
 
     }

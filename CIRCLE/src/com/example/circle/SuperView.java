@@ -158,13 +158,13 @@ public abstract class SuperView extends View implements
 
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
-        for (DragLocation dl:dragLocations){
-            float dlx = dl.x + stupid.x;
-            float dly = dl.y + stupid.y;
-            Paint temp =new Paint();
-            temp.setColor(Color.GREEN);
-            canvas.drawCircle(dlx,dly,15,temp);
-        }
+//        for (DragLocation dl:dragLocations){
+//            float dlx = dl.x + stupid.x;
+//            float dly = dl.y + stupid.y;
+//            Paint temp =new Paint();
+//            temp.setColor(Color.GREEN);
+//            canvas.drawCircle(dlx,dly,15,temp);
+//        }
 
 
         if (dragging != null) {
@@ -375,6 +375,8 @@ public abstract class SuperView extends View implements
 
     private boolean hasChanged = false;
 
+    protected HashSet<Equation> willSelect;
+
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
         if (event.getPointerCount() == 1) {
@@ -386,11 +388,8 @@ public abstract class SuperView extends View implements
                     myMode = TouchMode.BUTTON;
                 } else if (stupid.inBox(event.getX(), event.getY())) {
                     myMode = TouchMode.SELECT;
-                    HashSet<Equation> ons = stupid.onAny(event.getX(),
+                    willSelect = stupid.onAny(event.getX(),
                             event.getY());
-                    removeSelected();
-                    addToSelectingSet(ons);
-                    updateLastTouch(event);
                 } else {
                     myMode = TouchMode.MOVE;
                     if (selected != null) {
@@ -408,25 +407,30 @@ public abstract class SuperView extends View implements
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                 // check if they selected anything
                 if (myMode == TouchMode.SELECT) {
-                    HashSet<Equation> ons = stupid.onAny(event.getX(),
-                            event.getY());
+                    // if they get too far from were they started we are going to start dragging
+                    //TODO scale by dpi
+                    float maxMovement = 50;
+                    float distance = (float)Math.sqrt((lastX - event.getX())*(lastX - event.getX())+(lastY - event.getY())*(lastY-event.getY()));
+                    if (maxMovement < distance){
 
-                    addToSelectingSet(ons);
-                    updateLastTouch(event);
+                        boolean pass=true;
+                        if (selected != null) {
+                            for (Equation e : willSelect) {
+                                if (!selected.deepContains(e)) {
+                                    pass = false;
+                                    break;
+                                }
+                            }
+                        }else{
+                            resolveSelected(event);
+                        }
 
-                    String toLog = "";
-                    for (Equation e : selectingSet) {
-                        toLog += e.toString() + ",";
+                        if (pass) {
+                            startDragging();
+                        }else{
+                            myMode = TouchMode.MOVE;
+                        }
                     }
-
-                    Log.i("selectingSet", toLog);
-
-
-                    // see if they left the box
-                    // TODO both version might be good
-                    //if (canDrag &&  !stupid.inBox(event.getX(), event.getY())) {
-                    //startDragging();
-                    //}
                 }
 
                 // if we are dragging something move it
@@ -605,9 +609,6 @@ public abstract class SuperView extends View implements
                 buttons.get(i).click(event);
             }
         } else if (myMode == TouchMode.SELECT) {
-            // what did we select?
-            HashSet<Equation> ons = stupid.onAny(event.getX(), event.getY());
-            addToSelectingSet(ons);
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
             if (hasChanged){
@@ -630,6 +631,8 @@ public abstract class SuperView extends View implements
     }
 
     protected void selectSet() {
+
+
         Equation lcp = null;
         // if anything in selectingSet is contained by something else remove it
         HashSet<Equation> setCopy = new HashSet<Equation>(selectingSet);

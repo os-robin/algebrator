@@ -69,48 +69,6 @@ public class EmilyView extends SuperView {
 
         addButtons();
 
-        //Button solve = new Button(0, 1, 0, 1f / 6f, "solve", text,
-        //		bkg, highlight);
-        //solve.myAction = new Solve(this);
-        //buttons.add(solve);
-
-		/*
-         * AddEquation add1 = new AddEquation(); add1.add(new
-		 * NumConstEquation("3")); add1.add(new NumConstEquation("4"));
-		 * AddEquation add2 = new AddEquation(); add2.add(new
-		 * NumConstEquation("2")); add2.add(new NumConstEquation("5"));
-		 * AddEquation add3 = new AddEquation(); add3.add(new
-		 * NumConstEquation("1")); add3.add(new NumConstEquation("6"));
-		 * stupid.add(add1); stupid.add(add2); stupid.add(add3);
-		 */
-
-        //PlaceholderEquation empty1 = new PlaceholderEquation(this);
-        //empty1.setSelected(true);
-        //PlaceholderEquation empty2 = new PlaceholderEquation(this);
-        //stupid.add(empty1);
-        //stupid.add(empty2);
-
-//		buttons.get(10).myAction = new Action(this) {
-//			int count = 0;
-//
-//			@Override
-//			public void act() {
-//
-//				// TODO while there is room:
-//				// TODO allow the player to enter a var name
-//				// TODO it would be cool if you could swipe up or something to
-//				// delete these
-//
-//				Button tempButton = new Button((10f - count) / 11f, (11f - count) / 11f, 3f / 6f, 4f/ 6f,
-//						"A" + count, text, bkg, highlight);
-//				tempButton.myAction = new VarAction(emilyView, tempButton.text);
-//
-//				vars.add(tempButton);
-//
-//				count++;
-//			}
-//
-//		};
         buttonsPercent=4f/6f;
 
     }
@@ -225,6 +183,7 @@ public class EmilyView extends SuperView {
     protected void resolveSelected(MotionEvent event) {
         // now we need to figure out what we are selecting
         // find the least commond parent
+        removeSelected();
 
         if (selectingSet.size() <2){
             Equation lcp = null;
