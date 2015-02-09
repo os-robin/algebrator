@@ -22,7 +22,7 @@ public class DecimalAction extends Action {
             Equation l = emilyView.left();
             if ((l != null) && (l instanceof NumConstEquation && l.getDisplay(-1).contains(".") == false)) {
                 if (!(l.parent instanceof BinaryEquation && l.parent.indexOf(l) == 0)) {
-                    String toSet = l.getDisplay(0) + dec;
+                    String toSet = ((NumConstEquation)l).getDisplaySimple() + dec;
                     l.setDisplay(toSet);
                 } else {
                     Equation oldEq = emilyView.selected;

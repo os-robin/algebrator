@@ -26,7 +26,7 @@ public class NumberAction extends Action {
                 if (!(l.parent instanceof BinaryEquation)) {
                      if ((l instanceof NumConstEquation) &&(l.parent.equals(emilyView.selected.parent))) {
                         if (l instanceof NumConstEquation && !l.getDisplay(-1).equals("0")) {
-                            l.setDisplay(l.getDisplay(0) + num);
+                            l.setDisplay(((NumConstEquation)l).getDisplaySimple() + num);
                         } else if (l instanceof NumConstEquation && l.getDisplay(-1).equals("0")) {
                             l.setDisplay(num);
                         }
@@ -47,7 +47,7 @@ public class NumberAction extends Action {
                 } else {
                     if ((r instanceof NumConstEquation) && !(emilyView.selected.parent instanceof DivEquation)) {
                         if (!r.getDisplay(-1).equals("0")) {
-                            r.setDisplay(num + r.getDisplay(0));
+                            r.setDisplay(num +((NumConstEquation)r).getDisplaySimple());
                         } else {
                             r.setDisplay(num);
                         }
@@ -64,7 +64,7 @@ public class NumberAction extends Action {
             } else {
                 if (r instanceof NumConstEquation) {
                     if (!r.getDisplay(-1).equals("0")) {
-                        r.setDisplay(num + r.getDisplay(0));
+                        r.setDisplay(num + ((NumConstEquation)r).getDisplaySimple());
                     } else {
                         r.setDisplay(num);
                     }

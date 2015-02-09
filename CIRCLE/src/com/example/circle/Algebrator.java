@@ -13,7 +13,7 @@ public class Algebrator extends Application {
     private static Algebrator instance;
     private int TEXT_SIZE= DEFAULT_TEXT_SIZE;
     public int DEFAULT_SIZE;
-    public long doubleTapSpacing = 1000;
+    public long doubleTapSpacing = 300;
     public int mainColor;
     public int highLight;
     public TextPaint textPaint = new TextPaint();

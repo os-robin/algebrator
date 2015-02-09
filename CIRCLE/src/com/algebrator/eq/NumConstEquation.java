@@ -5,11 +5,14 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.Log;
 
+import com.example.circle.ColinView;
 import com.example.circle.EmilyView;
 import com.example.circle.SuperView;
 
+import java.text.DecimalFormat;
+
 public class NumConstEquation extends LeafEquation implements LegallityCheck {
-	
+
 	public NumConstEquation(double number, SuperView owner) {
 		super(owner);
         if (number <0){
@@ -27,6 +30,24 @@ public class NumConstEquation extends LeafEquation implements LegallityCheck {
         }
 
 	}
+
+    public String getDisplaySimple(){
+        return display;
+    }
+
+    @Override
+    public String getDisplay(int pos){
+        DecimalFormat df = new DecimalFormat();
+        if (owner instanceof ColinView) {
+            df.setMaximumFractionDigits(3);
+        }
+        String result = df.format(getValue());
+        if (display.endsWith(".")){
+            result+=".";
+        }
+        return result;
+    }
+
     //TODO
     public boolean illegal() {
         return true;

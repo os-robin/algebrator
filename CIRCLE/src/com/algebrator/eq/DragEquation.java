@@ -28,9 +28,7 @@ public class DragEquation {
         this.demo = eq;
 
         updateOps(eq);
-
     }
-
 
     public void updateOps(Equation equation) {
         ops = new ArrayList<Op>();

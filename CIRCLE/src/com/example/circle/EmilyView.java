@@ -94,7 +94,7 @@ public class EmilyView extends SuperView {
         secondRow.add(new Button("6",new NumberAction(this, "6")));
         secondRow.add(new Button(".", new DecimalAction(this, ".")));
         secondRow.add(new Button("+",new PlusAction(this)));
-        char[] timesUnicode = { '\u00D7'};
+        char[] timesUnicode = {'\u00D7'};
         secondRow.add(new Button(new String(timesUnicode),new TimesAction(this)));
         secondRow.add(new Button("^",new PowerAction(this)));
 
@@ -185,7 +185,6 @@ public class EmilyView extends SuperView {
         // find the least commond parent
         removeSelected();
 
-        if (selectingSet.size() <2){
             Equation lcp = null;
             // if it's an action up
             if (event.getAction() ==MotionEvent.ACTION_UP){
@@ -225,13 +224,7 @@ public class EmilyView extends SuperView {
                     }
                 }
             }
-            selectingSet = new HashSet<Equation>();
             return;
-
-
-        }else {
-            selectSet();
-        }
     }
     // returns the equation left of the selected
     public Equation left(){

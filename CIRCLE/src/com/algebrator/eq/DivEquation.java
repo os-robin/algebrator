@@ -90,7 +90,7 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 
 	@Override
 	public void privateDraw(Canvas canvas, float x, float y) {
-		drawBkgBox(canvas, x, y);
+		//drawBkgBox(canvas, x, y);
 		lastPoint = new ArrayList<Point>();
 		float totalHieght = measureHeight();
 		float currentY = -(totalHieght / 2) + y;

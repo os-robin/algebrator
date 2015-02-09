@@ -3,6 +3,7 @@ package com.example.circle;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -54,10 +55,12 @@ public class EquationButton extends Button {
         //TODO scale by dpi
         temp.setMaskFilter(new BlurMaskFilter(32, BlurMaskFilter.Blur.NORMAL));
 
-        temp.setColor(Algebrator.getAlgebrator().highLight);
+        temp.setColor(Algebrator.getAlgebrator().mainColor);
         temp.setAlpha(bkgCurrentAlpha);
 
-        canvas.drawRect(leftEnd, topEnd, rightEnd, bottomEnd, temp);
+        RectF r = new RectF(leftEnd, topEnd, rightEnd, bottomEnd);
+
+        canvas.drawRoundRect(r, 10, 10, temp);
 
     }
 
@@ -122,9 +125,9 @@ public class EquationButton extends Button {
 
         // we are moving from draw to drawCentered
         // we need to update
-        float myCenter = myEq.x;
-        float stupidCenter = cv.stupid.x;
-        cv.offsetX -= (-myCenter + stupidCenter);
+        //float myCenter = myEq.x;
+        //float stupidCenter = cv.stupid.x;
+        //cv.offsetX -= (-myCenter + stupidCenter);
 
         // and set this back to be the boss
         cv.stupid = myEq.copy();
@@ -132,7 +135,6 @@ public class EquationButton extends Button {
 
         // we need to remove all history and including this
         cv.history = new ArrayList<EquationButton>(cv.history.subList(cv.history.indexOf(this), cv.history.size()));
-
 
         // update the offsets of the remaining histories
         for (EquationButton eb : cv.history) {

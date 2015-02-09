@@ -5,11 +5,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -22,8 +20,8 @@ import android.view.WindowManager;
 import com.algebrator.eq.AddEquation;
 import com.algebrator.eq.DragEquation;
 import com.algebrator.eq.DragLocations;
+import com.algebrator.eq.EqualsEquation;
 import com.algebrator.eq.Equation;
-import com.algebrator.eq.EquationDis;
 import com.algebrator.eq.MinusEquation;
 import com.algebrator.eq.MultiEquation;
 import com.algebrator.eq.PlaceholderEquation;
@@ -115,7 +113,7 @@ public abstract class SuperView extends View implements
         // Get navigation bar height
         int navBarHeight = 0;
         /*
-		 * Resources resources = context.getResources(); int resourceId =
+         * Resources resources = context.getResources(); int resourceId =
 		 * resources.getIdentifier("navigation_bar_height", "dimen", "android");
 		 * if (resourceId > 0) { navBarHeight =
 		 * resources.getDimensionPixelSize(resourceId); }
@@ -159,30 +157,15 @@ public abstract class SuperView extends View implements
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
 //        for (DragLocation dl:dragLocations){
-//            float dlx = dl.x + stupid.x;
-//            float dly = dl.y + stupid.y;
+//            float dlx = dl.x + stupid.lastPoint.get(0).x;
+//            float dly = dl.y + stupid.lastPoint.get(0).y;
 //            Paint temp =new Paint();
 //            temp.setColor(Color.GREEN);
 //            canvas.drawCircle(dlx,dly,15,temp);
 //        }
 
-
         if (dragging != null) {
             dragging.eq.draw(canvas, dragging.eq.x, dragging.eq.y);
-        }
-
-        if (canDrag && !selectingSet.isEmpty()) {
-            if (lastLongTouch != null && lastLongTouch.started()) {
-                if (lastLongTouch.done()) {
-                    Log.i("lastLongTouch", "done");
-                    animation.add(new DragStarted(this, 0x7f));
-                    startDragging();
-                    lastLongTouch = null;
-                } else {
-                    drawProgress(canvas, lastLongTouch.percent(), 0x7f);
-                    Log.i("lastLongTouch", lastLongTouch.percent() + "");
-                }
-            }
         }
 
         for (int i = 0; i < animation.size(); i++) {
@@ -269,7 +252,11 @@ public abstract class SuperView extends View implements
             }
         }
 
-        stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        if (this instanceof EmilyView) {
+            stupid.draw(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        }else{
+            ((EqualsEquation) stupid).drawCentered(canvas, width / 2 + offsetX, height / 3 + offsetY);
+        }
         stupid.integrityCheckOuter();
         if (!stupid.toString().equals(lastLog)) {
             Log.i("", stupid.toString());
@@ -285,7 +272,7 @@ public abstract class SuperView extends View implements
 
     public void drawProgress(Canvas canvas, float percent, float startAt) {
         Paint p = new Paint();
-        p.setColor(Algebrator.getAlgebrator().highLight - 0xff000000);
+        p.setColor(Algebrator.getAlgebrator().mainColor - 0xff000000);
         float targetAlpha = startAt;
         p.setAlpha((int) targetAlpha);
         int at = 0;
@@ -327,9 +314,8 @@ public abstract class SuperView extends View implements
         offsetY += vy;
     }
 
-    public HashSet<Equation> selectingSet = new HashSet<Equation>();
+
     private long startTime;
-    private long tapTime = 1000;
     private long lastTapTime;
     private Point lastTapPoint;
     private float doubleTapDistance = 20;
@@ -373,8 +359,6 @@ public abstract class SuperView extends View implements
 
     LongTouch lastLongTouch = null;
 
-    private boolean hasChanged = false;
-
     protected HashSet<Equation> willSelect;
 
     @Override
@@ -410,10 +394,10 @@ public abstract class SuperView extends View implements
                     // if they get too far from were they started we are going to start dragging
                     //TODO scale by dpi
                     float maxMovement = 50;
-                    float distance = (float)Math.sqrt((lastX - event.getX())*(lastX - event.getX())+(lastY - event.getY())*(lastY-event.getY()));
-                    if (maxMovement < distance){
+                    float distance = (float) Math.sqrt((lastX - event.getX()) * (lastX - event.getX()) + (lastY - event.getY()) * (lastY - event.getY()));
+                    if (maxMovement < distance) {
 
-                        boolean pass=true;
+                        boolean pass = true;
                         if (selected != null) {
                             for (Equation e : willSelect) {
                                 if (!selected.deepContains(e)) {
@@ -421,13 +405,13 @@ public abstract class SuperView extends View implements
                                     break;
                                 }
                             }
-                        }else{
+                        } else {
                             resolveSelected(event);
                         }
 
                         if (pass) {
                             startDragging();
-                        }else{
+                        } else {
                             myMode = TouchMode.MOVE;
                         }
                     }
@@ -440,9 +424,8 @@ public abstract class SuperView extends View implements
 
                     DragLocation closest = dragLocations.closest(event);
 
-                    if (closest !=null){
+                    if (closest != null) {
                         stupid = closest.myStupid;
-                        hasChanged = !closest.isOG();
                     }
                 }
 
@@ -464,30 +447,34 @@ public abstract class SuperView extends View implements
                 // did we click anything?
                 boolean clicked = false;
                 long now = System.currentTimeMillis();
-                long totalTime = now - startTime;
-                if (totalTime < tapTime) {
-                    long tapSpacing = now - lastTapTime;
-                    Point tapPoint = new Point();
-                    tapPoint.x = (int) event.getX();
-                    tapPoint.y = (int) event.getY();
-                    if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode == TouchMode.SELECT) {
-                        Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + totalTime + " spacing: " + tapSpacing);
-                        if (canDrag) {
-                            stupid.tryOperator(event.getX(),
-                                    event.getY());
-                            clicked = true;
+                Point tapPoint = new Point();
+                tapPoint.x = (int) event.getX();
+                tapPoint.y = (int) event.getY();
+                long tapSpacing = now - lastTapTime;
+                if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode == TouchMode.SELECT) {
+                    Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + tapSpacing);
+                    if (canDrag) {
+                        stupid.tryOperator(event.getX(),
+                                event.getY());
+                        clicked = true;
+                        if (this instanceof ColinView ){
+                            if (((ColinView) this).changed == false) {
+                                clicked = false;
+                            }else{
+                                selected.setSelected(false);
+                            }
                         }
-
-                        lastTapTime = 0;
-                    } else {
-                        lastTapTime = now;
-                        lastTapPoint = tapPoint;
                     }
+
+                    // set the lastTapTime to zero so they can not triple tap and get two double taps
+                    lastTapTime=0;
+                }else{
+                    lastTapTime = now;
                 }
+                lastTapPoint = tapPoint;
                 if (!clicked) {
                     endOnePointer(event);
                 }
-                selectingSet = new HashSet<Equation>();
 
                 // if we were dragging everything around
                 if (myMode == TouchMode.MOVE) {
@@ -521,12 +508,10 @@ public abstract class SuperView extends View implements
         }
     }
 
-    private DragLocations dragLocations= new DragLocations();
+    private DragLocations dragLocations = new DragLocations();
 
     private void startDragging() {
         if (canDrag) {
-            selectSet();
-
             if (selected != null) {
                 myMode = TouchMode.DRAG;
                 // we need to take all the - signs with us
@@ -535,18 +520,22 @@ public abstract class SuperView extends View implements
                 }
                 //if (selected.canPop()) {
                 dragging = new DragEquation(selected);
-                dragging.eq.x =lastX;
-                dragging.eq.y =lastY;
+                dragging.eq.x = lastX;
+                dragging.eq.y = lastY;
                 selected.isDemo(true);
 
+                selected.setSelected(false);
+
                 getDragLocations();
+
                 Log.d("Drag Locations", "#######################");
                 for (DragLocation dl:dragLocations){
                     Log.d("Drag Locations",dl.myStupid.toString());
                 }
                 //}
+
             } else {
-                myMode = TouchMode.DEAD;
+                myMode = TouchMode.MOVE;
             }
         }
     }
@@ -554,37 +543,7 @@ public abstract class SuperView extends View implements
     //update DragLocations
     private void getDragLocations() {
         dragLocations = new DragLocations();
-        stupid.getDragLocations(dragging.demo,dragLocations,dragging.ops);
-    }
-
-    private void addToSelectingSet(HashSet<Equation> ons) {
-        // we only want them to select equation on the same side as
-
-        // we should not be select the = sign
-        for (Equation e : ons) {
-            if (e instanceof WritingLeafEquation && e.getDisplay(-1).equals("=")) {
-                ons.remove(e);
-            }
-        }
-
-        // if we selected anything
-        if (!ons.isEmpty()) {
-
-            // figure out what side we are looking at
-            int side;
-            if (!selectingSet.isEmpty()) {
-                side = ((Equation) selectingSet.toArray()[0]).side();
-            } else {
-                side = ((Equation) ons.toArray()[0]).side();
-            }
-
-            // only add bits form the correct side
-            for (Equation e : ons) {
-                if (e.side() == side) {
-                    selectingSet.add(e);
-                }
-            }
-        }
+        stupid.getDragLocations(dragging.demo, dragLocations, dragging.ops);
     }
 
     protected boolean inButtons(MotionEvent event) {
@@ -611,9 +570,10 @@ public abstract class SuperView extends View implements
         } else if (myMode == TouchMode.SELECT) {
             resolveSelected(event);
         } else if (myMode == TouchMode.DRAG) {
-            if (hasChanged){
-                ((ColinView)this).changed = hasChanged;
-                hasChanged = false;
+            DragLocation closest = dragLocations.closest(event);
+
+            if (closest != null) {
+                closest.select();
             }
 
 
@@ -630,9 +590,7 @@ public abstract class SuperView extends View implements
         stupid.updateLocation();
     }
 
-    protected void selectSet() {
-
-
+    protected void selectSet(HashSet<Equation> selectingSet) {
         Equation lcp = null;
         // if anything in selectingSet is contained by something else remove it
         HashSet<Equation> setCopy = new HashSet<Equation>(selectingSet);
@@ -661,7 +619,9 @@ public abstract class SuperView extends View implements
                 }
             }
             Collections.sort(indexs);
+            //Collections.reverse(indexs);
             int min = indexs.get(0);
+            Log.d("min", min + "");
             if (lcp.get(min) instanceof WritingLeafEquation) {
                 // the div lines in isOp could be a problem here
                 // i think it's no a problem... I hope
@@ -671,6 +631,7 @@ public abstract class SuperView extends View implements
                 }
             }
             int max = indexs.get(indexs.size() - 1);
+            Log.d("max", max + "");
             if (lcp.get(max) instanceof WritingLeafEquation) {
                 // the div lines in isOp could be a problem here
                 // i think it's no a problem... I hope
@@ -679,6 +640,14 @@ public abstract class SuperView extends View implements
                     indexs.add(max + 1);
                 }
             }
+
+            // the we need to add the indexes between min and max
+            for (int newIndex = min + 1; newIndex < max; newIndex++) {
+                if (!indexs.contains(newIndex)) {
+                    indexs.add(newIndex);
+                }
+            }
+            Collections.sort(indexs);
 
             // if they do not make up all of lcp
             if (indexs.size() != lcp.size()) {

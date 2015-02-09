@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.example.circle.Algebrator;
@@ -181,9 +182,9 @@ abstract public class Equation extends ArrayList<Equation> {
         this.x = x;
         this.y = y;
         //if (!demo){
-        if (isSelected()) {
+
             drawBkgBox(canvas, x, y);
-        }
+
         privateDraw(canvas, x, y);
         //}
         if (canvas == null) {
@@ -410,15 +411,12 @@ abstract public class Equation extends ArrayList<Equation> {
         } else {
             temp = new Paint(textPaint);
         }
-        if (selected) {
-            temp.setColor(Color.GREEN);
-        }
-        if (demo) {
-            temp.setColor(Color.BLUE);
-        }
-        if (owner.selectingSet.contains(this)) {
-            temp.setColor(Color.RED);
-        }
+        //if (selected) {
+        //    temp.setColor(Color.GREEN);
+        //}
+        //if (demo) {
+        //    temp.setColor(Color.BLUE);
+        //}
         float targetTextSize = temp.getTextSize();
         if (parent != null) {
             targetTextSize *= parent.getScale(this);
@@ -432,16 +430,25 @@ abstract public class Equation extends ArrayList<Equation> {
         return temp;
     }
 
+    private int bkgAlpha=0x00;
+    private int scale =5;
     protected void drawBkgBox(Canvas canvas, float x, float y) {
-        Rect r = new Rect((int) (x - measureWidth() / 2),
+        RectF r = new RectF((int) (x - measureWidth() / 2),
                 (int) (y - measureHeightUpper()),
                 (int) (x + measureWidth() / 2), (int) (y + measureHeightLower()));
         Paint p = new Paint();
         p.setColor(Algebrator.getAlgebrator().mainColor);
+        if (isSelected() || demo){
+            bkgAlpha = (bkgAlpha*(scale-1) + 0xFF)/scale;
+        }else{
+            bkgAlpha = (bkgAlpha*(scale-1) + 0x00)/scale;
+        }
+        p.setAlpha(bkgAlpha);
         Random rand = new Random();
         //p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
         if (canvas != null) {
-            canvas.drawRect(r, p);
+            canvas.drawRoundRect(r,10,10,p);
+                    //drawRoundRect(r, p);
         }
 
     }
@@ -564,10 +571,14 @@ abstract public class Equation extends ArrayList<Equation> {
         if (this.size() != eq.size()) {
             return false;
         }
-        for (Equation e : eq) {
+
+        ArrayList<Equation> list2 = new ArrayList<Equation>(eq);
+
+        for (Equation e : this) {
             boolean any = false;
-            for (Equation ee : this) {
+            for (Equation ee : list2) {
                 if (ee.same(e)) {
+                    list2.remove(ee);
                     any = true;
                     break;
                 }
@@ -587,9 +598,6 @@ abstract public class Equation extends ArrayList<Equation> {
 
         } else {
             owner.stupid = eq;
-        }
-        if (this.isSelected()) {
-            eq.setSelected(true);
         }
     }
 
@@ -772,8 +780,8 @@ abstract public class Equation extends ArrayList<Equation> {
 
     }
 
-    // returns null on sucess
-    public ArrayList<EquationDis> tryOp(Equation dragging, boolean right, Op op) {
+    // returns an updated version of dragging, removed or added equals sign or whatever
+    public Equation tryOp(Equation dragging, boolean right, Op op) {
         Log.i("try", this.hashCode() + " " + this.display);
 
         if (parent.indexOf(this) == -1) {
@@ -820,7 +828,7 @@ abstract public class Equation extends ArrayList<Equation> {
                 dragging.remove();
                 dragging = update(dragging,sameSide);
                 this.replace(dragging);
-                return null;
+                return dragging;
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 1 && op == Op.MULTI) {
                 dragging.remove();
                 dragging = update(dragging,sameSide);
@@ -831,7 +839,7 @@ abstract public class Equation extends ArrayList<Equation> {
                     dragging.replace(me);
                     me.add(dragging);
                 }
-                return null;
+                return dragging;
             } else if ((parent instanceof AddEquation && op == Op.ADD) ||
                     (parent instanceof MultiEquation && op == Op.MULTI)) {
                 if (parent.equals(dragging.parent)) {
@@ -890,9 +898,8 @@ abstract public class Equation extends ArrayList<Equation> {
                 at.replace(me);
                 me.add(at);
             }
-            return null;
         }
-        return new ArrayList<EquationDis>();
+        return dragging;
     }
 
     private Equation update(Equation dragging, boolean sameSide) {
@@ -1050,6 +1057,25 @@ abstract public class Equation extends ArrayList<Equation> {
             for (Equation e : this) {
                 e.getDragLocations(dragging, dragLocations, ops);
             }
+        }
+    }
+
+    public ArrayList<Equation> getLeafs() {
+        ArrayList<Equation> result = new ArrayList<Equation>();
+        if (size()==0){
+            result.add(this);
+        }else{
+            for (Equation e:this){
+                result.addAll(e.getLeafs());
+            }
+        }
+        return result;
+    }
+
+    public void deDemo() {
+        this.demo = false;
+        for (Equation e: this){
+            e.deDemo();
         }
     }
 

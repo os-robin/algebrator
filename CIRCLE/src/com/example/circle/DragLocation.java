@@ -10,20 +10,14 @@ public class DragLocation implements Comparable<DragLocation> {
     public float y;
     public Equation myStupid;
     public SuperView owner;
+    public Equation myDemo;
     public boolean og = false;
 
     public DragLocation(Equation.Op op, Equation dragging, Equation equation, boolean right) {
-
-        this.owner = equation.owner;
-
         if (dragging.equals(equation)) {
-            og = true;
-            myStupid = equation.owner.stupid;
-
-            //myStupid.updateLocation();
-            this.x = equation.x - myStupid.x;
-            this.y = equation.y - myStupid.y;
+            oGinit(equation);
         } else {
+            this.owner = equation.owner;
             myStupid = equation.owner.stupid.copy();
             //let's follow the path down
             Equation at = owner.stupid;
@@ -42,35 +36,50 @@ public class DragLocation implements Comparable<DragLocation> {
                 at = at.get(index);
                 myAt = myAt.get(index);
             }
-            Equation ourDragging = myAt;
+            myDemo  = myAt;
 
             // try op with our copies
-            ourEquation.tryOp(ourDragging, right, op);
+            myDemo = ourEquation.tryOp(myDemo, right, op);
 
             myStupid.x = 0;
             myStupid.y = 0;
 
             myStupid.updateLocation();
-            this.x = ourDragging.x;
-            this.y = ourDragging.y;
+
+            float equalsOffest = myStupid.lastPoint.get(0).x - owner.stupid.lastPoint.get(0).x - owner.stupid.x;
+
+            this.x = myDemo.x - myStupid.lastPoint.get(0).x;//+equalsOffest;
+            this.y = myDemo.y - myStupid.lastPoint.get(0).y;
+
+            myDemo.demo = true;
         }
 
+    }
+
+    private void oGinit(Equation equation) {
+        this.owner = equation.owner;
+        og = true;
+        myStupid = equation.owner.stupid;
+        myDemo = equation;
+
+        //myStupid.updateLocation();
+        this.x = equation.x - myStupid.lastPoint.get(0).x;
+        this.y = equation.y - myStupid.lastPoint.get(0).y;
+
+        myDemo.demo = true;
     }
 
     public float dis = 0;
 
     public DragLocation(Equation equation) {
-        myStupid = equation.owner.stupid;
-        this.owner = equation.owner;
-        og = true;
-
-        //myStupid.updateLocation();
-        this.x = equation.x - myStupid.x;
-        this.y = equation.y - myStupid.y;
+        oGinit(equation);
     }
 
     public void updateDis(float eventX, float eventY) {
-        this.dis = (float) Math.sqrt((x + owner.stupid.x - eventX) * (x + owner.stupid.x - eventX) + (y + owner.stupid.y - eventY) * (y + owner.stupid.y - eventY));
+        this.dis = (float) Math.sqrt((x + owner.stupid.lastPoint.get(0).x- eventX) *
+                (x + owner.stupid.lastPoint.get(0).x - eventX) +
+                (y + owner.stupid.lastPoint.get(0).y - eventY) *
+                (y + owner.stupid.lastPoint.get(0).y - eventY));
     }
 
     @Override
@@ -86,5 +95,15 @@ public class DragLocation implements Comparable<DragLocation> {
 
     public boolean isOG() {
         return og;
+    }
+
+    public void select() {
+        owner.stupid = myStupid;
+        if (!isOG()){
+            ((ColinView)owner).changed = true;
+        }else{
+            myDemo.setSelected(true);
+        }
+        myDemo.demo= false;
     }
 }

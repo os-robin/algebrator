@@ -93,8 +93,10 @@ public class Button {
         canvas.drawRect(left(), top(), right(), bottom(), bkgPaint);
 
         Rect out = new Rect();
+        //TODO scale by dpi
+        float buffer = 10;
         textPaint.getTextBounds(text, 0, text.length(), out);
-        while (out.width() > right() - left()) {
+        while (out.width() + 2*buffer > right() - left()) {
             textPaint.setTextSize(textPaint.getTextSize() - 1);
             textPaint.getTextBounds(text, 0, text.length(), out);
         }

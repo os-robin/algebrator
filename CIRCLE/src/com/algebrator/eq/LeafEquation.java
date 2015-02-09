@@ -78,7 +78,7 @@ public abstract class LeafEquation extends Equation {
 	@Override
 	public float measureWidth() {
 		// not tested
-		float totalWidth= myWidth + textPaint.measureText(display) -textPaint.measureText("A");//Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
+		float totalWidth= myWidth + textPaint.measureText(getDisplay(-1)) -textPaint.measureText("A");//Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
 		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;

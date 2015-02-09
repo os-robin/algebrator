@@ -26,17 +26,15 @@ public class DeleteAction extends Action {
                     int pos = l.parent.indexOf(l);
                     l.parent.add(pos + 1, emilyView.selected);
                 } else if (l instanceof NumConstEquation) {
-                    if (((NumConstEquation) l).getDisplay(-1).length() != 0) {
-                        String toSet = (String) ((NumConstEquation) l).getDisplay(-1)
-                                .subSequence(0,
-                                        ((NumConstEquation) l).getDisplay(-1)
-                                                .length() - 1);
+                    if (((NumConstEquation) l).getDisplaySimple().length() != 0) {
+                        String display =((NumConstEquation) l).getDisplaySimple();
+                        String toSet = (String) display.subSequence(0, display.length() - 1);
                         if (toSet.length() != 0 && toSet.charAt(0) == '-') {
                             toSet = toSet.substring(1, toSet.length());
                         }
                         ((NumConstEquation) l).setDisplay(toSet);
                     }
-                    if (((NumConstEquation) l).getDisplay(0).length() == 0) {
+                    if (((NumConstEquation) l).getDisplaySimple().length() == 0) {
                         l.remove();
                     }
                 } else {

@@ -72,6 +72,7 @@ public class ColinView extends SuperView {
 
 
     public boolean changed= false;
+
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         for (int i = 0; i < history.size(); i++) {
@@ -98,40 +99,61 @@ public class ColinView extends SuperView {
         }
 
 
-        Log.d("resolving selected, will select:",db1);
-        Log.d("resolving selected, selected:",selected.toString());
+        Log.d("resolving selected, will select: ",db1);
+        Log.d("resolving selected, selected: ",(selected==null?"null":selected.toString()));
 
-        selectingSet = new HashSet<Equation>();
-        if (selected != null){
-            if ( selected.size()!=0) {
-                selectingSet.addAll(selected);
-            }else {
-                selectingSet.add(selected);
+        HashSet<Equation> selectingSet = new HashSet<Equation>();
+
+        if (selected != null) {
+            // if everything we are adding is deep contained by selected we want to remove
+            // otherwise we want to add what is not already contained
+
+
+            boolean remove = true;
+            for (Equation e:willSelect){
+                if (!selected.deepContains(e)){
+                    remove = false;
+                    break;
+                }
             }
+            selectingSet.addAll(selected.getLeafs());
+            if (remove){
+                for (Equation e:willSelect){
+                    if (selectingSet.contains(e)){
+                        selectingSet.remove(e);
+                    }
+                }
+            }else{
+                int selectedSide = selected.side();
+                for (Equation e:willSelect){
+                    if (!selected.deepContains(e) && e.side() == selectedSide){
+                        selectingSet.add(e);
+                    }
+                }
+            }
+
+            // now we need to deselect and flatten
             selected.setSelected(false);
             stupid.fixIntegrety();
+
+        }else{
+            selectingSet = willSelect;
         }
-        for (Equation e : willSelect) {
-            if (selectingSet.contains(e)) {
-                selectingSet.remove(e);
-            } else {
-                selectingSet.add(e);
-            }
-        }
+
+
 
         String db2 = "";
         for (Equation e: selectingSet){
-            db2 += (e==null?null:e.toString()) + ",";
+            db2 += e + ",";
         }
-        Log.d("resolving selected, selectingSet:",db2);
+        Log.d("resolving selected, selectingSet: ",db2);
 
         if (selectingSet.isEmpty()) {
             //do nothing
         } else if (selectingSet.size() == 1) {
             ((Equation) selectingSet.toArray()[0]).setSelected(true);
-            selectingSet = new HashSet<Equation>();
         } else {
-            selectSet();
+            selectSet(selectingSet);
         }
     }
 }
