@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.text.TextPaint;
 import android.view.MotionEvent;
 
@@ -89,12 +90,16 @@ public class Button {
         //}
 
         bkgPaint.setColor(currentColor);
+        Paint bkgbkgPaint =  new Paint(bkgPaint);
+        bkgbkgPaint.setColor(targetBkgColor);
 
-        canvas.drawRect(left(), top(), right(), bottom(), bkgPaint);
+        canvas.drawRect(left(), top(), right(), bottom(), bkgbkgPaint);
+        RectF r = new RectF(left(), top(), right(), bottom());
+        canvas.drawRoundRect(r,10,10, bkgPaint);
 
         Rect out = new Rect();
         //TODO scale by dpi
-        float buffer = 10;
+        float buffer = 20;
         textPaint.getTextBounds(text, 0, text.length(), out);
         while (out.width() + 2*buffer > right() - left()) {
             textPaint.setTextSize(textPaint.getTextSize() - 1);

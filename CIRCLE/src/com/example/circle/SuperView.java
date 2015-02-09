@@ -461,7 +461,9 @@ public abstract class SuperView extends View implements
                             if (((ColinView) this).changed == false) {
                                 clicked = false;
                             }else{
-                                selected.setSelected(false);
+                                if (selected != null) {
+                                    selected.setSelected(false);
+                                }
                             }
                         }
                     }
@@ -593,9 +595,11 @@ public abstract class SuperView extends View implements
     protected void selectSet(HashSet<Equation> selectingSet) {
         Equation lcp = null;
         // if anything in selectingSet is contained by something else remove it
-        HashSet<Equation> setCopy = new HashSet<Equation>(selectingSet);
-        for (Equation eq1 : setCopy) {
-            for (Equation eq2 : setCopy) {
+        ArrayList<Equation> setCopy = new ArrayList<Equation>(selectingSet);
+        for (int i1=0;i1<setCopy.size();i1++) {
+            Equation eq1 =setCopy.get(i1);
+            for (int i2=i1+1;i2<setCopy.size();i2++) {
+                Equation eq2 = setCopy.get(i2);
                 if (!(eq1.equals(eq2)) && eq1.deepContains(eq2)) {
                     Log.i("removed", eq2.toString());
                     selectingSet.remove(eq2);
@@ -614,6 +618,10 @@ public abstract class SuperView extends View implements
             ArrayList<Integer> indexs = new ArrayList<Integer>();
             for (Equation eq : selectingSet) {
                 int index = lcp.deepIndexOf(eq);
+                if (index == -1){
+                    Log.e("index is -1!", lcp.toString() + " "+ eq.toString());
+                }
+
                 if (!indexs.contains(index)) {
                     indexs.add(index);
                 }

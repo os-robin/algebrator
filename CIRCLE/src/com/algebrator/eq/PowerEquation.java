@@ -86,8 +86,14 @@ public class PowerEquation extends Operation implements BinaryEquation {
 
         Equation result = null;
 
-        if (isSqrt()) {
-            this.get(1).replace(new NumConstEquation(.5, owner));
+        // this is really dangerous
+        if (isSqrt() && this.get(1) instanceof DivEquation) {
+            Equation oldEq = this.get(1);
+            Equation newEq = new NumConstEquation(.5, owner);
+            if (oldEq.selected){
+                newEq.setSelected(true);
+            }
+            oldEq.replace(newEq);
         }
 
         boolean wasEvenRoot = isEven();
@@ -127,7 +133,18 @@ public class PowerEquation extends Operation implements BinaryEquation {
             }else {
                 replace(get(0));
             }
-        } else {
+        } else if (get(0) instanceof DivEquation){
+            result = new DivEquation(owner);
+            Equation top = new PowerEquation(owner);
+            top.add(this.get(0).get(0));
+            top.add(this.get(1).copy());
+            result.add(top);
+            Equation bot = new PowerEquation(owner);
+            top.add(this.get(0).get(1));
+            top.add(this.get(1).copy());
+            result.add(bot);
+            replace(result);
+        }else{
             // if it's an add split it up
             // if it's numb and number you can just do it
             // if it's numb on top
@@ -191,12 +208,12 @@ public class PowerEquation extends Operation implements BinaryEquation {
 
                         Equation leftTemp = get(0);
                         while (leftTemp instanceof MinusEquation || leftTemp instanceof PlusMinusEquation) {
-                            leftTemp = leftTemp.get(0);
                             if (leftTemp instanceof  MinusEquation) {
                                 innerNeg = !innerNeg;
                             }else if (leftTemp instanceof  PlusMinusEquation){
                                 plusMinus = true;
                             }
+                            leftTemp = leftTemp.get(0);
                         }
 
                         if (leftTemp instanceof NumConstEquation && (!innerNeg || plusMinus)) {
