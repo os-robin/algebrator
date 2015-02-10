@@ -153,6 +153,7 @@ public abstract class SuperView extends View implements
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         // canvas.drawColor(0xFFFFFFFF, Mode.CLEAR);
+        Algebrator.getAlgebrator().at++;
 
         canvas.drawColor(0xFFFFFFFF, Mode.ADD);
 
@@ -528,6 +529,7 @@ public abstract class SuperView extends View implements
 
                 selected.setSelected(false);
 
+                //TODO the evil thing is in here
                 getDragLocations();
 
                 Log.d("Drag Locations", "#######################");

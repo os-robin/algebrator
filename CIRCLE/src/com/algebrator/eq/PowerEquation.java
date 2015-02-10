@@ -47,7 +47,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     @Override
-    public float measureWidth() {
+    protected float privateMeasureWidth() {
         if (isSqrt()) {
             return sqrtMeasureWidth();
         } else {
@@ -355,7 +355,8 @@ public class PowerEquation extends Operation implements BinaryEquation {
         get(1).y = point.y;
     }
 
-    public float measureHeightLower() {
+    @Override
+    protected float privateMeasureHeightLower() {
         if (isSqrt()) {
             return sqrtMeasureHeightLower();
         } else {
@@ -371,7 +372,8 @@ public class PowerEquation extends Operation implements BinaryEquation {
         return get(0).measureHeightLower();
     }
 
-    public float measureHeightUpper() {
+    @Override
+    protected float privateMeasureHeightUpper() {
         if (isSqrt()) {
             return sqrtMeasureHeightUpper();
         } else {
@@ -394,7 +396,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     @Override
-    public float measureHeight() {
+    protected float privateMeasureHeight() {
         return measureHeightLower() + measureHeightUpper();
     }
 }

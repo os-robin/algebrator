@@ -74,12 +74,12 @@ public class WritingPraEquation extends WritingLeafEquation {
     }
 
     @Override
-    public float measureHeightUpper(){
+    protected float privateMeasureHeightUpper(){
         return measureHeightHelper(true);
     }
 
     @Override
-    public float measureHeightLower(){
+    protected float privateMeasureHeightLower(){
         return measureHeightHelper(false);
     }
 

@@ -36,6 +36,16 @@ abstract public class Equation extends ArrayList<Equation> {
     private int id;
     private int buffer = 10;
 
+
+    protected float lastMeasureWidth=-1;
+    protected float lastMeasureHeight=-1;
+    protected float lastMeasureHeightUpper=-1;
+    protected float lastMeasureHeightLower=-1;
+    protected long lastMeasureWidthAt=-1;
+    protected long lastMeasureHeightAt=-1;
+    protected long lastMeasureHeightUpperAt=-1;
+    protected long lastMeasureHeightLowerAt=-1;
+
     public boolean parenthesis() {
         // are we an add inside a * or a -
         boolean result = this instanceof AddEquation && (this.parent instanceof MultiEquation || this.parent instanceof MinusEquation);
@@ -160,6 +170,16 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureWidth() {
+        if (Algebrator.getAlgebrator().at == lastMeasureWidthAt){
+            return lastMeasureWidth;
+        }else{
+            lastMeasureWidth = privateMeasureWidth();
+            lastMeasureWidthAt = Algebrator.getAlgebrator().at;
+            return lastMeasureWidth;
+        }
+    }
+
+    protected float privateMeasureWidth() {
         float totalWidth = 0;
         for (int i = 0; i < size() - 1; i++) {
             if (!(this instanceof MultiEquation) || (((MultiEquation) this).hasSign(i))) {
@@ -174,23 +194,21 @@ abstract public class Equation extends ArrayList<Equation> {
         if (parenthesis()) {
             totalWidth += PARN_WIDTH_ADDITION;
         }
-
         return totalWidth;
     }
 
     public void draw(Canvas canvas, float x, float y) {
         this.x = x;
         this.y = y;
-        //if (!demo){
 
-            drawBkgBox(canvas, x, y);
+        drawBkgBox(canvas, x, y);
 
         privateDraw(canvas, x, y);
-        //}
-        if (canvas == null) {
-            Log.d("I updated myself: ", this.toString() + " , " + lastPoint.size());
-        }
+
     }
+
+
+
 
     /**
      * x,y is the center of the equation to be drawn
@@ -238,6 +256,18 @@ abstract public class Equation extends ArrayList<Equation> {
 
 
     public float measureHeightLower() {
+        if (Algebrator.getAlgebrator().at == lastMeasureHeightLowerAt){
+            return lastMeasureHeightLower;
+        }else{
+
+            lastMeasureHeightLower = privateMeasureHeightLower();
+            lastMeasureHeightLowerAt = Algebrator.getAlgebrator().at;
+            return lastMeasureHeightLower;
+        }
+    }
+
+    protected float privateMeasureHeightLower() {
+
         float totalHeight = myHeight / 2;
 
         for (int i = 0; i < size(); i++) {
@@ -252,6 +282,19 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureHeightUpper() {
+        if (Algebrator.getAlgebrator().at == lastMeasureHeightUpperAt){
+            return lastMeasureHeightUpper;
+        }else{
+            lastMeasureHeightUpper = privateMeasureHeightUpper();
+            lastMeasureHeightUpperAt = Algebrator.getAlgebrator().at;
+            return lastMeasureHeightUpper;
+        }
+
+
+
+    }
+
+    protected float privateMeasureHeightUpper() {
         float totalHeight = myHeight / 2f;
 
         for (int i = 0; i < size(); i++) {
@@ -280,6 +323,17 @@ abstract public class Equation extends ArrayList<Equation> {
     }
 
     public float measureHeight() {
+        if (Algebrator.getAlgebrator().at == lastMeasureHeightAt){
+            return lastMeasureHeight;
+        }else{
+            lastMeasureHeight = privateMeasureHeight();
+            lastMeasureHeightAt = Algebrator.getAlgebrator().at;
+            return lastMeasureHeight;
+        }
+
+    }
+
+    protected float privateMeasureHeight() {
         return measureHeightLower() + measureHeightUpper();
     }
 

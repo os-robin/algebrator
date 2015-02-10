@@ -1,5 +1,7 @@
 package com.example.circle;
 
+import android.util.Log;
+
 import com.algebrator.eq.Equation;
 
 /**
@@ -39,12 +41,15 @@ public class DragLocation implements Comparable<DragLocation> {
             myDemo  = myAt;
 
             // try op with our copies
+
             myDemo = ourEquation.tryOp(myDemo, right, op);
+            Log.i("tryOp", myDemo.toString() + " " +myStupid.toString());
 
             myStupid.x = 0;
             myStupid.y = 0;
 
             myStupid.updateLocation();
+            Log.i("updated Loc", myDemo.toString() + " " +myStupid.toString());
 
             float equalsOffest = myStupid.lastPoint.get(0).x - owner.stupid.lastPoint.get(0).x - owner.stupid.x;
 

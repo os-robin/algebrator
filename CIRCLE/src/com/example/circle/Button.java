@@ -90,10 +90,10 @@ public class Button {
         //}
 
         bkgPaint.setColor(currentColor);
-        Paint bkgbkgPaint =  new Paint(bkgPaint);
+        Paint bkgbkgPaint =  new Paint();
         bkgbkgPaint.setColor(targetBkgColor);
 
-        canvas.drawRect(left(), top(), right(), bottom(), bkgbkgPaint);
+        //canvas.drawRect(left(), top(), right(), bottom(), bkgbkgPaint);
         RectF r = new RectF(left(), top(), right(), bottom());
         canvas.drawRoundRect(r,10,10, bkgPaint);
 

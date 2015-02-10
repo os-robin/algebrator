@@ -20,6 +20,7 @@ public class Algebrator extends Application {
     public Paint bkgPaint = new Paint();
     public EmilyView writeView  = null;
     public ColinView solveView  = null;
+    public int at=0;
 
     public int getTextSize(){
         return  this.TEXT_SIZE;

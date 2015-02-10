@@ -85,20 +85,17 @@ public class EquationButton extends Button {
     //long lastTap = 0;
     public void click(MotionEvent event) {
         if (inBox(event) && !cv.history.get(0).equals(this)) {
-            targetAlpha = 0xff;
             Log.d("highlighting ", myEq.toString());
 
             if (lastLongTouch == null && event.getAction() == MotionEvent.ACTION_DOWN) {
                 lastLongTouch = new LongTouch(event);
             } else if (lastLongTouch != null && lastLongTouch.outside(event)) {
                 lastLongTouch = null;
-                targetAlpha = 0x00;
             }
         }
 
         if (event.getAction() == MotionEvent.ACTION_UP) {
             lastLongTouch = null;
-            targetAlpha = 0x00;
         }
 
     }
@@ -154,7 +151,7 @@ public class EquationButton extends Button {
         bkgCurrentAlpha = (bkgCurrentAlpha * rate + bkgTargetAlpha) / (rate + 1);
         if (lastLongTouch == null) {
             bkgTargetAlpha = 0x00;
-        } else {
+        } else if (lastLongTouch.started()){
             bkgTargetAlpha = 0xff;
         }
         x = (x * rate + targetX) / (rate + 1);

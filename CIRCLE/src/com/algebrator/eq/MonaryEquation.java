@@ -70,13 +70,15 @@ public abstract class MonaryEquation extends Equation {
     }
 
     @Override
-    public float measureWidth() {
+    protected float privateMeasureWidth() {
         // if we are not the first element in an add equation
+        float result;
         if (drawSign()) {
-            return myWidth + super.measureWidth();
+            result= myWidth + super.privateMeasureWidth();
         }else{
-            return super.measureWidth();
+            result=super.privateMeasureWidth();
         }
+        return result;
     }
 
     @Override

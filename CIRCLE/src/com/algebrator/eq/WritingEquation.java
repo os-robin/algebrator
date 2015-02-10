@@ -18,6 +18,7 @@ public class WritingEquation extends Equation {
     char[] timesUnicode = { '\u00D7'};
     String times = new String(timesUnicode);
 
+
     public WritingEquation(SuperView o) {
         super(o);
         display = "\"";
@@ -82,7 +83,7 @@ public class WritingEquation extends Equation {
     }
 
     @Override
-    public float measureWidth() {
+    protected float privateMeasureWidth() {
         float totalWidth = 0;
 
         for (int i = 0; i < size(); i++) {
@@ -92,10 +93,8 @@ public class WritingEquation extends Equation {
         if (parenthesis()) {
             totalWidth += PARN_WIDTH_ADDITION;
         }
-
         return totalWidth;
     }
-
 
     public Equation convert() {
 

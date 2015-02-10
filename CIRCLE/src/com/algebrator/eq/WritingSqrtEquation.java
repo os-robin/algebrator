@@ -49,13 +49,13 @@ public class WritingSqrtEquation extends WritingPraEquation {
     }
 
     @Override
-    public float measureHeightUpper() {
-        return super.measureHeightUpper() + PowerEquation.height_addition ;
+    protected float privateMeasureHeightUpper() {
+        return super.privateMeasureHeightUpper() + PowerEquation.height_addition ;
     }
 
     @Override
-    public float measureWidth(){
-        return super.measureWidth() + buffer + PowerEquation.width_addition;
+    protected float privateMeasureWidth(){
+        return super.privateMeasureWidth() + buffer + PowerEquation.width_addition;
     }
 
 

@@ -72,8 +72,8 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
 	}
 
-	@Override
-	public float measureWidth() {
+    @Override
+    protected float privateMeasureWidth() {
 		float maxWidth = myWidth;
 
 		for (int i = 0; i < size(); i++) {
@@ -135,12 +135,12 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
 	}
 
     @Override
-    public float measureHeightUpper(){
+    protected float privateMeasureHeightUpper(){
         return measureHeight()/2;
     }
 
     @Override
-    public float measureHeightLower(){
+    protected float privateMeasureHeightLower(){
         return measureHeight()/2;
     }
 
