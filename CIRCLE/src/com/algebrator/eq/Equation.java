@@ -400,17 +400,18 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public boolean inBox(float x, float y) {
         float w = measureWidth();
-        float h = measureHeight();
+        float hl = measureHeightLower();
+        float hu = measureHeightUpper();
         if (x > (this.x + (w / 2) + buffer)) {
             return false;
         }
         if (x < (this.x - (w / 2) - buffer)) {
             return false;
         }
-        if (y > (this.y + (h / 2) + buffer)) {
+        if (y > (this.y + (hl) + buffer)) {
             return false;
         }
-        if (y < (this.y - (h / 2) - buffer)) {
+        if (y < (this.y - (hu) - buffer)) {
             return false;
         }
         return true;
@@ -419,6 +420,13 @@ abstract public class Equation extends ArrayList<Equation> {
     public void tryOperator(float x, float y) {
         Object[] ons = on(x, y).toArray();
         Equation old = owner.stupid.copy();
+
+        String db = "";
+        for (Object o: ons){
+            Equation e =(Equation)o;
+            db += e.toString() + " , ";
+        }
+        Log.i("tryOperator ",db);
 
         if (ons.length != 0) {
             ArrayList<Equation> onsList = new ArrayList<Equation>();
@@ -438,15 +446,35 @@ abstract public class Equation extends ArrayList<Equation> {
             } else if (this instanceof MinusEquation) {
                 tryOperator(onsList);
             }
+
+            if (owner instanceof ColinView){
+                if( !(old.same(owner.stupid))) {
+                    ((ColinView) owner).changed = true;
+                }else{
+                    // this is definatly a band-aid
+                    // so the problem is this:
+                    // you put something in willSelect with your action down
+                    // then you tryOperate with your action up
+                    // nothing happens when you try to operate
+                    // but we replace what we had with something new, but looks the same
+                    // since nothing has changed superview goes on to select
+                    // in select it look to will select
+                    // will select pionts to something no longer in stupid
+                    // crash
+                    //
+                    // this fixes that
+                    // but it shows the danger of replacing stuff we don't need to
+                    owner.stupid=old;
+                    Log.d("","reverted");
+                }
+            }
         } else {
             for (Equation e : this) {
                 e.tryOperator(x, y);
             }
         }
 
-        if (owner instanceof ColinView && !(old.same(owner.stupid))) {
-            ((ColinView) owner).changed = true;
-        }
+
     }
 
     public void tryOperator(ArrayList<Equation> equation) {
@@ -484,12 +512,14 @@ abstract public class Equation extends ArrayList<Equation> {
         return temp;
     }
 
-    private int bkgAlpha=0x00;
-    private int scale =5;
+    protected int bkgAlpha=0x00;
+    protected int scale =5;
+    //TODO scale by dpi
+    protected int bkgBuffer = 10;
     protected void drawBkgBox(Canvas canvas, float x, float y) {
-        RectF r = new RectF((int) (x - measureWidth() / 2),
-                (int) (y - measureHeightUpper()),
-                (int) (x + measureWidth() / 2), (int) (y + measureHeightLower()));
+        RectF r = new RectF((int) (x - measureWidth() / 2) -bkgBuffer,
+                (int) (y - measureHeightUpper())-bkgBuffer,
+                (int) (x + measureWidth() / 2)+bkgBuffer, (int) (y + measureHeightLower()+bkgBuffer));
         Paint p = new Paint();
         p.setColor(Algebrator.getAlgebrator().mainColor);
         if (isSelected() || demo){
@@ -500,7 +530,7 @@ abstract public class Equation extends ArrayList<Equation> {
         p.setAlpha(bkgAlpha);
         Random rand = new Random();
         //p.setARGB(255 / 4, 255 / 2, 255 / 2, 255 / 2);
-        if (canvas != null) {
+        if (canvas != null && !(this instanceof PlaceholderEquation)) {
             canvas.drawRoundRect(r,10,10,p);
                     //drawRoundRect(r, p);
         }
@@ -675,7 +705,7 @@ abstract public class Equation extends ArrayList<Equation> {
 
     public boolean reallyInstanceOf(Class t) {
         Equation at = this;
-        while (at instanceof MinusEquation) {
+        while (at instanceof MonaryEquation) {
             at = at.get(0);
         }
         return t.isInstance(at);
@@ -854,6 +884,24 @@ abstract public class Equation extends ArrayList<Equation> {
 
         if (can) {
             boolean sameSide = (op == Op.ADD && side() != dragging.side());
+
+            boolean thisNeg=false;
+            Equation at = this.parent;
+            while (at != null){
+                if (at instanceof MinusEquation){
+                    thisNeg =!thisNeg;
+                }
+                at = at.parent;
+            }
+            boolean dragNeg=false;
+            at = dragging.parent;
+            while (at != null){
+                if (at instanceof MinusEquation){
+                    dragNeg =!dragNeg;
+                }
+                at = at.parent;
+            }
+
             //peel off the minus signs
             ArrayList<MinusEquation> minusSigns = new ArrayList<MinusEquation>();
             while (this.parent instanceof MinusEquation) {
@@ -880,12 +928,12 @@ abstract public class Equation extends ArrayList<Equation> {
                 //dragging.updateOps(dragging.demo);
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 0 && op == Op.ADD) {
                 dragging.remove();
-                dragging = update(dragging,sameSide);
+                dragging = update(dragging,sameSide,thisNeg,dragNeg);
                 this.replace(dragging);
                 return dragging;
             } else if (this instanceof NumConstEquation && ((NumConstEquation) this).getValue() == 1 && op == Op.MULTI) {
                 dragging.remove();
-                dragging = update(dragging,sameSide);
+                dragging = update(dragging,sameSide,thisNeg,dragNeg);
                 this.replace(dragging);
                 // bring back the minus signs on demo
                 for (MinusEquation me : minusSigns) {
@@ -904,10 +952,10 @@ abstract public class Equation extends ArrayList<Equation> {
                 int myIndex = parent.indexOf(this);
                 Log.i("", "added to existing");
                 if (!right) {
-                    dragging = update(dragging,sameSide);
+                    dragging = update(dragging,sameSide,thisNeg,dragNeg);
                     parent.add(myIndex + 1, dragging);
                 } else {
-                    dragging = update(dragging,sameSide);
+                    dragging = update(dragging,sameSide,thisNeg,dragNeg);
                     parent.add(myIndex, dragging);
                 }
             } else {
@@ -930,23 +978,23 @@ abstract public class Equation extends ArrayList<Equation> {
                 if (op != Op.DIV) {
                     oldEq.replace(newEq);
                     if (right) {
-                        dragging = update(dragging,sameSide);
+                        dragging = update(dragging,sameSide,thisNeg,dragNeg);
                         newEq.add(dragging);
                         newEq.add(oldEq);
                     } else {
                         newEq.add(oldEq);
-                        dragging = update(dragging,sameSide);
+                        dragging = update(dragging,sameSide,thisNeg,dragNeg);
                         newEq.add(dragging);
                     }
                 } else {
                     oldEq.replace(newEq);
                     newEq.add(oldEq);
-                    dragging = update(dragging,sameSide);
+                    dragging = update(dragging,sameSide,thisNeg,dragNeg);
                     newEq.add(dragging);
                 }
             }
             // bring back the minus signs
-            Equation at = this;
+            at = this;
             for (MinusEquation me : minusSigns) {
                 me.clear();
                 at.replace(me);
@@ -956,9 +1004,9 @@ abstract public class Equation extends ArrayList<Equation> {
         return dragging;
     }
 
-    private Equation update(Equation dragging, boolean sameSide) {
+    private Equation update(Equation dragging, boolean sameSide,boolean thisNeg, boolean dragNeg) {
         Equation toInsert;
-        if (sameSide) {
+        if (thisNeg != dragNeg) {
             if (dragging instanceof MinusEquation) {
                 toInsert = dragging.get(0);
             } else {
@@ -968,7 +1016,20 @@ abstract public class Equation extends ArrayList<Equation> {
         } else {
             toInsert = dragging;
         }
-        return toInsert;
+
+        Equation toInsert2;
+        if (sameSide) {
+            if (toInsert instanceof MinusEquation) {
+                toInsert2 = toInsert.get(0);
+            } else {
+                toInsert2 = new MinusEquation(toInsert.owner);
+                toInsert2.add(toInsert);
+            }
+        }else {
+            toInsert2 = toInsert;
+        }
+
+        return toInsert2;
     }
 
     private boolean canPower(Equation dragging) {

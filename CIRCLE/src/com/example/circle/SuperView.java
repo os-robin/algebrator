@@ -47,6 +47,8 @@ public abstract class SuperView extends View implements
     protected float buttonsPercent;
     public ArrayList<Animation> animation = new ArrayList<Animation>();
 
+    public boolean disabled= false;
+
 
     protected float buttonLine() {
         return height * buttonsPercent;
@@ -319,7 +321,7 @@ public abstract class SuperView extends View implements
     private long startTime;
     private long lastTapTime;
     private Point lastTapPoint;
-    private float doubleTapDistance = 20;
+
 
     //moving the whole equation
     private float lastX;
@@ -362,140 +364,157 @@ public abstract class SuperView extends View implements
 
     protected HashSet<Equation> willSelect;
 
+
+    private int disabledAlpha = 0;
+    protected void onDrawAfter(Canvas canvas){
+        if (disabled) {
+            disabledAlpha = (int)((5f*disabledAlpha + 0x80)/6f);
+            Rect r = new Rect(0, 0, width, height);
+            Paint p = new Paint();
+            p.setColor(Color.BLACK);
+            p.setAlpha(disabledAlpha);
+            canvas.drawRect(r, p);
+        }
+    }
+
     @Override
     public synchronized boolean onTouch(View view, MotionEvent event) {
-        if (event.getPointerCount() == 1) {
+        if (!disabled) {
+            if (event.getPointerCount() == 1) {
 
-            // we need to know if they started in the box
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                // figure out the mode;
-                if (inButtons(event)) {
-                    myMode = TouchMode.BUTTON;
-                } else if (stupid.inBox(event.getX(), event.getY())) {
-                    myMode = TouchMode.SELECT;
-                    willSelect = stupid.onAny(event.getX(),
-                            event.getY());
-                } else {
-                    myMode = TouchMode.MOVE;
-                    if (selected != null) {
-                        removeSelected();
-                    }
-                }
-                startTime = System.currentTimeMillis();
-                lastX = event.getX();
-                lastY = event.getY();
-                // stop stupid sliding
-                slidding = false;
-                vx = 0;
-                vy = 0;
-            }
-            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                // check if they selected anything
-                if (myMode == TouchMode.SELECT) {
-                    // if they get too far from were they started we are going to start dragging
-                    //TODO scale by dpi
-                    float maxMovement = 50;
-                    float distance = (float) Math.sqrt((lastX - event.getX()) * (lastX - event.getX()) + (lastY - event.getY()) * (lastY - event.getY()));
-                    if (maxMovement < distance) {
-
-                        boolean pass = true;
+                // we need to know if they started in the box
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // figure out the mode;
+                    if (inButtons(event)) {
+                        myMode = TouchMode.BUTTON;
+                    } else if (stupid.inBox(event.getX(), event.getY())) {
+                        myMode = TouchMode.SELECT;
+                        willSelect = stupid.onAny(event.getX(),
+                                event.getY());
+                    } else {
+                        myMode = TouchMode.MOVE;
                         if (selected != null) {
-                            for (Equation e : willSelect) {
-                                if (!selected.deepContains(e)) {
-                                    pass = false;
-                                    break;
-                                }
-                            }
-                        } else {
-                            resolveSelected(event);
-                        }
-
-                        if (pass) {
-                            startDragging();
-                        } else {
-                            myMode = TouchMode.MOVE;
+                            removeSelected();
                         }
                     }
-                }
-
-                // if we are dragging something move it
-                if (myMode == TouchMode.DRAG) {
-                    dragging.eq.x = event.getX();
-                    dragging.eq.y = event.getY();
-
-                    DragLocation closest = dragLocations.closest(event);
-
-                    if (closest != null) {
-                        stupid = closest.myStupid;
-                    }
-                }
-
-                // if they are moving the equation
-                if (myMode == TouchMode.MOVE) {
-                    float dx = event.getX() - lastX;
-                    float dy = event.getY() - lastY;
-                    updateOffsetX(dx);
-                    updateOffsetY(dy);
+                    startTime = System.currentTimeMillis();
                     lastX = event.getX();
                     lastY = event.getY();
-
-                    vx = (3f * vx + dx) / 4f;
-                    vy = (3f * vy + dy) / 4f;
+                    // stop stupid sliding
+                    slidding = false;
+                    vx = 0;
+                    vy = 0;
                 }
-            }
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    // check if they selected anything
+                    if (myMode == TouchMode.SELECT) {
+                        // if they get too far from were they started we are going to start dragging
+                        //TODO scale by dpi
+                        float maxMovement = 50;
+                        float distance = (float) Math.sqrt((lastX - event.getX()) * (lastX - event.getX()) + (lastY - event.getY()) * (lastY - event.getY()));
+                        if (maxMovement < distance) {
 
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                // did we click anything?
-                boolean clicked = false;
-                long now = System.currentTimeMillis();
-                Point tapPoint = new Point();
-                tapPoint.x = (int) event.getX();
-                tapPoint.y = (int) event.getY();
-                long tapSpacing = now - lastTapTime;
-                if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < doubleTapDistance && myMode == TouchMode.SELECT) {
-                    Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + tapSpacing);
-                    if (canDrag) {
-                        stupid.tryOperator(event.getX(),
-                                event.getY());
-                        clicked = true;
-                        if (this instanceof ColinView ){
-                            if (((ColinView) this).changed == false) {
-                                clicked = false;
-                            }else{
-                                if (selected != null) {
-                                    selected.setSelected(false);
+                            boolean pass = true;
+                            if (selected != null) {
+                                for (Equation e : willSelect) {
+                                    if (!selected.deepContains(e)) {
+                                        pass = false;
+                                        break;
+                                    }
                                 }
+                            } else {
+                                resolveSelected(event);
+                            }
+
+                            if (pass) {
+                                startDragging();
+                            } else {
+                                myMode = TouchMode.MOVE;
                             }
                         }
                     }
 
-                    // set the lastTapTime to zero so they can not triple tap and get two double taps
-                    lastTapTime=0;
-                }else{
-                    lastTapTime = now;
+                    // if we are dragging something move it
+                    if (myMode == TouchMode.DRAG) {
+                        dragging.eq.x = event.getX();
+                        dragging.eq.y = event.getY();
+
+                        DragLocation closest = dragLocations.closest(event);
+
+                        if (closest != null) {
+                            stupid = closest.myStupid;
+                        }
+                    }
+
+                    // if they are moving the equation
+                    if (myMode == TouchMode.MOVE) {
+                        float dx = event.getX() - lastX;
+                        float dy = event.getY() - lastY;
+                        updateOffsetX(dx);
+                        updateOffsetY(dy);
+                        lastX = event.getX();
+                        lastY = event.getY();
+
+                        vx = (3f * vx + dx) / 4f;
+                        vy = (3f * vy + dy) / 4f;
+                    }
                 }
-                lastTapPoint = tapPoint;
-                if (!clicked) {
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    // did we click anything?
+                    boolean clicked = false;
+                    long now = System.currentTimeMillis();
+                    Point tapPoint = new Point();
+                    tapPoint.x = (int) event.getX();
+                    tapPoint.y = (int) event.getY();
+                    long tapSpacing = now - lastTapTime;
+                    if (tapSpacing < Algebrator.getAlgebrator().doubleTapSpacing && dis(tapPoint, lastTapPoint) < Algebrator.getAlgebrator().getDoubleTapDistance() && myMode == TouchMode.SELECT) {
+                        Log.i("", "doubleTap! dis: " + dis(tapPoint, lastTapPoint) + " time: " + tapSpacing);
+                        if (canDrag) {
+                            stupid.tryOperator(event.getX(),
+                                    event.getY());
+                            clicked = true;
+                            if (this instanceof ColinView) {
+                                if (((ColinView) this).changed == false) {
+                                    clicked = false;
+                                } else {
+                                    if (selected != null) {
+                                        selected.setSelected(false);
+                                    }
+                                }
+                            }
+                        }
+
+                        // set the lastTapTime to zero so they can not triple tap and get two double taps
+                        lastTapTime = 0;
+                    } else {
+                        lastTapTime = now;
+                    }
+                    lastTapPoint = tapPoint;
+                    if (!clicked) {
+                        endOnePointer(event);
+                    }
+
+                    // if we were dragging everything around
+                    if (myMode == TouchMode.MOVE) {
+                        slidding = true;
+                    }
+
+                    lastLongTouch = null;
+
+                }
+
+            } else if (event.getPointerCount() == 2) {
+                if (myMode != TouchMode.ZOOM) {
                     endOnePointer(event);
+                    myMode = TouchMode.ZOOM;
                 }
+            } else
 
-                // if we were dragging everything around
-                if (myMode == TouchMode.MOVE) {
-                    slidding = true;
-                }
-
-                lastLongTouch = null;
-
+            {
+                myMode = TouchMode.DEAD;
             }
-
-        } else if (event.getPointerCount() == 2) {
-            if (myMode != TouchMode.ZOOM) {
-                endOnePointer(event);
-                myMode = TouchMode.ZOOM;
-            }
-        } else
-
-        {
+        }else{
             myMode = TouchMode.DEAD;
         }
 
@@ -519,7 +538,7 @@ public abstract class SuperView extends View implements
                 myMode = TouchMode.DRAG;
                 // we need to take all the - signs with us
                 while (selected.parent instanceof MinusEquation) {
-                    selected = selected.parent;
+                    selected.parent.setSelected(true);
                 }
                 //if (selected.canPop()) {
                 dragging = new DragEquation(selected);

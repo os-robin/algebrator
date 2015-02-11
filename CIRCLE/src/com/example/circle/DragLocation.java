@@ -109,6 +109,6 @@ public class DragLocation implements Comparable<DragLocation> {
         }else{
             myDemo.setSelected(true);
         }
-        myDemo.demo= false;
+        myStupid.deDemo();
     }
 }

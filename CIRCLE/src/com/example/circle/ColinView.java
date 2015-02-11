@@ -42,6 +42,7 @@ public class ColinView extends SuperView {
         for (EquationButton eb:history){
             eb.tryRevert(canvas);
         }
+        onDrawAfter(canvas);
     }
 
     // TODO scale with dpi

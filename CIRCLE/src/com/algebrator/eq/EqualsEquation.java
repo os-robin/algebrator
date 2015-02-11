@@ -23,8 +23,8 @@ public class EqualsEquation extends Equation {
     public EqualsEquation(SuperView owner) {
 		super(owner);
 		display = "=";
-		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
-		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().getDefaultSize();
+		myHeight = Algebrator.getAlgebrator().getDefaultSize();
 	}
 
 	public int side(Equation equation)  {

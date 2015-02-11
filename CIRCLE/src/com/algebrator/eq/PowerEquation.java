@@ -1,9 +1,11 @@
 package com.algebrator.eq;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.example.circle.Algebrator;
@@ -21,8 +23,8 @@ public class PowerEquation extends Operation implements BinaryEquation {
         super(owner);
 
         display = "^";
-        myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
-        myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+        myWidth = Algebrator.getAlgebrator().getDefaultSize();
+        myHeight = Algebrator.getAlgebrator().getDefaultSize();
     }
 
     @Override
@@ -90,14 +92,14 @@ public class PowerEquation extends Operation implements BinaryEquation {
         if (isSqrt() && this.get(1) instanceof DivEquation) {
             Equation oldEq = this.get(1);
             Equation newEq = new NumConstEquation(.5, owner);
-            if (oldEq.selected){
+            if (oldEq.selected) {
                 newEq.setSelected(true);
             }
             oldEq.replace(newEq);
         }
 
         boolean wasEvenRoot = isEven();
-        boolean wasEven = get(1) instanceof NumConstEquation && ((NumConstEquation) get(1)).getValue() %2 ==0;
+        boolean wasEven = get(1) instanceof NumConstEquation && ((NumConstEquation) get(1)).getValue() % 2 == 0;
 
         // if it is a power equation
         if (get(0) instanceof PowerEquation) {
@@ -120,20 +122,20 @@ public class PowerEquation extends Operation implements BinaryEquation {
                 }
             }
 
-            if (result instanceof  NumConstEquation && ((NumConstEquation) result).getValue()==1){
+            if (result instanceof NumConstEquation && ((NumConstEquation) result).getValue() == 1) {
                 get(0).replace(get(0).get(0));
-            }else {
+            } else {
                 get(0).get(1).replace(result);
             }
 
-            if (wasEvenRoot){
+            if (wasEvenRoot) {
                 result = new PlusMinusEquation(owner);
                 result.add(get(0));
                 replace(result);
-            }else {
+            } else {
                 replace(get(0));
             }
-        } else if (get(0) instanceof DivEquation){
+        } else if (get(0) instanceof DivEquation) {
             result = new DivEquation(owner);
             Equation top = new PowerEquation(owner);
             top.add(this.get(0).get(0));
@@ -144,7 +146,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
             top.add(this.get(1).copy());
             result.add(bot);
             replace(result);
-        }else{
+        } else {
             // if it's an add split it up
             // if it's numb and number you can just do it
             // if it's numb on top
@@ -180,7 +182,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
                             for (int i = 0; i < val; i++) {
                                 result.add(get(0).copy());
                             }
-                        } else {
+                        } else if (!get(0).reallyInstanceOf(NumConstEquation.class)) {
                             HashSet<MultiCountData> left = new HashSet<MultiCountData>();
                             left.add(new MultiCountData(new NumConstEquation(1, owner)));
                             for (int i = 0; i < val; i++) {
@@ -198,37 +200,37 @@ public class PowerEquation extends Operation implements BinaryEquation {
                                 }
                             }
 
-                            if (wasEven && result instanceof PlusMinusEquation){
+                            if (wasEven && result instanceof PlusMinusEquation) {
                                 result = result.get(0);
                             }
-                        }
-                    } else {
-                        boolean innerNeg = false;
-                        boolean plusMinus = false;
+                        } else {
+                            boolean innerNeg = false;
+                            boolean plusMinus = false;
 
-                        Equation leftTemp = get(0);
-                        while (leftTemp instanceof MinusEquation || leftTemp instanceof PlusMinusEquation) {
-                            if (leftTemp instanceof  MinusEquation) {
-                                innerNeg = !innerNeg;
-                            }else if (leftTemp instanceof  PlusMinusEquation){
-                                plusMinus = true;
+                            Equation leftTemp = get(0);
+                            while (leftTemp instanceof MinusEquation || leftTemp instanceof PlusMinusEquation) {
+                                if (leftTemp instanceof MinusEquation) {
+                                    innerNeg = !innerNeg;
+                                } else if (leftTemp instanceof PlusMinusEquation) {
+                                    plusMinus = true;
+                                }
+                                leftTemp = leftTemp.get(0);
                             }
-                            leftTemp = leftTemp.get(0);
-                        }
 
-                        if (leftTemp instanceof NumConstEquation && (!innerNeg || plusMinus)) {
+                            if (leftTemp instanceof NumConstEquation && (!innerNeg || plusMinus)) {
 
-                            double leftValue = ((NumConstEquation) leftTemp).getValue();
+                                double leftValue = ((NumConstEquation) leftTemp).getValue();
 
-                            double resultValue = Math.pow(leftValue, value);
+                                double resultValue = Math.pow(leftValue, value);
 
-                            result = new NumConstEquation(resultValue, owner);
+                                result = new NumConstEquation(resultValue, owner);
+                            }
                         }
                     }
                 }
             }
             if (result != null) {
-                if (wasEvenRoot){
+                if (wasEvenRoot) {
                     Equation oldEq = result;
                     result = new PlusMinusEquation(owner);
                     result.add(oldEq);
@@ -239,8 +241,9 @@ public class PowerEquation extends Operation implements BinaryEquation {
     }
 
     // is used to tell if we need to +/- cases A^(1/(O*2))
+
     private boolean isEven() {
-        if (get(1) instanceof NumConstEquation && 1/((NumConstEquation) get(1)).getValue() %2 ==0) {
+        if (get(1) instanceof NumConstEquation && 1 / ((NumConstEquation) get(1)).getValue() % 2 == 0) {
             return true;
         }
         // there are other cases but we do not worry about them
@@ -273,7 +276,7 @@ public class PowerEquation extends Operation implements BinaryEquation {
             float atY = y;
 
             if (parenthesis()) {
-                    drawParentheses(canvas, x, y, temp);
+                drawParentheses(canvas, x, y, temp);
                 atX += PARN_WIDTH_ADDITION / 2;
             }
             Rect out = new Rect();
@@ -305,6 +308,13 @@ public class PowerEquation extends Operation implements BinaryEquation {
                         point.x = (int) atX;
                         point.y = (int) atY;
                         lastPoint.add(point);
+                        //Paint green = new Paint();
+                        //green.setColor(Color.GREEN);
+                        //green.setAlpha(0x80);
+                        if (canvas != null) {
+                            Rect r = new Rect(point.x-myWidth/2,point.y-myHeight/2,point.x+myWidth/2,point.y+myHeight/2);
+                            //.drawRect(r, green);
+                        }
                     }
                 }
                 atX += (currentWidth / 2);
@@ -316,29 +326,32 @@ public class PowerEquation extends Operation implements BinaryEquation {
     public static float height_addition = 20;
     public static float width_addition = 60;
 
-    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,Equation e){
+    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p, Equation e) {
         sqrtSignDraw(canvas, atX, y, p, e.measureHeightLower(), e.measureHeightUpper(), e.x + e.measureWidth() / 2);
     }
 
-    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p ,float lower, float upper,float end){
+    public static void sqrtSignDraw(Canvas canvas, float atX, float y, Paint p, float lower, float upper, float end) {
         if (canvas != null) {
             // TODO scale by dpi
             p.setStrokeWidth(3);
-            canvas.drawLine(atX, y, atX + width_addition / 3f, y, p);
-            atX += width_addition / 3f;
-            canvas.drawLine(atX, y, atX + width_addition / 3f, y + lower, p);
-            atX += width_addition / 3f;
-            canvas.drawLine(atX, y + lower, atX + width_addition / 3f, y - upper, p);
-            atX += width_addition / 3f;
-            canvas.drawLine(atX, y - upper, end, y - upper, p);
+            atX += width_addition / 5f;
+            canvas.drawLine(atX, y, atX + width_addition / 5f, y, p);
+            atX += width_addition / 5f;
+            canvas.drawLine(atX, y, atX + width_addition / 5f, y + lower - height_addition / 2, p);
+            atX += width_addition / 5f;
+            canvas.drawLine(atX, y + lower - height_addition / 2, atX + width_addition / 5f, (y - upper) + height_addition / 2, p);
+            atX += width_addition / 5f;
+            canvas.drawLine(atX, (y - upper) + height_addition / 2, end, (y - upper) + height_addition / 2, p);
         }
     }
 
 
     private void sqrtDraw(Canvas canvas, float x, float y, Paint p) {
+        drawSqrtBkg(canvas, x, y);
+
         // let's start by drawing the sqrt sign
         float atX = x - measureWidth() / 2;
-            sqrtSignDraw(canvas, atX, y, p, this);
+        sqrtSignDraw(canvas, atX, y, p, this);
 
         // now let's draw the content
         get(0).draw(canvas, x + width_addition / 2, y);
@@ -353,6 +366,37 @@ public class PowerEquation extends Operation implements BinaryEquation {
         //update the location of thing
         get(1).x = point.x;
         get(1).y = point.y;
+    }
+
+    private int mybkgAlpha = 0x00;
+
+    private void drawSqrtBkg(Canvas canvas, float x, float y) {
+
+        Paint p = new Paint();
+        p.setColor(Algebrator.getAlgebrator().mainColor);
+        if (get(1).isSelected() || get(1).demo) {
+            mybkgAlpha = (mybkgAlpha * (scale - 1) + 0xFF) / scale;
+        } else {
+            mybkgAlpha = (mybkgAlpha * (scale - 1) + 0x00) / scale;
+        }
+        p.setAlpha(mybkgAlpha);
+
+        if (canvas != null) {
+
+            RectF r1 = new RectF((int) (x - measureWidth() / 2),
+                    (int) (y - measureHeightUpper()),
+                    (int) (x - measureWidth() / 2) + width_addition, (int) (y + measureHeightLower()));
+            canvas.drawRoundRect(r1, 10, 10, p);
+
+            RectF r2 = new RectF((int) (x - measureWidth() / 2),
+                    (int) (y - measureHeightUpper()),
+                    (int) (x + measureWidth() / 2) + height_addition / 2f, (int) (int) (y - measureHeightUpper()) + height_addition);
+
+            Paint whiteOut = new Paint();
+            whiteOut.setColor(Color.WHITE);
+            canvas.drawRoundRect(r2, 10, 10, whiteOut);
+            canvas.drawRoundRect(r2, 10, 10, p);
+        }
     }
 
     @Override

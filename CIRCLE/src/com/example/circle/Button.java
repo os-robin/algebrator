@@ -93,8 +93,12 @@ public class Button {
         Paint bkgbkgPaint =  new Paint();
         bkgbkgPaint.setColor(targetBkgColor);
 
-        //canvas.drawRect(left(), top(), right(), bottom(), bkgbkgPaint);
+        canvas.drawRect(left(), top(), right(), bottom(), bkgbkgPaint);
         RectF r = new RectF(left(), top(), right(), bottom());
+
+        //Paint white = new Paint();
+        //white.setColor(Color.WHITE);
+        //canvas.drawRoundRect(r,10,10, white);
         canvas.drawRoundRect(r,10,10, bkgPaint);
 
         Rect out = new Rect();

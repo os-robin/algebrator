@@ -77,8 +77,8 @@ public class AddEquation extends FlexOperation {
 	public AddEquation(SuperView owner) {
 		super(owner);
 		display = "+";
-		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
-		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().getDefaultSize();
+		myHeight = Algebrator.getAlgebrator().getDefaultSize();
 	}
 	public void tryOperator(ArrayList<Equation> eqs) {
         //TODO handle inbeddedness

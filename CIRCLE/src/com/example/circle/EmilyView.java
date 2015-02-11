@@ -148,10 +148,10 @@ public class EmilyView extends SuperView {
 
         drawShadow(canvas);
 
-        for (int i = 0; i < vars.size(); i++) {
-            vars.get(i).draw(canvas);
-        }
+        onDrawAfter(canvas);
     }
+
+
 
     private void drawShadow(Canvas canvas) {
         Paint p = new Paint();

@@ -3,6 +3,9 @@ package com.example.circle;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
+import com.algebrator.eq.Equation;
+import com.algebrator.eq.PlaceholderEquation;
+
 /**
  * Created by Colin on 2/6/2015.
  */
@@ -27,6 +30,14 @@ public class WriteScreen
                 ((ViewGroup) myView.getParent()).removeView(myView);
             }
         }
+        myView.disabled = false;
+
+        if (myView.selected == null){
+            Equation toAdd = new PlaceholderEquation(myView);
+            myView.selected = toAdd;
+            myView.stupid.add(toAdd);
+        }
+
 
         lookAt(myView);
     }

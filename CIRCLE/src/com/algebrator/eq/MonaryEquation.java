@@ -20,8 +20,8 @@ public abstract class MonaryEquation extends Equation {
     public MonaryEquation(SuperView owner2) {
         super(owner2);
 
-        myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
-        myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+        myWidth = Algebrator.getAlgebrator().getDefaultSize();
+        myHeight = Algebrator.getAlgebrator().getDefaultSize();
     }
 
     @Override
@@ -64,6 +64,9 @@ public abstract class MonaryEquation extends Equation {
     public boolean drawSign() {
         Equation lft = left();
         if (parenthesis()){
+            return true;
+        }
+        if (parent instanceof MinusEquation){
             return true;
         }
         return lft == null || !(lft.parent instanceof AddEquation);

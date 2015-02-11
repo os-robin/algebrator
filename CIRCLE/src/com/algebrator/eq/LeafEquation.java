@@ -25,8 +25,8 @@ public abstract class LeafEquation extends Equation {
 
 	public LeafEquation(SuperView owner) {
 		super(owner);
-		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
-		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myHeight = Algebrator.getAlgebrator().getDefaultSize();
+		myWidth = Algebrator.getAlgebrator().getDefaultSize();
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public abstract class LeafEquation extends Equation {
     @Override
     protected float privateMeasureWidth() {
 		// not tested
-		float totalWidth= myWidth + textPaint.measureText(getDisplay(-1)) -textPaint.measureText("A");//Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
+		float totalWidth= myWidth + getPaint().measureText(getDisplay(-1)) -getPaint().measureText("A");//Math.max(myWidth,textPaint.measureText(display)); //-textPaint.measureText(display.subSequence(0, 1)+"")
 		
 		if (parenthesis()){
 			totalWidth += PARN_WIDTH_ADDITION;
@@ -122,6 +122,6 @@ public abstract class LeafEquation extends Equation {
 		point.y = (int) y;
 		lastPoint.add(point);
 	}
-	
+
 	public void tryOperator(ArrayList< Equation> yos){}
 }

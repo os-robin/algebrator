@@ -68,8 +68,8 @@ public class DivEquation extends Operation implements MultiDivSuperEquation, Bin
         display = "/";
 
 
-		myWidth = Algebrator.getAlgebrator().DEFAULT_SIZE;
-		myHeight = Algebrator.getAlgebrator().DEFAULT_SIZE;
+		myWidth = Algebrator.getAlgebrator().getDefaultSize();
+		myHeight = Algebrator.getAlgebrator().getDefaultSize();
 	}
 
     @Override

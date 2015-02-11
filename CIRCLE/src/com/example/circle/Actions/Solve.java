@@ -2,6 +2,7 @@ package com.example.circle.Actions;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 
 import com.algebrator.eq.Equation;
 import com.algebrator.eq.WritingEquation;
@@ -22,19 +23,36 @@ public class Solve extends Action {
         if (emilyView.stupid instanceof WritingEquation)
             if (((WritingEquation) emilyView.stupid).deepLegal() && countEquals(emilyView.stupid) == 1) {
 
-                emilyView.removeSelected();
-                Equation toPass = emilyView.stupid.copy();
+                AsyncTask<Void,Void,Long> task = new AsyncTask<Void,Void,Long>(){
+                    Intent myIntent;
+                    Context myContext;
 
-                Equation newEq = ((WritingEquation) toPass).convert();
+                    protected Long doInBackground(Void... v) {
+                        emilyView.removeSelected();
+                        Equation toPass = emilyView.stupid.copy();
 
-                Context c = emilyView.getContext();
-                ColinView colinView = new ColinView(c);
-                colinView.stupid = newEq;
-                Algebrator.getAlgebrator().solveView = colinView;
-                //((MainActivity) c).lookAt(colinView);
+                        Equation newEq = ((WritingEquation) toPass).convert();
 
-                Intent myIntent = new Intent(c, SolveScreen.class);
-                c.startActivity(myIntent);
+                        myContext = emilyView.getContext();
+                        ColinView colinView = new ColinView(myContext);
+                        colinView.stupid = newEq;
+                        Algebrator.getAlgebrator().solveView = colinView;
+                        //((MainActivity) c).lookAt(colinView);
+
+                        myIntent = new Intent(myContext, SolveScreen.class);
+                        myContext.startActivity(myIntent);
+                        return 1L;
+                    }
+
+                    protected void onProgressUpdate(Void v) {
+                    }
+
+                    protected void onPostExecute(Long v) {
+
+                    }
+                };
+                emilyView.disabled = true;
+                task.execute();
             }
     }
 }

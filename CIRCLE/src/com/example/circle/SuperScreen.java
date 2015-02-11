@@ -29,8 +29,7 @@ public class SuperScreen extends Activity{
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
 
-        Algebrator.getAlgebrator().setTextSize((int) ((metrics.densityDpi  / 160f) * Algebrator.getAlgebrator().DEFAULT_TEXT_SIZE));
-        Algebrator.getAlgebrator().DEFAULT_SIZE = (int) ((metrics.densityDpi  / 160f) * 50);
+        Algebrator.getAlgebrator().setDpi(metrics.densityDpi  / 160f);
 
         Log.i("lifeCycle", "MainActivity-onCreate");
     }
